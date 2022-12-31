@@ -1,0 +1,313 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "API Spec for Repository Scientific API",
+    "version": "1.0.0",
+    "description": "My final project for accomplish my study at Politeknik Negeri Cilacap."
+  },
+  "tags": [
+    {
+      "name": "Category",
+      "description": "API Spec for Category"
+    }
+  ],
+  "servers": [{ "url": "http://localhost:8080/api/v1", "description": "Local environment" }],
+  "paths": {
+    "/categories": {
+      "post": {
+        "tags": ["Category"],
+        "summary": "Create category",
+        "description": "Create category of repository",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "name": "Programming"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success create category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "code": 201,
+                  "status": "success",
+                  "message": "CREATED"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Category"],
+        "summary": "List all categories",
+        "description": "List all categories of repository",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "programming"
+            },
+            "required": true,
+            "name": "keyword",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 10
+            },
+            "required": true,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 1
+            },
+            "required": true,
+            "name": "page",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get all categories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Category"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "status": "success",
+                  "message": "OK",
+                  "data": [
+                    {
+                      "id": "850c3915-16ea-4e2f-b068-5e25108ff681",
+                      "name": "Multimedia",
+                      "created_at": "2022-12-31T23:04:17+07:00",
+                      "updated_at": "2022-12-31T23:04:17+07:00"
+                    },
+                    {
+                      "id": "eb2b5257-0380-4afc-9ab7-c41915f0672e",
+                      "name": "Networking",
+                      "created_at": "2022-12-31T23:15:43+07:00",
+                      "updated_at": "2022-12-31T23:20:24+07:00"
+                    }
+                  ],
+                  "pagination": {
+                    "page": 1,
+                    "limit": 10,
+                    "total_rows": 2,
+                    "total_pages": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/{categoryId}": {
+      "put": {
+        "tags": ["Category"],
+        "summary": "Update category",
+        "description": "Update category of repository",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "categoryId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "name": "Programming"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success update category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "status": "success",
+                  "message": "OK"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Category"],
+        "description": "Get category by id category of repository",
+        "summary": "Get category by id",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "categoryId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get category by id category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Category"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": {
+                      "id": "eb2b5257-0380-4afc-9ab7-c41915f0672e",
+                      "name": "Networking",
+                      "created_at": "2022-12-31T23:15:43+07:00",
+                      "updated_at": "2022-12-31T23:20:24+07:00"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Category": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "total_rows": {
+            "type": "number"
+          },
+          "total_pages": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}
