@@ -9,6 +9,7 @@ import (
 	"github.com/arvinpaundra/repository-api/configs"
 	driverMySQL "github.com/arvinpaundra/repository-api/drivers/mysql"
 	driverRedis "github.com/arvinpaundra/repository-api/drivers/redis"
+	"github.com/arvinpaundra/repository-api/middlewares"
 	"github.com/arvinpaundra/repository-api/utils"
 	"github.com/labstack/echo/v4"
 )
@@ -25,6 +26,8 @@ func main() {
 	redisdb := redis.Init(ctx)
 
 	e := echo.New()
+
+	e.Use(middlewares.CORS())
 
 	route := routes.RouteConfig{
 		Echo:  e,
