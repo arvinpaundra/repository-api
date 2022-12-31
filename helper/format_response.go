@@ -2,20 +2,24 @@ package helper
 
 import "net/http"
 
-type Paginate struct {
-	Page       int64 `json:"page,omitempty"`
-	Limit      int64 `json:"limit,omitempty"`
-	TotalRows  int64 `json:"total_rows"`
-	TotalPages int64 `json:"total_pages"`
+type BaseResponse struct {
+	Code       int         `json:"code"`
+	Status     string      `json:"status"`
+	Message    string      `json:"message"`
+	Data       interface{} `json:"data,omitempty"`
+	Errors     interface{} `json:"errors,omitempty"`
+	Pagination *Pagination `json:"pagination,omitempty"`
 }
 
-type BaseResponse struct {
-	Code    int         `json:"code"`
-	Status  string      `json:"status"`
-	Message string      `json:"message"`
-	Errors  interface{} `json:"errors,omitempty"`
-	Data    interface{} `json:"data,omitempty"`
-	Page    Paginate    `json:"pagination,omitempty"`
+// 200 - OK
+func SuccessResponse(data interface{}, pagination *Pagination) BaseResponse {
+	return BaseResponse{
+		Code:       http.StatusOK,
+		Status:     "success",
+		Message:    "OK",
+		Data:       data,
+		Pagination: pagination,
+	}
 }
 
 // 201 - Created
@@ -24,17 +28,6 @@ func SuccessCreatedResponse() BaseResponse {
 		Code:    http.StatusCreated,
 		Status:  "success",
 		Message: "CREATED",
-	}
-}
-
-// 200 - OK
-func SuccessResponse(data interface{}, paginate Paginate) BaseResponse {
-	return BaseResponse{
-		Code:    http.StatusOK,
-		Status:  "success",
-		Message: "OK",
-		Data:    data,
-		Page:    paginate,
 	}
 }
 

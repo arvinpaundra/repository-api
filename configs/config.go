@@ -11,6 +11,9 @@ func GetConfig(key string) string {
 	viper.SetConfigType("env")
 	viper.AddConfigPath(".")
 
+	// for test service purposes
+	viper.AddConfigPath("./..")
+
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalf("err while reading config file: %v", err)
 	}
