@@ -2,12 +2,12 @@ package request
 
 import "github.com/arvinpaundra/repository-api/models/domain"
 
-type UpdateCategoryRequest struct {
+type UpdateCollectionRequest struct {
 	Name string `json:"name" form:"name" validate:"required"`
 }
 
-func (req *UpdateCategoryRequest) ToDomainCategory() domain.Category {
-	return domain.Category{
+func (req *UpdateCollectionRequest) ToDomainCollection() domain.Collection {
+	return domain.Collection{
 		Name: req.Name,
 	}
 }

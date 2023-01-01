@@ -9,6 +9,10 @@
     {
       "name": "Category",
       "description": "API Spec for Category"
+    },
+    {
+      "name": "Collection",
+      "description": "API Spec for Collection"
     }
   ],
   "servers": [{ "url": "http://localhost:8080/api/v1", "description": "Local environment" }],
@@ -74,7 +78,6 @@
               "type": "string",
               "example": "programming"
             },
-            "required": true,
             "name": "keyword",
             "in": "query"
           },
@@ -270,11 +273,284 @@
           }
         }
       }
+    },
+    "/collections": {
+      "post": {
+        "tags": ["Collection"],
+        "description": "Create collection of repository",
+        "summary": "Crete collection",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "name": "Laporan Tugas Akhir"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success create collection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 201,
+                    "status": "success",
+                    "message": "CREATED"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Collection"],
+        "description": "List all collections of repository",
+        "summary": "List all collections",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "keyword",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 10
+            },
+            "required": true,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 1
+            },
+            "required": true,
+            "name": "page",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success get all collections",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Collection"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "example": {
+                    "code": 201,
+                    "status": "success",
+                    "message": "OK",
+                    "data": [
+                      {
+                        "id": "849229b7-b224-4391-8cf9-9f01122e3667",
+                        "name": "Laporan Tugas Akhir",
+                        "created_at": "2023-01-01T15:44:03+07:00",
+                        "updated_at": "2023-01-01T15:46:18+07:00"
+                      },
+                      {
+                        "id": "b6467238-590c-4bd6-b468-054bfe10de59",
+                        "name": "Laporan Hasil Magang",
+                        "created_at": "2023-01-01T15:43:51+07:00",
+                        "updated_at": "2023-01-01T15:43:51+07:00"
+                      }
+                    ],
+                    "pagination": {
+                      "page": 1,
+                      "limit": 10,
+                      "total_rows": 2,
+                      "total_pages": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/collections/{collectionId}": {
+      "put": {
+        "tags": ["Collection"],
+        "summary": "Update collection",
+        "description": "Update collection of repository",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "collectionId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "name": "Laporan Hasil Magang"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success update collection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Collection"],
+        "description": "Get collection by id collection of repository",
+        "summary": "Get collection by id",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "collectionId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get collection by id collection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Collection"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": {
+                      "id": "849229b7-b224-4391-8cf9-9f01122e3667",
+                      "name": "Laporan Tugas Akhir",
+                      "created_at": "2023-01-01T15:44:03+07:00",
+                      "updated_at": "2023-01-01T15:46:18+07:00"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
       "Category": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "Collection": {
         "type": "object",
         "properties": {
           "id": {
