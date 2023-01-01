@@ -20,6 +20,10 @@ func (rc *RouteConfig) New() {
 	categoryService := service.NewCategoryService(categoryRepository)
 	categoryController := controller.NewCategoryController(categoryService)
 
+	collectionRepository := drivers.NewCollectionRepository(rc.MySQl)
+	collectionService := service.NewCollectionService(collectionRepository)
+	collectionController := controller.NewCollectionController(collectionService)
+
 	// API current version
 	v1 := rc.Echo.Group("/api/v1")
 
@@ -29,4 +33,10 @@ func (rc *RouteConfig) New() {
 	category.PUT("/:categoryId", categoryController.HandlerUpdateCategory)
 	category.GET("", categoryController.HandlerFindAllCategories)
 	category.GET("/:categoryId", categoryController.HandlerFindCategoryById)
+
+	collection := v1.Group("/collections")
+	collection.POST("", collectionController.HandlerCreateCollection)
+	collection.PUT("/:collectionId", collectionController.HandlerUpdateCollection)
+	collection.GET("", collectionController.HandlerFindAllCollections)
+	collection.GET("/:collectionId", collectionController.HandlerFindCollectionById)
 }
