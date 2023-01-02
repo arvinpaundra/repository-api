@@ -12,7 +12,7 @@ func GetConfig(key string) string {
 	viper.AddConfigPath(".")
 
 	// for test service purposes
-	viper.AddConfigPath("./..")
+	viper.AddConfigPath("./../..")
 
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalf("err while reading config file: %v", err)
