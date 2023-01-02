@@ -63,11 +63,11 @@ This project using [Swagger](https://swagger.io) for API Documentation or API Sp
 Do run the test with command snippet below :
 
 ```sh
-go test -v -cover ./services
+go test -v -cover ./services/...
 ```
 
 For more information about test coverage and more readable (generated into html), then do run this command :
 
 ```sh
-go test -v -coverprofile=cover.out ./services && go tool cover -html=cover.out
+go test -v -coverprofile=cover.out ./services/... && go tool cover -html=cover.out
 ```
