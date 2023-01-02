@@ -12,7 +12,17 @@ type BaseResponse struct {
 }
 
 // 200 - OK
-func SuccessResponse(data interface{}, pagination *Pagination) BaseResponse {
+func SuccessOKResponse(data interface{}) BaseResponse {
+	return BaseResponse{
+		Code:    http.StatusOK,
+		Status:  "success",
+		Message: "OK",
+		Data:    data,
+	}
+}
+
+// 200 - OK with pagination
+func SuccessOKResponseWithPagination(data interface{}, pagination *Pagination) BaseResponse {
 	return BaseResponse{
 		Code:       http.StatusOK,
 		Status:     "success",
