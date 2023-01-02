@@ -13,6 +13,10 @@
     {
       "name": "Collection",
       "description": "API Spec for Collection"
+    },
+    {
+      "name": "Role",
+      "description": "API Spec for Role"
     }
   ],
   "servers": [{ "url": "http://localhost:8080/api/v1", "description": "Local environment" }],
@@ -21,7 +25,7 @@
       "post": {
         "tags": ["Category"],
         "summary": "Create category",
-        "description": "Create category of repository",
+        "description": "Create category",
         "requestBody": {
           "content": {
             "application/json": {
@@ -71,7 +75,7 @@
       "get": {
         "tags": ["Category"],
         "summary": "List all categories",
-        "description": "List all categories of repository",
+        "description": "List all categories",
         "parameters": [
           {
             "schema": {
@@ -163,7 +167,7 @@
       "put": {
         "tags": ["Category"],
         "summary": "Update category",
-        "description": "Update category of repository",
+        "description": "Update category",
         "parameters": [
           {
             "schema": {
@@ -222,7 +226,7 @@
       },
       "get": {
         "tags": ["Category"],
-        "description": "Get category by id category of repository",
+        "description": "Get category by id category",
         "summary": "Get category by id",
         "parameters": [
           {
@@ -277,7 +281,7 @@
     "/collections": {
       "post": {
         "tags": ["Collection"],
-        "description": "Create collection of repository",
+        "description": "Create collection",
         "summary": "Crete collection",
         "requestBody": {
           "content": {
@@ -327,7 +331,7 @@
       },
       "get": {
         "tags": ["Collection"],
-        "description": "List all collections of repository",
+        "description": "List all collections",
         "summary": "List all collections",
         "parameters": [
           {
@@ -419,7 +423,7 @@
       "put": {
         "tags": ["Collection"],
         "summary": "Update collection",
-        "description": "Update collection of repository",
+        "description": "Update collection",
         "parameters": [
           {
             "schema": {
@@ -478,7 +482,7 @@
       },
       "get": {
         "tags": ["Collection"],
-        "description": "Get collection by id collection of repository",
+        "description": "Get collection by id collection",
         "summary": "Get collection by id",
         "parameters": [
           {
@@ -529,6 +533,247 @@
           }
         }
       }
+    },
+    "/roles": {
+      "post": {
+        "tags": ["Role"],
+        "description": "Create role",
+        "summary": "Create role",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string"
+                  },
+                  "visibility": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "role": "Mahasiswa",
+                  "visibility": "pemustaka"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success create role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 201,
+                    "status": "success",
+                    "message": "CREATED"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Role"],
+        "summary": "List all roles",
+        "description": "List all roles",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "visibility",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get all roles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Role"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "status": "success",
+                  "message": "OK",
+                  "data": [
+                    {
+                      "id": "fade66ce-4290-4b66-bf07-37205aea3ce7",
+                      "role": "Dosen",
+                      "visibility": "pemustaka",
+                      "created_at": "2023-01-02T05:54:10+07:00",
+                      "updated_at": "2023-01-02T05:55:03+07:00"
+                    },
+                    {
+                      "id": "c0e4b0f2-6338-40df-be43-9173bf48bcd1",
+                      "role": "Mahasiswa",
+                      "visibility": "pemustaka",
+                      "created_at": "2023-01-02T05:54:02+07:00",
+                      "updated_at": "2023-01-02T05:54:02+07:00"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/roles/{roleId}": {
+      "put": {
+        "tags": ["Role"],
+        "summary": "Update role",
+        "description": "Update role",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "roleId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string"
+                  },
+                  "visibility": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "role": "Dosen",
+                "visibility": "pemustaka"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success update role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Role"],
+        "description": "Get role by id role",
+        "summary": "Get role by id",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "roleId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get role by id role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Role"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": {
+                      "id": "c0e4b0f2-6338-40df-be43-9173bf48bcd1",
+                      "role": "Mahasiswa",
+                      "visibility": "pemustaka",
+                      "created_at": "2023-01-02T05:54:02+07:00",
+                      "updated_at": "2023-01-02T05:54:02+07:00"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -557,6 +802,26 @@
             "type": "string"
           },
           "name": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "Role": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "visibility": {
             "type": "string"
           },
           "created_at": {
