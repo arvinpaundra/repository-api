@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS study_programs (
+  id VARCHAR(200) PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP,
+  updated_at TIMESTAMP
+)ENGINE=InnoDB;
