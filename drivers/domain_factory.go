@@ -4,6 +4,7 @@ import (
 	"github.com/arvinpaundra/repository-api/drivers/mysql/category"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/collection"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/role"
+	studyProgram "github.com/arvinpaundra/repository-api/drivers/mysql/studyProgram"
 	"gorm.io/gorm"
 )
 
@@ -17,4 +18,8 @@ func NewCollectionRepository(conn *gorm.DB) collection.CollectionRepository {
 
 func NewRoleRepository(conn *gorm.DB) role.RoleRepository {
 	return role.NewSQLRepository(conn)
+}
+
+func NewStudyProgramRepository(conn *gorm.DB) studyProgram.StudyProgramRepository {
+	return studyProgram.NewSQLRepository(conn)
 }

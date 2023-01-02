@@ -1,28 +1,28 @@
-package collection
+package study_program
 
 import (
 	"net/http"
 	"strconv"
 
 	"github.com/arvinpaundra/repository-api/helper"
-	"github.com/arvinpaundra/repository-api/models/web/collection/request"
-	"github.com/arvinpaundra/repository-api/services/collection"
+	"github.com/arvinpaundra/repository-api/models/web/studyProgram/request"
+	studyProgram "github.com/arvinpaundra/repository-api/services/studyProgram"
 	"github.com/arvinpaundra/repository-api/utils"
 	"github.com/labstack/echo/v4"
 )
 
-type CollectionControllerImpl struct {
-	collectionService collection.CollectionService
+type StudyProgramControllerImpl struct {
+	studyProgramService studyProgram.StudyProgramService
 }
 
-func NewCollectionController(collectionService collection.CollectionService) CollectionController {
-	return CollectionControllerImpl{
-		collectionService: collectionService,
+func NewStudyProgramController(studyProgramService studyProgram.StudyProgramService) StudyProgramController {
+	return StudyProgramControllerImpl{
+		studyProgramService: studyProgramService,
 	}
 }
 
-func (ctrl CollectionControllerImpl) HandlerCreateCollection(c echo.Context) error {
-	var req request.CreateCollectionRequest
+func (ctrl StudyProgramControllerImpl) HandlerCreateStudyProgram(c echo.Context) error {
+	var req request.CreateStudyProgramRequest
 
 	_ = c.Bind(&req)
 
@@ -30,7 +30,7 @@ func (ctrl CollectionControllerImpl) HandlerCreateCollection(c echo.Context) err
 		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(err))
 	}
 
-	err := ctrl.collectionService.Create(c.Request().Context(), req)
+	err := ctrl.studyProgramService.Create(c.Request().Context(), req)
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
@@ -39,10 +39,9 @@ func (ctrl CollectionControllerImpl) HandlerCreateCollection(c echo.Context) err
 	return c.JSON(http.StatusCreated, helper.SuccessCreatedResponse())
 }
 
-func (ctrl CollectionControllerImpl) HandlerUpdateCollection(c echo.Context) error {
-	collectionId := c.Param("collectionId")
-
-	var req request.UpdateCollectionRequest
+func (ctrl StudyProgramControllerImpl) HandlerUpdateStudyProgram(c echo.Context) error {
+	studyProgramId := c.Param("studyProgramId")
+	var req request.UpdateStudyProgramRequest
 
 	_ = c.Bind(&req)
 
@@ -50,11 +49,11 @@ func (ctrl CollectionControllerImpl) HandlerUpdateCollection(c echo.Context) err
 		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(err))
 	}
 
-	err := ctrl.collectionService.Update(c.Request().Context(), req, collectionId)
+	err := ctrl.studyProgramService.Update(c.Request().Context(), req, studyProgramId)
 
 	if err != nil {
 		switch err {
-		case utils.ErrCollectionNotFound:
+		case utils.ErrStudyProgramNotFound:
 			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
 		default:
 			return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
@@ -64,7 +63,7 @@ func (ctrl CollectionControllerImpl) HandlerUpdateCollection(c echo.Context) err
 	return c.JSON(http.StatusOK, helper.SuccessOKResponse(nil))
 }
 
-func (ctrl CollectionControllerImpl) HandlerFindAllCollections(c echo.Context) error {
+func (ctrl StudyProgramControllerImpl) HandlerFindAllStudyPrograms(c echo.Context) error {
 	keyword := c.QueryParam("keyword")
 
 	limit, err := strconv.Atoi(c.QueryParam("limit"))
@@ -86,7 +85,7 @@ func (ctrl CollectionControllerImpl) HandlerFindAllCollections(c echo.Context) e
 		Page:  page,
 	}
 
-	collections, totalRows, totalPages, err := ctrl.collectionService.FindAll(c.Request().Context(), keyword, pagination.GetLimit(), pagination.GetOffset())
+	studyPrograms, totalRows, totalPages, err := ctrl.studyProgramService.FindAll(c.Request().Context(), keyword, pagination.GetLimit(), pagination.GetOffset())
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
@@ -95,26 +94,26 @@ func (ctrl CollectionControllerImpl) HandlerFindAllCollections(c echo.Context) e
 	pagination.TotalRows = totalRows
 	pagination.TotalPages = totalPages
 
-	return c.JSON(http.StatusOK, helper.SuccessOKResponseWithPagination(collections, pagination))
+	return c.JSON(http.StatusOK, helper.SuccessOKResponseWithPagination(studyPrograms, pagination))
 }
 
-func (ctrl CollectionControllerImpl) HandlerFindCollectionById(c echo.Context) error {
-	collectionId := c.Param("collectionId")
+func (ctrl StudyProgramControllerImpl) HandlerFindStudyProgramById(c echo.Context) error {
+	studyProgramId := c.Param("studyProgramId")
 
-	collection, err := ctrl.collectionService.FindById(c.Request().Context(), collectionId)
+	studyProgram, err := ctrl.studyProgramService.FindById(c.Request().Context(), studyProgramId)
 
 	if err != nil {
 		switch err {
-		case utils.ErrCollectionNotFound:
+		case utils.ErrStudyProgramNotFound:
 			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
 		default:
 			return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
 		}
 	}
 
-	return c.JSON(http.StatusOK, helper.SuccessOKResponse(collection))
+	return c.JSON(http.StatusOK, helper.SuccessOKResponse(studyProgram))
 }
 
-func (ctrl CollectionControllerImpl) HandlerDeleteCollectioin(c echo.Context) error {
+func (ctrl StudyProgramControllerImpl) HandlerDeleteStudyProgram(c echo.Context) error {
 	panic("not implemented")
 }

@@ -60,7 +60,7 @@ func (ctrl RoleControllerImpl) HandlerUpdateRole(c echo.Context) error {
 		}
 	}
 
-	return c.JSON(http.StatusOK, helper.SuccessResponse(nil, nil))
+	return c.JSON(http.StatusOK, helper.SuccessOKResponse(nil))
 }
 
 func (ctrl RoleControllerImpl) HandlerFindAllRoles(c echo.Context) error {
@@ -72,7 +72,7 @@ func (ctrl RoleControllerImpl) HandlerFindAllRoles(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
 	}
 
-	return c.JSON(http.StatusOK, helper.SuccessResponse(roles, nil))
+	return c.JSON(http.StatusOK, helper.SuccessOKResponseWithPagination(roles, nil))
 }
 
 func (ctrl RoleControllerImpl) HandlerFindRoleById(c echo.Context) error {
@@ -89,7 +89,7 @@ func (ctrl RoleControllerImpl) HandlerFindRoleById(c echo.Context) error {
 		}
 	}
 
-	return c.JSON(http.StatusOK, helper.SuccessResponse(role, nil))
+	return c.JSON(http.StatusOK, helper.SuccessOKResponse(role))
 }
 
 func (ctrl RoleControllerImpl) HandlerDeleteRole(c echo.Context) error {
