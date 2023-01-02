@@ -17,6 +17,10 @@
     {
       "name": "Role",
       "description": "API Spec for Role"
+    },
+    {
+      "name": "Study Program",
+      "description": "API Spec for Study Program"
     }
   ],
   "servers": [{ "url": "http://localhost:8080/api/v1", "description": "Local environment" }],
@@ -774,6 +778,263 @@
           }
         }
       }
+    },
+    "/study-programs": {
+      "post": {
+        "tags": ["Study Program"],
+        "description": "Create study program",
+        "summary": "Create study program",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "name": "D3 - Teknik Informatika"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success create study program",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 201,
+                    "status": "success",
+                    "message": "CREATED"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Study Program"],
+        "summary": "List all study programs",
+        "description": "List all study programs",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "keyword",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 10
+            },
+            "required": true,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 1
+            },
+            "required": true,
+            "name": "page",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get all study programs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/StudyProgram"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "status": "success",
+                  "message": "OK",
+                  "data": [
+                    {
+                      "id": "c837de18-3c59-41df-a28b-ed96f147f710",
+                      "name": "D-3 Teknik Elektronika",
+                      "created_at": "2023-01-02T21:52:00+07:00",
+                      "updated_at": "2023-01-02T21:54:18+07:00"
+                    },
+                    {
+                      "id": "bdcc445e-3129-46d2-bae5-6ad490d7e5a4",
+                      "name": "D-3 Teknik Informatika",
+                      "created_at": "2023-01-02T21:51:53+07:00",
+                      "updated_at": "2023-01-02T21:51:53+07:00"
+                    }
+                  ],
+                  "pagination": {
+                    "page": 1,
+                    "limit": 10,
+                    "total_rows": 2,
+                    "total_pages": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/study-programs/{studyProgramId}": {
+      "put": {
+        "tags": ["Study Program"],
+        "summary": "Update study program",
+        "description": "Update study program",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "studyProgramId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "name": "D3 - Teknik Informatika"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success update study program",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Study Program"],
+        "description": "Get study program by id study program",
+        "summary": "Get study program by id",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "studyProgramId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get study program by id study program",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/StudyProgram"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": {
+                      "id": "c837de18-3c59-41df-a28b-ed96f147f710",
+                      "name": "D-3 Teknik Elektronika",
+                      "created_at": "2023-01-02T21:52:00+07:00",
+                      "updated_at": "2023-01-02T21:54:18+07:00"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -822,6 +1083,23 @@
             "type": "string"
           },
           "visibility": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "StudyProgram": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
             "type": "string"
           },
           "created_at": {
