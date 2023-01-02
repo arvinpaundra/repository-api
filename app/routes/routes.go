@@ -14,6 +14,9 @@ import (
 
 	roleController "github.com/arvinpaundra/repository-api/controllers/role"
 	roleService "github.com/arvinpaundra/repository-api/services/role"
+
+	studyProgramController "github.com/arvinpaundra/repository-api/controllers/studyProgram"
+	studyProgramService "github.com/arvinpaundra/repository-api/services/studyProgram"
 )
 
 type RouteConfig struct {
@@ -35,6 +38,10 @@ func (rc *RouteConfig) New() {
 	roleService := roleService.NewRoleService(roleRepository)
 	roleController := roleController.NewRoleController(roleService)
 
+	studyProgramRepository := drivers.NewStudyProgramRepository(rc.MySQl)
+	studyProgramService := studyProgramService.NewStudyProgramService(studyProgramRepository)
+	studyProgramController := studyProgramController.NewStudyProgramController(studyProgramService)
+
 	// API current version
 	v1 := rc.Echo.Group("/api/v1")
 
@@ -45,15 +52,24 @@ func (rc *RouteConfig) New() {
 	category.GET("", categoryController.HandlerFindAllCategories)
 	category.GET("/:categoryId", categoryController.HandlerFindCategoryById)
 
+	// collection routes
 	collection := v1.Group("/collections")
 	collection.POST("", collectionController.HandlerCreateCollection)
 	collection.PUT("/:collectionId", collectionController.HandlerUpdateCollection)
 	collection.GET("", collectionController.HandlerFindAllCollections)
 	collection.GET("/:collectionId", collectionController.HandlerFindCollectionById)
 
+	// collection routes
 	role := v1.Group("/roles")
 	role.POST("", roleController.HandlerCreateRole)
 	role.PUT("/:roleId", roleController.HandlerUpdateRole)
 	role.GET("", roleController.HandlerFindAllRoles)
 	role.GET("/:roleId", roleController.HandlerFindRoleById)
+
+	// study program routes
+	studyProgram := v1.Group("/study-programs")
+	studyProgram.POST("", studyProgramController.HandlerCreateStudyProgram)
+	studyProgram.PUT("/:studyProgramId", studyProgramController.HandlerUpdateStudyProgram)
+	studyProgram.GET("", studyProgramController.HandlerFindAllStudyPrograms)
+	studyProgram.GET("/:studyProgramId", studyProgramController.HandlerFindStudyProgramById)
 }
