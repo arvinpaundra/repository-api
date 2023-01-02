@@ -24,6 +24,10 @@ func (rc *RouteConfig) New() {
 	collectionService := service.NewCollectionService(collectionRepository)
 	collectionController := controller.NewCollectionController(collectionService)
 
+	roleRepository := drivers.NewRoleRepository(rc.MySQl)
+	roleService := service.NewRoleService(roleRepository)
+	roleController := controller.NewRoleController(roleService)
+
 	// API current version
 	v1 := rc.Echo.Group("/api/v1")
 
@@ -39,4 +43,10 @@ func (rc *RouteConfig) New() {
 	collection.PUT("/:collectionId", collectionController.HandlerUpdateCollection)
 	collection.GET("", collectionController.HandlerFindAllCollections)
 	collection.GET("/:collectionId", collectionController.HandlerFindCollectionById)
+
+	role := v1.Group("/roles")
+	role.POST("", roleController.HandlerCreateRole)
+	role.PUT("/:roleId", roleController.HandlerUpdateRole)
+	role.GET("", roleController.HandlerFindAllRoles)
+	role.GET("/:roleId", roleController.HandlerFindRoleById)
 }
