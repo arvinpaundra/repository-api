@@ -1,12 +1,19 @@
 package routes
 
 import (
-	controller "github.com/arvinpaundra/repository-api/controllers"
 	"github.com/arvinpaundra/repository-api/drivers"
-	service "github.com/arvinpaundra/repository-api/services"
 	"github.com/go-redis/redis/v8"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
+
+	categoryController "github.com/arvinpaundra/repository-api/controllers/category"
+	categoryService "github.com/arvinpaundra/repository-api/services/category"
+
+	collectionController "github.com/arvinpaundra/repository-api/controllers/collection"
+	collectionService "github.com/arvinpaundra/repository-api/services/collection"
+
+	roleController "github.com/arvinpaundra/repository-api/controllers/role"
+	roleService "github.com/arvinpaundra/repository-api/services/role"
 )
 
 type RouteConfig struct {
@@ -17,16 +24,16 @@ type RouteConfig struct {
 
 func (rc *RouteConfig) New() {
 	categoryRepository := drivers.NewCategoryRepository(rc.MySQl)
-	categoryService := service.NewCategoryService(categoryRepository)
-	categoryController := controller.NewCategoryController(categoryService)
+	categoryService := categoryService.NewCategoryService(categoryRepository)
+	categoryController := categoryController.NewCategoryController(categoryService)
 
 	collectionRepository := drivers.NewCollectionRepository(rc.MySQl)
-	collectionService := service.NewCollectionService(collectionRepository)
-	collectionController := controller.NewCollectionController(collectionService)
+	collectionService := collectionService.NewCollectionService(collectionRepository)
+	collectionController := collectionController.NewCollectionController(collectionService)
 
 	roleRepository := drivers.NewRoleRepository(rc.MySQl)
-	roleService := service.NewRoleService(roleRepository)
-	roleController := controller.NewRoleController(roleService)
+	roleService := roleService.NewRoleService(roleRepository)
+	roleController := roleController.NewRoleController(roleService)
 
 	// API current version
 	v1 := rc.Echo.Group("/api/v1")

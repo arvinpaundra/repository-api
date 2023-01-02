@@ -1,20 +1,20 @@
-package controller
+package role
 
 import (
 	"net/http"
 
 	"github.com/arvinpaundra/repository-api/helper"
 	"github.com/arvinpaundra/repository-api/models/web/role/request"
-	service "github.com/arvinpaundra/repository-api/services"
+	"github.com/arvinpaundra/repository-api/services/role"
 	"github.com/arvinpaundra/repository-api/utils"
 	"github.com/labstack/echo/v4"
 )
 
 type RoleControllerImpl struct {
-	roleService service.RoleService
+	roleService role.RoleService
 }
 
-func NewRoleController(roleService service.RoleService) RoleController {
+func NewRoleController(roleService role.RoleService) RoleController {
 	return RoleControllerImpl{
 		roleService: roleService,
 	}
