@@ -1,4 +1,4 @@
-package controller
+package collection
 
 import (
 	"net/http"
@@ -6,16 +6,16 @@ import (
 
 	"github.com/arvinpaundra/repository-api/helper"
 	"github.com/arvinpaundra/repository-api/models/web/collection/request"
-	service "github.com/arvinpaundra/repository-api/services"
+	"github.com/arvinpaundra/repository-api/services/collection"
 	"github.com/arvinpaundra/repository-api/utils"
 	"github.com/labstack/echo/v4"
 )
 
 type CollectionControllerImpl struct {
-	collectionService service.CollectionService
+	collectionService collection.CollectionService
 }
 
-func NewCollectionController(collectionService service.CollectionService) CollectionController {
+func NewCollectionController(collectionService collection.CollectionService) CollectionController {
 	return CollectionControllerImpl{
 		collectionService: collectionService,
 	}

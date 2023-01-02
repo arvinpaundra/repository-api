@@ -1,4 +1,4 @@
-package service_test
+package category_test
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"github.com/arvinpaundra/repository-api/models/domain"
 	"github.com/arvinpaundra/repository-api/models/web/category/request"
 	"github.com/arvinpaundra/repository-api/models/web/category/response"
-	service "github.com/arvinpaundra/repository-api/services"
+	"github.com/arvinpaundra/repository-api/services/category"
 	"github.com/arvinpaundra/repository-api/utils"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -18,7 +18,7 @@ import (
 
 var (
 	categoryRepository mocks.CategoryRepository
-	categoryService    service.CategoryService
+	categoryService    category.CategoryService
 
 	categoryDomain      domain.Category
 	createCategoryDTO   request.CreateCategoryRequest
@@ -30,7 +30,7 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	categoryService = service.NewCategoryService(&categoryRepository)
+	categoryService = category.NewCategoryService(&categoryRepository)
 
 	categoryDomain = domain.Category{
 		ID:   uuid.NewString(),
@@ -57,7 +57,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestCreate(t *testing.T) {
-	t.Run("Test Create | Success", func(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
 		categoryRepository.Mock.On("Save", ctx, mock.Anything).Return(nil).Once()
 
 		err := categoryService.Create(ctx, createCategoryDTO)
@@ -65,7 +65,7 @@ func TestCreate(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
-	t.Run("Test Create | Failed | Error occurred", func(t *testing.T) {
+	t.Run("Failed | Error occurred", func(t *testing.T) {
 		categoryRepository.Mock.On("Save", ctx, mock.Anything).Return(errors.New("error occurred")).Once()
 
 		err := categoryService.Create(ctx, createCategoryDTO)
@@ -75,7 +75,7 @@ func TestCreate(t *testing.T) {
 }
 
 func TestUpdate(t *testing.T) {
-	t.Run("Test Update | Success", func(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
 		categoryRepository.Mock.On("FindById", ctx, categoryDomain.ID).Return(categoryDomain, nil).Once()
 
 		categoryRepository.Mock.On("Update", ctx, updateCategoryDTO.ToDomainCategory(), categoryDomain.ID).Return(nil).Once()
@@ -85,7 +85,7 @@ func TestUpdate(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
-	t.Run("Test Update | Failed | Category not found", func(t *testing.T) {
+	t.Run("Failed | Category not found", func(t *testing.T) {
 		categoryRepository.Mock.On("FindById", ctx, categoryDomain.ID).Return(domain.Category{}, utils.ErrCategoryNotFound).Once()
 
 		err := categoryService.Update(ctx, updateCategoryDTO, categoryDomain.ID)
@@ -93,7 +93,7 @@ func TestUpdate(t *testing.T) {
 		assert.Error(t, err)
 	})
 
-	t.Run("Test Update | Failed | Error occurred", func(t *testing.T) {
+	t.Run("Failed | Error occurred", func(t *testing.T) {
 		categoryRepository.Mock.On("FindById", ctx, categoryDomain.ID).Return(categoryDomain, nil).Once()
 
 		categoryRepository.Mock.On("Update", ctx, updateCategoryDTO.ToDomainCategory(), categoryDomain.ID).Return(errors.New("error occurred")).Once()
@@ -105,7 +105,7 @@ func TestUpdate(t *testing.T) {
 }
 
 func TestFindAll(t *testing.T) {
-	t.Run("Test Find All | Success", func(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
 		categoryRepository.Mock.On("FindAll", ctx, "", 10, 0).Return([]domain.Category{categoryDomain}, totalRows, nil).Once()
 
 		results, actualTotalRows, actualTotalPages, err := categoryService.FindAll(ctx, "", 10, 0)
@@ -116,7 +116,7 @@ func TestFindAll(t *testing.T) {
 		assert.NotEmpty(t, actualTotalPages)
 	})
 
-	t.Run("Test Find All | Failed | Error occurred", func(t *testing.T) {
+	t.Run("Failed | Error occurred", func(t *testing.T) {
 		categoryRepository.Mock.On("FindAll", ctx, "", 10, 0).Return([]domain.Category{}, int64(0), errors.New("error occurred")).Once()
 
 		results, actualTotalRows, actualTotalPages, err := categoryService.FindAll(ctx, "", 10, 0)
@@ -129,7 +129,7 @@ func TestFindAll(t *testing.T) {
 }
 
 func TestFindById(t *testing.T) {
-	t.Run("Test Find By Id | Success", func(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
 		categoryRepository.Mock.On("FindById", ctx, categoryDomain.ID).Return(categoryDomain, nil).Once()
 
 		result, err := categoryService.FindById(ctx, categoryDomain.ID)
@@ -138,7 +138,7 @@ func TestFindById(t *testing.T) {
 		assert.NotEmpty(t, result)
 	})
 
-	t.Run("Test Fin By Id | Failed | Category not found", func(t *testing.T) {
+	t.Run("Failed | Category not found", func(t *testing.T) {
 		categoryRepository.Mock.On("FindById", ctx, categoryDomain.ID).Return(domain.Category{}, utils.ErrCategoryNotFound).Once()
 
 		result, err := categoryService.FindById(ctx, categoryDomain.ID)

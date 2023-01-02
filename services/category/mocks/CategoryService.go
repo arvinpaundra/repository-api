@@ -16,13 +16,13 @@ type CategoryService struct {
 	mock.Mock
 }
 
-// Create provides a mock function with given fields: ctx, category
-func (_m *CategoryService) Create(ctx context.Context, category request.CreateCategoryRequest) error {
-	ret := _m.Called(ctx, category)
+// Create provides a mock function with given fields: ctx, _a1
+func (_m *CategoryService) Create(ctx context.Context, _a1 request.CreateCategoryRequest) error {
+	ret := _m.Called(ctx, _a1)
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, request.CreateCategoryRequest) error); ok {
-		r0 = rf(ctx, category)
+		r0 = rf(ctx, _a1)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -102,13 +102,13 @@ func (_m *CategoryService) FindById(ctx context.Context, categoryId string) (res
 	return r0, r1
 }
 
-// Update provides a mock function with given fields: ctx, category, categoryId
-func (_m *CategoryService) Update(ctx context.Context, category request.UpdateCategoryRequest, categoryId string) error {
-	ret := _m.Called(ctx, category, categoryId)
+// Update provides a mock function with given fields: ctx, _a1, categoryId
+func (_m *CategoryService) Update(ctx context.Context, _a1 request.UpdateCategoryRequest, categoryId string) error {
+	ret := _m.Called(ctx, _a1, categoryId)
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, request.UpdateCategoryRequest, string) error); ok {
-		r0 = rf(ctx, category, categoryId)
+		r0 = rf(ctx, _a1, categoryId)
 	} else {
 		r0 = ret.Error(0)
 	}

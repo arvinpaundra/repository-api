@@ -1,4 +1,4 @@
-package controller
+package category
 
 import (
 	"net/http"
@@ -6,16 +6,16 @@ import (
 
 	"github.com/arvinpaundra/repository-api/helper"
 	"github.com/arvinpaundra/repository-api/models/web/category/request"
-	service "github.com/arvinpaundra/repository-api/services"
+	"github.com/arvinpaundra/repository-api/services/category"
 	"github.com/arvinpaundra/repository-api/utils"
 	"github.com/labstack/echo/v4"
 )
 
 type CategoryControllerImpl struct {
-	categoryService service.CategoryService
+	categoryService category.CategoryService
 }
 
-func NewCategoryController(categoryService service.CategoryService) CategoryController {
+func NewCategoryController(categoryService category.CategoryService) CategoryController {
 	return CategoryControllerImpl{
 		categoryService: categoryService,
 	}
