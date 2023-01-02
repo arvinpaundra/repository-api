@@ -61,11 +61,7 @@ func (ctrl CategoryControllerImpl) HandlerUpdateCategory(c echo.Context) error {
 		}
 	}
 
-	return c.JSON(http.StatusOK, helper.SuccessResponse(nil, nil))
-}
-
-func (ctrl CategoryControllerImpl) HandlerDeleteCategory(c echo.Context) error {
-	panic("not implemented")
+	return c.JSON(http.StatusOK, helper.SuccessOKResponse(nil))
 }
 
 func (ctrl CategoryControllerImpl) HandlerFindAllCategories(c echo.Context) error {
@@ -99,7 +95,7 @@ func (ctrl CategoryControllerImpl) HandlerFindAllCategories(c echo.Context) erro
 	pagination.TotalRows = totalRows
 	pagination.TotalPages = totalPages
 
-	return c.JSON(http.StatusOK, helper.SuccessResponse(categories, pagination))
+	return c.JSON(http.StatusOK, helper.SuccessOKResponseWithPagination(categories, pagination))
 }
 
 func (ctrl CategoryControllerImpl) HandlerFindCategoryById(c echo.Context) error {
@@ -116,5 +112,9 @@ func (ctrl CategoryControllerImpl) HandlerFindCategoryById(c echo.Context) error
 		}
 	}
 
-	return c.JSON(http.StatusOK, helper.SuccessResponse(category, nil))
+	return c.JSON(http.StatusOK, helper.SuccessOKResponse(category))
+}
+
+func (ctrl CategoryControllerImpl) HandlerDeleteCategory(c echo.Context) error {
+	panic("not implemented")
 }

@@ -61,7 +61,7 @@ func (ctrl CollectionControllerImpl) HandlerUpdateCollection(c echo.Context) err
 		}
 	}
 
-	return c.JSON(http.StatusOK, helper.SuccessResponse(nil, nil))
+	return c.JSON(http.StatusOK, helper.SuccessOKResponse(nil))
 }
 
 func (ctrl CollectionControllerImpl) HandlerFindAllCollections(c echo.Context) error {
@@ -95,7 +95,7 @@ func (ctrl CollectionControllerImpl) HandlerFindAllCollections(c echo.Context) e
 	pagination.TotalRows = totalRows
 	pagination.TotalPages = totalPages
 
-	return c.JSON(http.StatusOK, helper.SuccessResponse(collections, pagination))
+	return c.JSON(http.StatusOK, helper.SuccessOKResponseWithPagination(collections, pagination))
 }
 
 func (ctrl CollectionControllerImpl) HandlerFindCollectionById(c echo.Context) error {
@@ -112,7 +112,7 @@ func (ctrl CollectionControllerImpl) HandlerFindCollectionById(c echo.Context) e
 		}
 	}
 
-	return c.JSON(http.StatusOK, helper.SuccessResponse(collection, nil))
+	return c.JSON(http.StatusOK, helper.SuccessOKResponse(collection))
 }
 
 func (ctrl CollectionControllerImpl) HandlerDeleteCollectioin(c echo.Context) error {
