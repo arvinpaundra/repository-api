@@ -3,6 +3,7 @@ package drivers
 import (
 	"github.com/arvinpaundra/repository-api/drivers/mysql/category"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/collection"
+	"github.com/arvinpaundra/repository-api/drivers/mysql/departement"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/role"
 	studyProgram "github.com/arvinpaundra/repository-api/drivers/mysql/studyProgram"
 	"gorm.io/gorm"
@@ -22,4 +23,8 @@ func NewRoleRepository(conn *gorm.DB) role.RoleRepository {
 
 func NewStudyProgramRepository(conn *gorm.DB) studyProgram.StudyProgramRepository {
 	return studyProgram.NewSQLRepository(conn)
+}
+
+func NewDepartementRepository(conn *gorm.DB) departement.DepartementRepository {
+	return departement.NewSQLRepository(conn)
 }
