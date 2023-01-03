@@ -17,6 +17,9 @@ import (
 
 	studyProgramController "github.com/arvinpaundra/repository-api/controllers/studyProgram"
 	studyProgramService "github.com/arvinpaundra/repository-api/services/studyProgram"
+
+	departementController "github.com/arvinpaundra/repository-api/controllers/departement"
+	departementService "github.com/arvinpaundra/repository-api/services/departement"
 )
 
 type RouteConfig struct {
@@ -41,6 +44,10 @@ func (rc *RouteConfig) New() {
 	studyProgramRepository := drivers.NewStudyProgramRepository(rc.MySQl)
 	studyProgramService := studyProgramService.NewStudyProgramService(studyProgramRepository)
 	studyProgramController := studyProgramController.NewStudyProgramController(studyProgramService)
+
+	departementRepository := drivers.NewDepartementRepository(rc.MySQl)
+	departementService := departementService.NewDepartementService(departementRepository, studyProgramRepository)
+	departementController := departementController.NewDepartementController(departementService)
 
 	// API current version
 	v1 := rc.Echo.Group("/api/v1")
@@ -69,7 +76,17 @@ func (rc *RouteConfig) New() {
 	// study program routes
 	studyProgram := v1.Group("/study-programs")
 	studyProgram.POST("", studyProgramController.HandlerCreateStudyProgram)
-	studyProgram.PUT("/:studyProgramId", studyProgramController.HandlerUpdateStudyProgram)
 	studyProgram.GET("", studyProgramController.HandlerFindAllStudyPrograms)
-	studyProgram.GET("/:studyProgramId", studyProgramController.HandlerFindStudyProgramById)
+
+	detailStudyProgram := studyProgram.Group("/:studyProgramId")
+	detailStudyProgram.PUT("", studyProgramController.HandlerUpdateStudyProgram)
+	detailStudyProgram.GET("", studyProgramController.HandlerFindStudyProgramById)
+	detailStudyProgram.GET("/departements", departementController.HandlerFindDepartementsByStudyProgramId)
+
+	// departement routes
+	departement := v1.Group("/departements")
+	departement.POST("", departementController.HandlerCreateDepartement)
+	departement.PUT("/:departementId", departementController.HandlerUpdateDepartement)
+	departement.GET("", departementController.HandlerFindAllDepartements)
+	departement.GET("/:departementId", departementController.HandlerFindDepartementById)
 }

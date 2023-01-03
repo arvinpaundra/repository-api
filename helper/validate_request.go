@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"reflect"
 	"strings"
 
 	"github.com/go-playground/validator/v10"
@@ -12,6 +13,18 @@ var validate *validator.Validate
 
 func ValidateRequest(value interface{}) ValidationError {
 	validate = validator.New()
+
+	// register tag name to be validated instead using field name
+	validate.RegisterTagNameFunc(func(field reflect.StructField) string {
+		name := strings.SplitN(field.Tag.Get("json"), ",", 2)[0]
+
+		// skip if tag key says it should be ignored
+		if name == "-" {
+			return ""
+		}
+
+		return name
+	})
 
 	err := validate.Struct(value)
 
@@ -29,7 +42,7 @@ func validatorErrorMessage(validationError error) ValidationError {
 	// make error message for each invalid field
 	for _, err := range validationError.(validator.ValidationErrors) {
 		// append error message to the map, where the key is field name and value is an error desctiption
-		errFields[strings.ToLower(err.Field())] = msgForTag(err)
+		errFields[err.Field()] = msgForTag(err)
 	}
 
 	return errFields

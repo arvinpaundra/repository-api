@@ -8,19 +8,23 @@
   "tags": [
     {
       "name": "Category",
-      "description": "API Spec for Category"
+      "description": "API Spec for Category of Repositories"
     },
     {
       "name": "Collection",
-      "description": "API Spec for Collection"
+      "description": "API Spec for Collection of Repositories"
     },
     {
       "name": "Role",
-      "description": "API Spec for Role"
+      "description": "API Spec for User Role"
     },
     {
       "name": "Study Program",
       "description": "API Spec for Study Program"
+    },
+    {
+      "name": "Departement",
+      "description": "API Spec for Departement"
     }
   ],
   "servers": [{ "url": "http://localhost:8080/api/v1", "description": "Local environment" }],
@@ -1035,6 +1039,352 @@
           }
         }
       }
+    },
+    "/study-programs/{studyProgramId}/departements": {
+      "get": {
+        "tags": ["Study Program"],
+        "summary": "List all departements by study program",
+        "description": "List all departements by study program",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "bdcc445e-3129-46d2-bae5-6ad490d7e5a4"
+            },
+            "required": true,
+            "name": "studyProgramId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get all departements by study program",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Departement"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "status": "success",
+                  "message": "OK",
+                  "data": [
+                    {
+                      "id": "d533fd7a-7da8-4e88-a126-331c1a2dc4b0",
+                      "study_program_id": "bdcc445e-3129-46d2-bae5-6ad490d7e5a4",
+                      "name": "Teknik Informatika",
+                      "study_program": "D-3 Teknik Informatika",
+                      "code": "TI",
+                      "created_at": "2023-01-03T09:57:56+07:00",
+                      "updated_at": "2023-01-03T10:02:50+07:00"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/departements": {
+      "post": {
+        "tags": ["Departement"],
+        "description": "Create departement",
+        "summary": "Create departement",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "study_program_id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "code": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "study_program_id": "bdcc445e-3129-46d2-bae5-6ad490d7e5a4",
+                  "name": "Teknik Informatika",
+                  "code": "TI"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success create departement",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 201,
+                    "status": "success",
+                    "message": "CREATED"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Departement"],
+        "summary": "List all departements",
+        "description": "List all departements",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "keyword",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 10
+            },
+            "required": true,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 1
+            },
+            "required": true,
+            "name": "page",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get all departements",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Departement"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "status": "success",
+                  "message": "OK",
+                  "data": [
+                    {
+                      "id": "78c2cbbe-e38c-4584-a9b5-6948f94d1ee2",
+                      "study_program_id": "c837de18-3c59-41df-a28b-ed96f147f710",
+                      "name": "Teknik Elektronika",
+                      "study_program": "D-3 Teknik Elektronika",
+                      "code": "TE",
+                      "created_at": "2023-01-03T09:59:39+07:00",
+                      "updated_at": "2023-01-03T09:59:39+07:00"
+                    },
+                    {
+                      "id": "d533fd7a-7da8-4e88-a126-331c1a2dc4b0",
+                      "study_program_id": "bdcc445e-3129-46d2-bae5-6ad490d7e5a4",
+                      "name": "Teknik Informatika",
+                      "study_program": "D-3 Teknik Informatika",
+                      "code": "TI",
+                      "created_at": "2023-01-03T09:57:56+07:00",
+                      "updated_at": "2023-01-03T10:02:50+07:00"
+                    }
+                  ],
+                  "pagination": {
+                    "page": 1,
+                    "limit": 10,
+                    "total_rows": 2,
+                    "total_pages": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/departements/{departementId}": {
+      "put": {
+        "tags": ["Departement"],
+        "summary": "Update departement",
+        "description": "Update departement",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "departementId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "study_program_id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "code": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "study_program_id": "bdcc445e-3129-46d2-bae5-6ad490d7e5a4",
+                "name": "D3 - Teknik Informatika",
+                "code": "TI"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success update departement",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Departement"],
+        "description": "Get departement by id departement",
+        "summary": "Get departement by id",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "d533fd7a-7da8-4e88-a126-331c1a2dc4b0"
+            },
+            "required": true,
+            "name": "departementId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get departement by id departement",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Departement"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": {
+                      "id": "d533fd7a-7da8-4e88-a126-331c1a2dc4b0",
+                      "study_program_id": "bdcc445e-3129-46d2-bae5-6ad490d7e5a4",
+                      "name": "Teknik Informatika",
+                      "study_program": "D-3 Teknik Informatika",
+                      "code": "TI",
+                      "created_at": "2023-01-03T09:57:56+07:00",
+                      "updated_at": "2023-01-03T10:02:50+07:00"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1100,6 +1450,32 @@
             "type": "string"
           },
           "name": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "Departement": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "study_program_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "study_program": {
+            "type": "string"
+          },
+          "code": {
             "type": "string"
           },
           "created_at": {
