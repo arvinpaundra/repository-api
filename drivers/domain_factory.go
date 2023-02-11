@@ -4,8 +4,12 @@ import (
 	"github.com/arvinpaundra/repository-api/drivers/mysql/category"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/collection"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/departement"
+	"github.com/arvinpaundra/repository-api/drivers/mysql/pemustaka"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/role"
 	studyProgram "github.com/arvinpaundra/repository-api/drivers/mysql/studyProgram"
+	"github.com/arvinpaundra/repository-api/drivers/mysql/user"
+	expirationToken "github.com/arvinpaundra/repository-api/drivers/redis/expirationToken"
+	"github.com/go-redis/redis/v8"
 	"gorm.io/gorm"
 )
 
@@ -27,4 +31,16 @@ func NewStudyProgramRepository(conn *gorm.DB) studyProgram.StudyProgramRepositor
 
 func NewDepartementRepository(conn *gorm.DB) departement.DepartementRepository {
 	return departement.NewSQLRepository(conn)
+}
+
+func NewExpirationRepository(conn *redis.Client) expirationToken.ExpirationTokenRepository {
+	return expirationToken.NewRedisRepository(conn)
+}
+
+func NewPemustakaRepository(conn *gorm.DB) pemustaka.PemustakaRepository {
+	return pemustaka.NewSQLRepository(conn)
+}
+
+func NewUserRepository(conn *gorm.DB) user.UserRepository {
+	return user.NewSQLRepository(conn)
 }

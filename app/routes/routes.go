@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/arvinpaundra/repository-api/drivers"
+	"github.com/arvinpaundra/repository-api/helper"
 	"github.com/go-redis/redis/v8"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -20,73 +21,112 @@ import (
 
 	departementController "github.com/arvinpaundra/repository-api/controllers/departement"
 	departementService "github.com/arvinpaundra/repository-api/services/departement"
+
+	pemustakaController "github.com/arvinpaundra/repository-api/controllers/pemustaka"
+	pemustakaService "github.com/arvinpaundra/repository-api/services/pemustaka"
+
+	authController "github.com/arvinpaundra/repository-api/controllers/auth"
+	authService "github.com/arvinpaundra/repository-api/services/auth"
+
+	mailingController "github.com/arvinpaundra/repository-api/controllers/mailing"
+	mailingService "github.com/arvinpaundra/repository-api/services/mailing"
 )
 
 type RouteConfig struct {
-	Echo  *echo.Echo
-	MySQl *gorm.DB
-	Redis *redis.Client
+	Echo    *echo.Echo
+	MySQl   *gorm.DB
+	Redis   *redis.Client
+	Mailing *helper.Mailing
 }
 
 func (rc *RouteConfig) New() {
 	categoryRepository := drivers.NewCategoryRepository(rc.MySQl)
-	categoryService := categoryService.NewCategoryService(categoryRepository)
-	categoryController := categoryController.NewCategoryController(categoryService)
+	categorySrvc := categoryService.NewCategoryService(categoryRepository)
+	categoryCtrl := categoryController.NewCategoryController(categorySrvc)
 
 	collectionRepository := drivers.NewCollectionRepository(rc.MySQl)
-	collectionService := collectionService.NewCollectionService(collectionRepository)
-	collectionController := collectionController.NewCollectionController(collectionService)
+	collectionSrvc := collectionService.NewCollectionService(collectionRepository)
+	collectionCtrl := collectionController.NewCollectionController(collectionSrvc)
 
 	roleRepository := drivers.NewRoleRepository(rc.MySQl)
-	roleService := roleService.NewRoleService(roleRepository)
-	roleController := roleController.NewRoleController(roleService)
+	roleSrvc := roleService.NewRoleService(roleRepository)
+	roleCtrl := roleController.NewRoleController(roleSrvc)
 
 	studyProgramRepository := drivers.NewStudyProgramRepository(rc.MySQl)
-	studyProgramService := studyProgramService.NewStudyProgramService(studyProgramRepository)
-	studyProgramController := studyProgramController.NewStudyProgramController(studyProgramService)
+	studyProgramSrvc := studyProgramService.NewStudyProgramService(studyProgramRepository)
+	studyProgramCtrl := studyProgramController.NewStudyProgramController(studyProgramSrvc)
 
 	departementRepository := drivers.NewDepartementRepository(rc.MySQl)
-	departementService := departementService.NewDepartementService(departementRepository, studyProgramRepository)
-	departementController := departementController.NewDepartementController(departementService)
+	departementSrvc := departementService.NewDepartementService(departementRepository, studyProgramRepository)
+	departementCtrl := departementController.NewDepartementController(departementSrvc)
+
+	exporationTokenRepository := drivers.NewExpirationRepository(rc.Redis)
+	userRepository := drivers.NewUserRepository(rc.MySQl)
+
+	pemustakaRepository := drivers.NewPemustakaRepository(rc.MySQl)
+	pemustakaSrvc := pemustakaService.NewPemustakaService(userRepository, pemustakaRepository, studyProgramRepository, departementRepository, roleRepository, rc.MySQl)
+	pemustakaCtrl := pemustakaController.NewPemustakaController(pemustakaSrvc)
+
+	authSrvc := authService.NewAuthService(userRepository, exporationTokenRepository)
+	authCtrl := authController.NewAuthController(authSrvc)
+
+	mailingSrvc := mailingService.NewMailingService(exporationTokenRepository, userRepository, pemustakaRepository, *rc.Mailing)
+	mailingCtrl := mailingController.NewMailingController(mailingSrvc)
 
 	// API current version
 	v1 := rc.Echo.Group("/api/v1")
 
 	// category routes
 	category := v1.Group("/categories")
-	category.POST("", categoryController.HandlerCreateCategory)
-	category.PUT("/:categoryId", categoryController.HandlerUpdateCategory)
-	category.GET("", categoryController.HandlerFindAllCategories)
-	category.GET("/:categoryId", categoryController.HandlerFindCategoryById)
+	category.POST("", categoryCtrl.HandlerCreateCategory)
+	category.PUT("/:categoryId", categoryCtrl.HandlerUpdateCategory)
+	category.GET("", categoryCtrl.HandlerFindAllCategories)
+	category.GET("/:categoryId", categoryCtrl.HandlerFindCategoryById)
 
 	// collection routes
 	collection := v1.Group("/collections")
-	collection.POST("", collectionController.HandlerCreateCollection)
-	collection.PUT("/:collectionId", collectionController.HandlerUpdateCollection)
-	collection.GET("", collectionController.HandlerFindAllCollections)
-	collection.GET("/:collectionId", collectionController.HandlerFindCollectionById)
+	collection.POST("", collectionCtrl.HandlerCreateCollection)
+	collection.PUT("/:collectionId", collectionCtrl.HandlerUpdateCollection)
+	collection.GET("", collectionCtrl.HandlerFindAllCollections)
+	collection.GET("/:collectionId", collectionCtrl.HandlerFindCollectionById)
 
 	// collection routes
 	role := v1.Group("/roles")
-	role.POST("", roleController.HandlerCreateRole)
-	role.PUT("/:roleId", roleController.HandlerUpdateRole)
-	role.GET("", roleController.HandlerFindAllRoles)
-	role.GET("/:roleId", roleController.HandlerFindRoleById)
+	role.POST("", roleCtrl.HandlerCreateRole)
+	role.PUT("/:roleId", roleCtrl.HandlerUpdateRole)
+	role.GET("", roleCtrl.HandlerFindAllRoles)
+	role.GET("/:roleId", roleCtrl.HandlerFindRoleById)
 
 	// study program routes
 	studyProgram := v1.Group("/study-programs")
-	studyProgram.POST("", studyProgramController.HandlerCreateStudyProgram)
-	studyProgram.GET("", studyProgramController.HandlerFindAllStudyPrograms)
+	studyProgram.POST("", studyProgramCtrl.HandlerCreateStudyProgram)
+	studyProgram.GET("", studyProgramCtrl.HandlerFindAllStudyPrograms)
 
 	detailStudyProgram := studyProgram.Group("/:studyProgramId")
-	detailStudyProgram.PUT("", studyProgramController.HandlerUpdateStudyProgram)
-	detailStudyProgram.GET("", studyProgramController.HandlerFindStudyProgramById)
-	detailStudyProgram.GET("/departements", departementController.HandlerFindDepartementsByStudyProgramId)
+	detailStudyProgram.PUT("", studyProgramCtrl.HandlerUpdateStudyProgram)
+	detailStudyProgram.GET("", studyProgramCtrl.HandlerFindStudyProgramById)
+	detailStudyProgram.GET("/departements", departementCtrl.HandlerFindDepartementsByStudyProgramId)
 
 	// departement routes
 	departement := v1.Group("/departements")
-	departement.POST("", departementController.HandlerCreateDepartement)
-	departement.PUT("/:departementId", departementController.HandlerUpdateDepartement)
-	departement.GET("", departementController.HandlerFindAllDepartements)
-	departement.GET("/:departementId", departementController.HandlerFindDepartementById)
+	departement.POST("", departementCtrl.HandlerCreateDepartement)
+	departement.PUT("/:departementId", departementCtrl.HandlerUpdateDepartement)
+	departement.GET("", departementCtrl.HandlerFindAllDepartements)
+	departement.GET("/:departementId", departementCtrl.HandlerFindDepartementById)
+
+	// auth routes
+	auth := v1.Group("/auth")
+	forgotPassword := auth.Group("/forgot-password")
+	forgotPassword.POST("", mailingCtrl.HandlerSendForgotPasswordWithExpirationToken)
+	forgotPassword.PUT("", authCtrl.HandlerForgotPassword)
+
+	authPemustaka := auth.Group("/pemustaka")
+	authPemustaka.POST("/register", pemustakaCtrl.HandlerRegister)
+	authPemustaka.POST("/login", pemustakaCtrl.HandlerLogin)
+
+	// pemustaka routes
+	pemustaka := v1.Group("/pemustaka")
+	// pemustaka.PUT("/:pemustakaId", pemustakaCtrl.HandlerUpdate)
+	pemustaka.GET("", pemustakaCtrl.HandlerFindAllPemustaka)
+	pemustaka.GET("/:pemustakaId", pemustakaCtrl.HandlerFindPemustakaById)
 }
