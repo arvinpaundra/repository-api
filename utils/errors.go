@@ -36,8 +36,23 @@ var (
 	// error email already used
 	ErrEmailAlreadyUsed = errors.New("email already used")
 
+	// error email not found
+	ErrEmailNotFound = errors.New("email not found")
+
 	// error invalid password length
 	ErrInvalidPasswordLength = errors.New("minimum password length are 6 characters long")
+
+	// error token has been expired
+	ErrTokenExpired = errors.New("token has been expired")
+
+	// error token has been sent
+	ErrTokenHasBeenSent = errors.New("token has been sent")
+
+	// error token not match
+	ErrTokenNotMatch = errors.New("token not matched")
+
+	// error link has been expired
+	ErrLinkExpired = errors.New("link has been expired")
 
 	// error internal server error
 	ErrInternalServerError = errors.New("internal server error")
