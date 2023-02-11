@@ -9,6 +9,7 @@ import (
 	"github.com/arvinpaundra/repository-api/configs"
 	driverMySQL "github.com/arvinpaundra/repository-api/drivers/mysql"
 	driverRedis "github.com/arvinpaundra/repository-api/drivers/redis"
+	"github.com/arvinpaundra/repository-api/helper"
 	"github.com/arvinpaundra/repository-api/middlewares"
 	"github.com/arvinpaundra/repository-api/utils"
 	"github.com/labstack/echo/v4"
@@ -29,10 +30,14 @@ func main() {
 
 	e.Use(middlewares.CORS())
 
+	// init mail service
+	mailing := helper.NewMailing()
+
 	route := routes.RouteConfig{
-		Echo:  e,
-		MySQl: mysqldb,
-		Redis: redisdb,
+		Echo:    e,
+		MySQl:   mysqldb,
+		Redis:   redisdb,
+		Mailing: mailing,
 	}
 
 	route.New()
