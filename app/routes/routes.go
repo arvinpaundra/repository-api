@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/arvinpaundra/repository-api/drivers"
 	"github.com/arvinpaundra/repository-api/helper"
+	"github.com/arvinpaundra/repository-api/helper/cloudinary"
 	"github.com/go-redis/redis/v8"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -22,6 +23,9 @@ import (
 	departementController "github.com/arvinpaundra/repository-api/controllers/departement"
 	departementService "github.com/arvinpaundra/repository-api/services/departement"
 
+	requestAccessController "github.com/arvinpaundra/repository-api/controllers/requestAccess"
+	requestAccessService "github.com/arvinpaundra/repository-api/services/requestAccess"
+
 	pemustakaController "github.com/arvinpaundra/repository-api/controllers/pemustaka"
 	pemustakaService "github.com/arvinpaundra/repository-api/services/pemustaka"
 
@@ -33,10 +37,11 @@ import (
 )
 
 type RouteConfig struct {
-	Echo    *echo.Echo
-	MySQl   *gorm.DB
-	Redis   *redis.Client
-	Mailing *helper.Mailing
+	Echo       *echo.Echo
+	MySQl      *gorm.DB
+	Redis      *redis.Client
+	Mailing    *helper.Mailing
+	Cloudinary cloudinary.Cloudinary
 }
 
 func (rc *RouteConfig) New() {
@@ -62,10 +67,14 @@ func (rc *RouteConfig) New() {
 
 	exporationTokenRepository := drivers.NewExpirationRepository(rc.Redis)
 	userRepository := drivers.NewUserRepository(rc.MySQl)
-
 	pemustakaRepository := drivers.NewPemustakaRepository(rc.MySQl)
-	pemustakaSrvc := pemustakaService.NewPemustakaService(userRepository, pemustakaRepository, studyProgramRepository, departementRepository, roleRepository, rc.MySQl)
+	requestAccessRepository := drivers.NewRequestAccessRepository(rc.MySQl)
+
+	pemustakaSrvc := pemustakaService.NewPemustakaService(userRepository, pemustakaRepository, studyProgramRepository, departementRepository, roleRepository, requestAccessRepository, rc.Cloudinary, rc.MySQl)
 	pemustakaCtrl := pemustakaController.NewPemustakaController(pemustakaSrvc)
+
+	requestAccessSrvc := requestAccessService.NewRequestAccessService(requestAccessRepository, pemustakaRepository, rc.MySQl)
+	requestAccessCtrl := requestAccessController.NewRequestAccessController(requestAccessSrvc)
 
 	authSrvc := authService.NewAuthService(userRepository, exporationTokenRepository)
 	authCtrl := authController.NewAuthController(authSrvc)
@@ -126,7 +135,13 @@ func (rc *RouteConfig) New() {
 
 	// pemustaka routes
 	pemustaka := v1.Group("/pemustaka")
-	// pemustaka.PUT("/:pemustakaId", pemustakaCtrl.HandlerUpdate)
+	pemustaka.PUT("/:pemustakaId", pemustakaCtrl.HandlerUpdatePemustaka)
 	pemustaka.GET("", pemustakaCtrl.HandlerFindAllPemustaka)
 	pemustaka.GET("/:pemustakaId", pemustakaCtrl.HandlerFindPemustakaById)
+
+	// request access routes
+	requestAccess := v1.Group("/request-accesses")
+	requestAccess.GET("", requestAccessCtrl.HandlerFindAllRequestAccesses)
+	requestAccess.GET("/:requestAccessId", requestAccessCtrl.HandlerFindRequestAccessById)
+	requestAccess.PUT("/:requestAccessId", requestAccessCtrl.HandlerUpdateRequestAccess)
 }
