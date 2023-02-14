@@ -30,8 +30,8 @@ func (repository PemustakaRepositoryImpl) Save(ctx context.Context, tx *gorm.DB,
 	return nil
 }
 
-func (repository PemustakaRepositoryImpl) Update(ctx context.Context, pemustaka domain.Pemustaka, pemustakaId string) error {
-	err := repository.conn.WithContext(ctx).Model(&domain.Pemustaka{}).Where("id = ?", pemustakaId).Updates(&pemustaka).Error
+func (repository PemustakaRepositoryImpl) Update(ctx context.Context, tx *gorm.DB, pemustaka domain.Pemustaka, pemustakaId string) error {
+	err := tx.WithContext(ctx).Model(&domain.Pemustaka{}).Where("id = ?", pemustakaId).Updates(&pemustaka).Error
 
 	if err != nil {
 		return err

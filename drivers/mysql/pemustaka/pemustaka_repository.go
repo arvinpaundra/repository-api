@@ -10,7 +10,7 @@ import (
 
 type PemustakaRepository interface {
 	Save(ctx context.Context, tx *gorm.DB, pemustaka domain.Pemustaka) error
-	Update(ctx context.Context, pemustaka domain.Pemustaka, pemustakaId string) error
+	Update(ctx context.Context, tx *gorm.DB, pemustaka domain.Pemustaka, pemustakaId string) error
 	FindAll(ctx context.Context, query request.PemustakaRequestQuery, limit int, offset int) ([]domain.Pemustaka, int, error)
 	FindById(ctx context.Context, pemustakaId string) (domain.Pemustaka, error)
 	FindByUserId(ctx context.Context, userId string) (domain.Pemustaka, error)
