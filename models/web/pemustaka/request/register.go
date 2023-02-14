@@ -13,7 +13,6 @@ type RegisterPemustakaRequest struct {
 	Fullname       string `json:"fullname" form:"fullname" validate:"required"`
 	IdentityNumber string `json:"identity_number" form:"identity_number" validate:"required"`
 	YearGen        string `json:"year_gen" form:"year_gen"`
-	// SuppFile       *multipart.FileHeader `json:"supp_file" form:"supp_file" validate:"required"`
 }
 
 func (req *RegisterPemustakaRequest) ToDomainPemustaka() domain.Pemustaka {
