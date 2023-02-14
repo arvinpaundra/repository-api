@@ -10,6 +10,7 @@ import (
 	driverMySQL "github.com/arvinpaundra/repository-api/drivers/mysql"
 	driverRedis "github.com/arvinpaundra/repository-api/drivers/redis"
 	"github.com/arvinpaundra/repository-api/helper"
+	"github.com/arvinpaundra/repository-api/helper/cloudinary"
 	"github.com/arvinpaundra/repository-api/middlewares"
 	"github.com/arvinpaundra/repository-api/utils"
 	"github.com/labstack/echo/v4"
@@ -32,12 +33,14 @@ func main() {
 
 	// init mail service
 	mailing := helper.NewMailing()
+	cloudinary := cloudinary.NewCloudinary()
 
 	route := routes.RouteConfig{
-		Echo:    e,
-		MySQl:   mysqldb,
-		Redis:   redisdb,
-		Mailing: mailing,
+		Echo:       e,
+		MySQl:      mysqldb,
+		Redis:      redisdb,
+		Mailing:    mailing,
+		Cloudinary: cloudinary,
 	}
 
 	route.New()
