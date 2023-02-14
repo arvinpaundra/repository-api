@@ -24,13 +24,21 @@ func NewPemustakaController(pemustakaService pemustaka.PemustakaService) Pemusta
 func (ctrl PemustakaControllerImpl) HandlerRegister(c echo.Context) error {
 	var req request.RegisterPemustakaRequest
 
+	supportEvidence, _ := c.FormFile("support_evidence")
+
+	if supportEvidence == nil {
+		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
+			"support_evidence": "This field is required",
+		}))
+	}
+
 	_ = c.Bind(&req)
 
 	if err := helper.ValidateRequest(req); err != nil {
 		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(err))
 	}
 
-	err := ctrl.pemustakaService.Register(c.Request().Context(), req)
+	err := ctrl.pemustakaService.Register(c.Request().Context(), req, supportEvidence)
 
 	if err != nil {
 		switch err {
@@ -67,6 +75,8 @@ func (ctrl PemustakaControllerImpl) HandlerLogin(c echo.Context) error {
 			return c.JSON(http.StatusConflict, helper.ConflictResponse(utils.ErrAuthenticationFailed.Error()))
 		case utils.ErrPemustakaNotFound:
 			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrWaitingForAcceptance:
+			return c.JSON(http.StatusConflict, helper.ConflictResponse(err.Error()))
 		default:
 			return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
 		}
@@ -78,7 +88,34 @@ func (ctrl PemustakaControllerImpl) HandlerLogin(c echo.Context) error {
 }
 
 func (ctrl PemustakaControllerImpl) HandlerUpdatePemustaka(c echo.Context) error {
-	panic("not implemented")
+	var req request.UpdatePemustakaRequest
+
+	pemustakaId := c.Param("pemustakaId")
+
+	avatar, _ := c.FormFile("avatar")
+
+	_ = c.Bind(&req)
+
+	if err := helper.ValidateRequest(req); err != nil {
+		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(err))
+	}
+
+	err := ctrl.pemustakaService.Update(c.Request().Context(), req, avatar, pemustakaId)
+
+	if err != nil {
+		switch err {
+		case utils.ErrPemustakaNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrStudyProgramNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrDepartementNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		default:
+			return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
+		}
+	}
+
+	return c.JSON(http.StatusOK, helper.SuccessOKResponse(nil))
 }
 
 func (ctrl PemustakaControllerImpl) HandlerFindAllPemustaka(c echo.Context) error {
