@@ -125,13 +125,13 @@ func (_m *PemustakaRepository) Save(ctx context.Context, tx *gorm.DB, _a2 domain
 	return r0
 }
 
-// Update provides a mock function with given fields: ctx, _a1, pemustakaId
-func (_m *PemustakaRepository) Update(ctx context.Context, _a1 domain.Pemustaka, pemustakaId string) error {
-	ret := _m.Called(ctx, _a1, pemustakaId)
+// Update provides a mock function with given fields: ctx, tx, _a2, pemustakaId
+func (_m *PemustakaRepository) Update(ctx context.Context, tx *gorm.DB, _a2 domain.Pemustaka, pemustakaId string) error {
+	ret := _m.Called(ctx, tx, _a2, pemustakaId)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, domain.Pemustaka, string) error); ok {
-		r0 = rf(ctx, _a1, pemustakaId)
+	if rf, ok := ret.Get(0).(func(context.Context, *gorm.DB, domain.Pemustaka, string) error); ok {
+		r0 = rf(ctx, tx, _a2, pemustakaId)
 	} else {
 		r0 = ret.Error(0)
 	}

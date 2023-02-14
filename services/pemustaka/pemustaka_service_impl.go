@@ -3,12 +3,16 @@ package pemustaka
 import (
 	"context"
 	"math"
+	"mime/multipart"
 
+	"github.com/arvinpaundra/repository-api/configs"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/departement"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/pemustaka"
+	requestAccess "github.com/arvinpaundra/repository-api/drivers/mysql/requestAccess"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/role"
 	studyProgram "github.com/arvinpaundra/repository-api/drivers/mysql/studyProgram"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/user"
+	"github.com/arvinpaundra/repository-api/helper/cloudinary"
 	"github.com/arvinpaundra/repository-api/models/domain"
 	"github.com/arvinpaundra/repository-api/models/web/pemustaka/request"
 	"github.com/arvinpaundra/repository-api/models/web/pemustaka/response"
@@ -18,12 +22,14 @@ import (
 )
 
 type PemustakaServiceImpl struct {
-	userRepository         user.UserRepository
-	pemustakaRepository    pemustaka.PemustakaRepository
-	studyProgramRepository studyProgram.StudyProgramRepository
-	departementRepository  departement.DepartementRepository
-	roleRepository         role.RoleRepository
-	tx                     *gorm.DB
+	userRepository          user.UserRepository
+	pemustakaRepository     pemustaka.PemustakaRepository
+	studyProgramRepository  studyProgram.StudyProgramRepository
+	departementRepository   departement.DepartementRepository
+	roleRepository          role.RoleRepository
+	requestAccessRepository requestAccess.RequestAccessRepository
+	cloudinary              cloudinary.Cloudinary
+	tx                      *gorm.DB
 }
 
 func NewPemustakaService(
@@ -32,19 +38,23 @@ func NewPemustakaService(
 	studyProgramRepository studyProgram.StudyProgramRepository,
 	departementRepository departement.DepartementRepository,
 	roleRepository role.RoleRepository,
+	requestAccessRepository requestAccess.RequestAccessRepository,
+	cloudinary cloudinary.Cloudinary,
 	tx *gorm.DB,
 ) PemustakaService {
 	return PemustakaServiceImpl{
-		userRepository:         userRepository,
-		pemustakaRepository:    pemustakaRepository,
-		studyProgramRepository: studyProgramRepository,
-		departementRepository:  departementRepository,
-		roleRepository:         roleRepository,
-		tx:                     tx,
+		userRepository:          userRepository,
+		pemustakaRepository:     pemustakaRepository,
+		studyProgramRepository:  studyProgramRepository,
+		departementRepository:   departementRepository,
+		roleRepository:          roleRepository,
+		requestAccessRepository: requestAccessRepository,
+		cloudinary:              cloudinary,
+		tx:                      tx,
 	}
 }
 
-func (service PemustakaServiceImpl) Register(ctx context.Context, req request.RegisterPemustakaRequest) error {
+func (service PemustakaServiceImpl) Register(ctx context.Context, req request.RegisterPemustakaRequest, supportEvidence *multipart.FileHeader) error {
 	tx := service.tx.Begin()
 
 	user, _ := service.userRepository.FindByEmail(ctx, req.Email)
@@ -97,8 +107,32 @@ func (service PemustakaServiceImpl) Register(ctx context.Context, req request.Re
 	pemustakaDomain.MemberCode = memberCode
 	pemustakaDomain.IsActive = "0"
 	pemustakaDomain.IsCollectedFinalProject = "0"
+	pemustakaDomain.Avatar = configs.GetConfig("DEFAULT_AVATAR")
+
+	filename := utils.GetFilename()
+
+	requestAccessURL, err := service.cloudinary.Upload(ctx, "request-accesses", filename, supportEvidence)
+
+	if err != nil {
+		return err
+	}
 
 	if err := service.pemustakaRepository.Save(ctx, tx, pemustakaDomain); err != nil {
+		if errorRollback := tx.Rollback().Error; errorRollback != nil {
+			return errorRollback
+		}
+
+		return err
+	}
+
+	requestAccessDomain := domain.RequestAccess{
+		ID:              uuid.NewString(),
+		PemustakaId:     pemustakaDomain.ID,
+		SupportEvidence: requestAccessURL,
+		Status:          "pending",
+	}
+
+	if err := service.requestAccessRepository.Save(ctx, tx, requestAccessDomain); err != nil {
 		if errorRollback := tx.Rollback().Error; errorRollback != nil {
 			return errorRollback
 		}
@@ -132,13 +166,21 @@ func (service PemustakaServiceImpl) Login(ctx context.Context, req request.Login
 		return "", utils.ErrPemustakaNotFound
 	}
 
+	if pemustaka.IsActive == "0" {
+		return "", utils.ErrWaitingForAcceptance
+	}
+
 	token, _ := utils.GenerateToken(pemustaka.ID, pemustaka.Role.Role)
 
 	return token, nil
 }
 
-func (service PemustakaServiceImpl) Update(ctx context.Context, req request.UpdatePemustakaRequest, pemustakaId string) error {
-	if _, err := service.pemustakaRepository.FindById(ctx, pemustakaId); err != nil {
+func (service PemustakaServiceImpl) Update(ctx context.Context, req request.UpdatePemustakaRequest, avatar *multipart.FileHeader, pemustakaId string) error {
+	tx := service.tx.Begin()
+
+	pemustaka, err := service.pemustakaRepository.FindById(ctx, pemustakaId)
+
+	if err != nil {
 		return err
 	}
 
@@ -150,20 +192,37 @@ func (service PemustakaServiceImpl) Update(ctx context.Context, req request.Upda
 		return err
 	}
 
-	var avatarUrl string
+	var avatarURL string
 
-	if req.Avatar != nil {
-		// TODO: do upload image
-		avatarUrl = ""
+	if avatar != nil {
+		if pemustaka.Avatar != configs.GetConfig("DEFAULT_AVATAR") {
+			if err := service.cloudinary.Delete(ctx, pemustaka.Avatar); err != nil {
+				return err
+			}
+		}
+
+		filename := utils.GetFilename()
+
+		avatarURL, err = service.cloudinary.Upload(ctx, "avatars", filename, avatar)
+
+		if err != nil {
+			return err
+		}
 	}
 
-	pemustaka := req.ToDomainPemustaka()
-	pemustaka.Avatar = avatarUrl
+	pemustakaDomain := req.ToDomainPemustaka()
+	pemustakaDomain.Avatar = avatarURL
 
-	err := service.pemustakaRepository.Update(ctx, pemustaka, pemustakaId)
+	if err = service.pemustakaRepository.Update(ctx, tx, pemustakaDomain, pemustakaId); err != nil {
+		if errorRollback := tx.Rollback().Error; errorRollback != nil {
+			return errorRollback
+		}
 
-	if err != nil {
 		return err
+	}
+
+	if errorCommit := tx.Commit().Error; errorCommit != nil {
+		return errorCommit
 	}
 
 	return nil

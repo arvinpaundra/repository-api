@@ -33,6 +33,10 @@
     {
       "name": "Pemustaka",
       "description": "API Spec for Pemustaka"
+    },
+    {
+      "name": "Request Access",
+      "description": "API Spec for Request Access"
     }
   ],
   "servers": [{ "url": "http://localhost:8080/api/v1", "description": "Local environment" }],
@@ -1844,6 +1848,320 @@
             }
           }
         }
+      },
+      "put": {
+        "tags": ["Pemustaka"],
+        "description": "Update pemustaka",
+        "summary": "Update pemustaka",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "c132bc13-da3f-43e2-9ad8-21f1cfa99696"
+            },
+            "name": "pemustakaId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "study_program_id": {
+                    "type": "string"
+                  },
+                  "departement_id": {
+                    "type": "string"
+                  },
+                  "fullname": {
+                    "type": "string"
+                  },
+                  "year_gen": {
+                    "type": "string"
+                  },
+                  "gender": {
+                    "type": "string"
+                  },
+                  "telp": {
+                    "type": "string"
+                  },
+                  "birth_date": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "study_program_id": "bdcc445e-3129-46d2-bae5-6ad490d7e5a4",
+                  "departement_id": "d533fd7a-7da8-4e88-a126-331c1a2dc4b0",
+                  "fullname": "User Pemustaka Test",
+                  "year_gen": "2023",
+                  "gender": "Pria",
+                  "telp": "",
+                  "birth_date": "",
+                  "address": "test"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success update pemustaka",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/request-accesses": {
+      "get": {
+        "tags": ["Request Access"],
+        "description": "Lit all request accesses",
+        "summary": "List all request accesses",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "keyword",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 10
+            },
+            "name": "limit",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 1
+            },
+            "name": "page",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get all request accesses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/RequestAccess"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/RequestAccess"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": [
+                      {
+                        "id": "a909232b-d7ef-4532-8aec-d0679fe434f7",
+                        "pemustaka_id": "d75127d3-6671-4ef4-b5ac-f4df99991f17",
+                        "pemustaka": "Arvin Paundra Ardana",
+                        "role": "Mahasiswa",
+                        "study_program": "D-3 Teknik Informatika",
+                        "departement": "Teknik Informatika",
+                        "identity_number": "123456789",
+                        "support_evidence": "https://res.cloudinary.com/dxhv9xlwc/image/upload/v1676350069/request-accesses/39bb9af8cf7943fdafb1c5f0436a23fe.jpg",
+                        "status": "accepted",
+                        "created_at": "2023-02-14T11:47:50+07:00",
+                        "updated_at": "2023-02-14T11:48:50+07:00"
+                      }
+                    ],
+                    "pagination": {
+                      "page": 1,
+                      "limit": 10,
+                      "total_rows": 1,
+                      "total_pages": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/request-accesses/{requestAccessId}": {
+      "get": {
+        "tags": ["Request Access"],
+        "description": "Get detail request access by id",
+        "summary": "Get detail request access by id",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "a909232b-d7ef-4532-8aec-d0679fe434f7"
+            },
+            "name": "requestAccessId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get detail request access by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/RequestAccess"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": {
+                      "id": "a909232b-d7ef-4532-8aec-d0679fe434f7",
+                      "pemustaka_id": "d75127d3-6671-4ef4-b5ac-f4df99991f17",
+                      "pemustaka": "Arvin Paundra Ardana",
+                      "role": "Mahasiswa",
+                      "study_program": "D-3 Teknik Informatika",
+                      "departement": "Teknik Informatika",
+                      "identity_number": "123456789",
+                      "support_evidence": "https://res.cloudinary.com/dxhv9xlwc/image/upload/v1676350069/request-accesses/39bb9af8cf7943fdafb1c5f0436a23fe.jpg",
+                      "status": "accepted",
+                      "created_at": "2023-02-14T11:47:50+07:00",
+                      "updated_at": "2023-02-14T11:48:50+07:00"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Request Access"],
+        "description": "Confirm acceptance account",
+        "summary": "Confirm acceptance account",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "a909232b-d7ef-4532-8aec-d0679fe434f7"
+            },
+            "name": "requestAccessId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "status": "accepted"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success confirm acceptance account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -1995,6 +2313,44 @@
             "type": "string"
           },
           "avatar": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "RequestAccess": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "pemustaka_id": {
+            "type": "string"
+          },
+          "pemustaka": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "study_program": {
+            "type": "string"
+          },
+          "departement": {
+            "type": "string"
+          },
+          "identitiy_number": {
+            "type": "string"
+          },
+          "support_evidence": {
+            "type": "string"
+          },
+          "status": {
             "type": "string"
           },
           "created_at": {

@@ -33,6 +33,9 @@ var (
 	// error repository not found
 	ErrRepositoryNotFound = errors.New("repository not found")
 
+	// error request access not found
+	ErrRequestAccessNotFound = errors.New("request access not found")
+
 	// error email already used
 	ErrEmailAlreadyUsed = errors.New("email already used")
 
@@ -53,6 +56,9 @@ var (
 
 	// error link has been expired
 	ErrLinkExpired = errors.New("link has been expired")
+
+	// error waiting for acceptance to activate pemustaka account
+	ErrWaitingForAcceptance = errors.New("account is waiting for acceptance")
 
 	// error internal server error
 	ErrInternalServerError = errors.New("internal server error")

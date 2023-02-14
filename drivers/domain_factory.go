@@ -5,6 +5,7 @@ import (
 	"github.com/arvinpaundra/repository-api/drivers/mysql/collection"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/departement"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/pemustaka"
+	requestAccess "github.com/arvinpaundra/repository-api/drivers/mysql/requestAccess"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/role"
 	studyProgram "github.com/arvinpaundra/repository-api/drivers/mysql/studyProgram"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/user"
@@ -43,4 +44,8 @@ func NewPemustakaRepository(conn *gorm.DB) pemustaka.PemustakaRepository {
 
 func NewUserRepository(conn *gorm.DB) user.UserRepository {
 	return user.NewSQLRepository(conn)
+}
+
+func NewRequestAccessRepository(conn *gorm.DB) requestAccess.RequestAccessRepository {
+	return requestAccess.NewSQLRepository(conn)
 }

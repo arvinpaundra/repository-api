@@ -7,9 +7,11 @@ import (
 
 	deptMock "github.com/arvinpaundra/repository-api/drivers/mysql/departement/mocks"
 	pemustakaMock "github.com/arvinpaundra/repository-api/drivers/mysql/pemustaka/mocks"
+	requestAccessMock "github.com/arvinpaundra/repository-api/drivers/mysql/requestAccess/mocks"
 	roleMock "github.com/arvinpaundra/repository-api/drivers/mysql/role/mocks"
 	stuPrdMock "github.com/arvinpaundra/repository-api/drivers/mysql/studyProgram/mocks"
 	userMock "github.com/arvinpaundra/repository-api/drivers/mysql/user/mocks"
+	cloudinaryMock "github.com/arvinpaundra/repository-api/helper/cloudinary/mocks"
 	"github.com/arvinpaundra/repository-api/models/domain"
 	"github.com/arvinpaundra/repository-api/models/web/pemustaka/request"
 	"github.com/arvinpaundra/repository-api/services/pemustaka"
@@ -20,12 +22,14 @@ import (
 )
 
 var (
-	userRepository        userMock.UserRepository
-	pemustakaRepository   pemustakaMock.PemustakaRepository
-	stuProdRepository     stuPrdMock.StudyProgramRepository
-	departementRepository deptMock.DepartementRepository
-	roleRepository        roleMock.RoleRepository
-	pemustakaService      pemustaka.PemustakaService
+	userRepository          userMock.UserRepository
+	pemustakaRepository     pemustakaMock.PemustakaRepository
+	stuProdRepository       stuPrdMock.StudyProgramRepository
+	departementRepository   deptMock.DepartementRepository
+	roleRepository          roleMock.RoleRepository
+	requestAccessRepository requestAccessMock.RequestAccessRepository
+	cloudinary              cloudinaryMock.Cloudinary
+	pemustakaService        pemustaka.PemustakaService
 
 	userDomain         domain.User
 	pemustakaDomain    domain.Pemustaka
@@ -51,6 +55,8 @@ func TestMain(m *testing.M) {
 		&stuProdRepository,
 		&departementRepository,
 		&roleRepository,
+		&requestAccessRepository,
+		&cloudinary,
 		tx,
 	)
 
@@ -122,7 +128,6 @@ func TestMain(m *testing.M) {
 		Telp:           pemustakaDomain.Telp,
 		BirthDate:      pemustakaDomain.BirthDate,
 		Address:        pemustakaDomain.Address,
-		// Avatar: ,
 	}
 
 	pemustakaRequestQuery = request.PemustakaRequestQuery{
