@@ -45,7 +45,7 @@ func (repository PemustakaRepositoryImpl) FindAll(ctx context.Context, query req
 
 	var totalRows int64
 	err = repository.conn.WithContext(ctx).Model(&domain.Pemustaka{}).
-		Where("fullname LIKE ? AND role_id = ? AND departement_id LIKE ? AND is_collected_final_project LIKE ? AND year_gen LIKE ?", "%"+query.Keyword+"%", query.RoleId, "%"+query.DepartementId+"%", "%"+query.IsCollectedFinalProject+"%", "%"+query.YearGen+"%").
+		Where("fullname LIKE ? AND role_id LIKE ? AND departement_id LIKE ? AND is_collected_final_project LIKE ? AND year_gen LIKE ?", "%"+query.Keyword+"%", "%"+query.RoleId+"%", "%"+query.DepartementId+"%", "%"+query.IsCollectedFinalProject+"%", "%"+query.YearGen+"%").
 		Count(&totalRows).Error
 	if err != nil {
 		return []domain.Pemustaka{}, 0, err
@@ -53,7 +53,7 @@ func (repository PemustakaRepositoryImpl) FindAll(ctx context.Context, query req
 
 	var rec []domain.Pemustaka
 	err = repository.conn.WithContext(ctx).Model(&domain.Pemustaka{}).Preload(clause.Associations).
-		Where("fullname LIKE ? AND role_id = ? AND departement_id LIKE ? AND is_collected_final_project LIKE ? AND year_gen LIKE ?", "%"+query.Keyword+"%", query.RoleId, "%"+query.DepartementId+"%", "%"+query.IsCollectedFinalProject+"%", "%"+query.YearGen+"%").
+		Where("fullname LIKE ? AND role_id LIKE ? AND departement_id LIKE ? AND is_collected_final_project LIKE ? AND year_gen LIKE ?", "%"+query.Keyword+"%", "%"+query.RoleId+"%", "%"+query.DepartementId+"%", "%"+query.IsCollectedFinalProject+"%", "%"+query.YearGen+"%").
 		Limit(limit).Offset(offset).Find(&rec).Error
 	if err != nil {
 		return []domain.Pemustaka{}, 0, err
