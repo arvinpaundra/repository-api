@@ -66,27 +66,17 @@ func (ctrl CollectionControllerImpl) HandlerUpdateCollection(c echo.Context) err
 
 func (ctrl CollectionControllerImpl) HandlerFindAllCollections(c echo.Context) error {
 	keyword := c.QueryParam("keyword")
+	visibility := c.QueryParam("visibility")
 
-	limit, err := strconv.Atoi(c.QueryParam("limit"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
-			"request.query.limit": "Invalid number format",
-		}))
-	}
-
-	page, err := strconv.Atoi(c.QueryParam("page"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
-			"request.query.page": "Invalid number format",
-		}))
-	}
+	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+	page, _ := strconv.Atoi(c.QueryParam("page"))
 
 	pagination := &helper.Pagination{
 		Limit: limit,
 		Page:  page,
 	}
 
-	collections, totalRows, totalPages, err := ctrl.collectionService.FindAll(c.Request().Context(), keyword, pagination.GetLimit(), pagination.GetOffset())
+	collections, totalRows, totalPages, err := ctrl.collectionService.FindAll(c.Request().Context(), keyword, visibility, pagination.GetLimit(), pagination.GetOffset())
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
