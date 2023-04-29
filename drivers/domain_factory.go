@@ -1,10 +1,14 @@
 package drivers
 
 import (
+	"github.com/arvinpaundra/repository-api/drivers/mysql/author"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/category"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/collection"
+	"github.com/arvinpaundra/repository-api/drivers/mysql/contributor"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/departement"
+	"github.com/arvinpaundra/repository-api/drivers/mysql/document"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/pemustaka"
+	"github.com/arvinpaundra/repository-api/drivers/mysql/repository"
 	requestAccess "github.com/arvinpaundra/repository-api/drivers/mysql/requestAccess"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/role"
 	studyProgram "github.com/arvinpaundra/repository-api/drivers/mysql/studyProgram"
@@ -48,4 +52,20 @@ func NewUserRepository(conn *gorm.DB) user.UserRepository {
 
 func NewRequestAccessRepository(conn *gorm.DB) requestAccess.RequestAccessRepository {
 	return requestAccess.NewSQLRepository(conn)
+}
+
+func NewRepository(conn *gorm.DB) repository.Repository {
+	return repository.NewSQLRepository(conn)
+}
+
+func NewAuthorRepository(conn *gorm.DB) author.AuthorRepository {
+	return author.NewSQLRepository(conn)
+}
+
+func NewContributorRepository(conn *gorm.DB) contributor.ContributorRepository {
+	return contributor.NewSQLRepository(conn)
+}
+
+func NewDocumentRepository(conn *gorm.DB) document.DocumentRepository {
+	return document.NewSQLRepository(conn)
 }
