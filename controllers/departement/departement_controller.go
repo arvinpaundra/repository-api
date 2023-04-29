@@ -8,5 +8,4 @@ type DepartementController interface {
 	HandlerDeleteDepartement(c echo.Context) error
 	HandlerFindAllDepartements(c echo.Context) error
 	HandlerFindDepartementById(c echo.Context) error
-	HandlerFindDepartementsByStudyProgramId(c echo.Context) error
 }
