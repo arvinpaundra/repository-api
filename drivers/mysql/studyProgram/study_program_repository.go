@@ -12,4 +12,5 @@ type StudyProgramRepository interface {
 	Delete(ctx context.Context, studyProgramId string) error
 	FindAll(ctx context.Context, keyword string, limit int, offset int) ([]domain.StudyProgram, int, error)
 	FindById(ctx context.Context, studyProgramId string) (domain.StudyProgram, error)
+	FindByDepartementId(ctx context.Context, departementId string) ([]domain.StudyProgram, error)
 }

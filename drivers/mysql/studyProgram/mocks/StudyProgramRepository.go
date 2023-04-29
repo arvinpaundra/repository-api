@@ -58,6 +58,29 @@ func (_m *StudyProgramRepository) FindAll(ctx context.Context, keyword string, l
 	return r0, r1, r2
 }
 
+// FindByDepartementId provides a mock function with given fields: ctx, departementId
+func (_m *StudyProgramRepository) FindByDepartementId(ctx context.Context, departementId string) ([]domain.StudyProgram, error) {
+	ret := _m.Called(ctx, departementId)
+
+	var r0 []domain.StudyProgram
+	if rf, ok := ret.Get(0).(func(context.Context, string) []domain.StudyProgram); ok {
+		r0 = rf(ctx, departementId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]domain.StudyProgram)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, departementId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindById provides a mock function with given fields: ctx, studyProgramId
 func (_m *StudyProgramRepository) FindById(ctx context.Context, studyProgramId string) (domain.StudyProgram, error) {
 	ret := _m.Called(ctx, studyProgramId)
