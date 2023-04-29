@@ -72,10 +72,9 @@ func TestMain(m *testing.M) {
 	}
 
 	departementDomain = domain.Departement{
-		ID:             uuid.NewString(),
-		StudyProgramId: studyProgramDomain.ID,
-		Name:           "test",
-		Code:           "test",
+		ID:   uuid.NewString(),
+		Name: "test",
+		Code: "test",
 	}
 
 	roleDomain = domain.Role{

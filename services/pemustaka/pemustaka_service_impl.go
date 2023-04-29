@@ -2,6 +2,7 @@ package pemustaka
 
 import (
 	"context"
+	"fmt"
 	"math"
 	"mime/multipart"
 
@@ -84,6 +85,8 @@ func (service PemustakaServiceImpl) Register(ctx context.Context, req request.Re
 	userDomain.Email = req.Email
 	userDomain.Password = hashPassword
 
+	fmt.Print(userDomain)
+
 	if err := service.userRepository.Save(ctx, tx, userDomain); err != nil {
 		if errorRollback := tx.Rollback().Error; errorRollback != nil {
 			return errorRollback
@@ -107,6 +110,7 @@ func (service PemustakaServiceImpl) Register(ctx context.Context, req request.Re
 	pemustakaDomain.MemberCode = memberCode
 	pemustakaDomain.IsActive = "0"
 	pemustakaDomain.IsCollectedFinalProject = "0"
+	pemustakaDomain.IsCollectedInternshipReport = "0"
 	pemustakaDomain.Avatar = configs.GetConfig("DEFAULT_AVATAR")
 
 	filename := utils.GetFilename()
@@ -194,11 +198,9 @@ func (service PemustakaServiceImpl) Update(ctx context.Context, req request.Upda
 
 	var avatarURL string
 
-	if avatar != nil {
-		if pemustaka.Avatar != configs.GetConfig("DEFAULT_AVATAR") {
-			if err := service.cloudinary.Delete(ctx, pemustaka.Avatar); err != nil {
-				return err
-			}
+	if avatar != nil && pemustaka.Avatar != configs.GetConfig("DEFAULT_AVATAR") {
+		if err := service.cloudinary.Delete(ctx, pemustaka.Avatar); err != nil {
+			return err
 		}
 
 		filename := utils.GetFilename()

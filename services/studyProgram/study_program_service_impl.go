@@ -4,6 +4,7 @@ import (
 	"context"
 	"math"
 
+	"github.com/arvinpaundra/repository-api/drivers/mysql/departement"
 	studyProgram "github.com/arvinpaundra/repository-api/drivers/mysql/studyProgram"
 	"github.com/arvinpaundra/repository-api/models/web/studyProgram/request"
 	"github.com/arvinpaundra/repository-api/models/web/studyProgram/response"
@@ -12,15 +13,24 @@ import (
 
 type StudyProgramServiceImpl struct {
 	studyProgramRepository studyProgram.StudyProgramRepository
+	departementRepository  departement.DepartementRepository
 }
 
-func NewStudyProgramService(studyProgramRepository studyProgram.StudyProgramRepository) StudyProgramService {
+func NewStudyProgramService(
+	studyProgramRepository studyProgram.StudyProgramRepository,
+	departementRepository departement.DepartementRepository,
+) StudyProgramService {
 	return StudyProgramServiceImpl{
 		studyProgramRepository: studyProgramRepository,
+		departementRepository:  departementRepository,
 	}
 }
 
 func (service StudyProgramServiceImpl) Create(ctx context.Context, studyProgram request.CreateStudyProgramRequest) error {
+	if _, err := service.departementRepository.FindById(ctx, studyProgram.DepatementId); err != nil {
+		return err
+	}
+
 	studyProgramDomain := studyProgram.ToDomainStudyProgram()
 
 	studyProgramDomain.ID = uuid.NewString()
@@ -35,6 +45,10 @@ func (service StudyProgramServiceImpl) Create(ctx context.Context, studyProgram 
 }
 
 func (service StudyProgramServiceImpl) Update(ctx context.Context, studyProgram request.UpdateStudyProgramRequest, studyProgramId string) error {
+	if _, err := service.departementRepository.FindById(ctx, studyProgram.DepatementId); err != nil {
+		return err
+	}
+
 	if _, err := service.studyProgramRepository.FindById(ctx, studyProgramId); err != nil {
 		return err
 	}
@@ -68,6 +82,20 @@ func (service StudyProgramServiceImpl) FindById(ctx context.Context, studyProgra
 	}
 
 	return response.ToStudyProgramResponse(studyProgram), nil
+}
+
+func (service StudyProgramServiceImpl) FindByDepartementId(ctx context.Context, departementId string) ([]response.StudyProgramResponse, error) {
+	if _, err := service.departementRepository.FindById(ctx, departementId); err != nil {
+		return []response.StudyProgramResponse{}, err
+	}
+
+	studyPrograms, err := service.studyProgramRepository.FindByDepartementId(ctx, departementId)
+
+	if err != nil {
+		return []response.StudyProgramResponse{}, err
+	}
+
+	return response.ToStudyProgramsResponse(studyPrograms), nil
 }
 
 func (service StudyProgramServiceImpl) Delete(ctx context.Context, studyProgramId string) error {

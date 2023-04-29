@@ -48,8 +48,8 @@ func (service CollectionServiceImpl) Update(ctx context.Context, collection requ
 	return nil
 }
 
-func (service CollectionServiceImpl) FindAll(ctx context.Context, keyword string, limit int, offset int) ([]response.CollectionResponse, int, int, error) {
-	collections, totalRows, err := service.collectionRepository.FindAll(ctx, keyword, limit, offset)
+func (service CollectionServiceImpl) FindAll(ctx context.Context, keyword string, visibility string, limit int, offset int) ([]response.CollectionResponse, int, int, error) {
+	collections, totalRows, err := service.collectionRepository.FindAll(ctx, keyword, visibility, limit, offset)
 
 	if err != nil {
 		return []response.CollectionResponse{}, 0, 0, err
