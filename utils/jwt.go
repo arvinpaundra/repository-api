@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"strings"
 	"time"
 
 	"github.com/arvinpaundra/repository-api/configs"
@@ -31,6 +32,36 @@ func GenerateToken(id string, role string) (string, error) {
 	return token.SignedString([]byte(jwtSecret))
 }
 
-func ExtractToken(c echo.Context) error {
-	panic("implement me")
+func ExtractToken(c echo.Context) (*JWTCustomClaim, error) {
+	tokenFromHeader := c.Request().Header.Get("Authorization")
+
+	sanitizedTokenBearer := strings.Replace(tokenFromHeader, "Bearer ", "", 1)
+
+	token, err := jwt.Parse(sanitizedTokenBearer, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, ErrInvalidTokenHeader
+		}
+
+		return []byte(jwtSecret), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if token.Valid {
+		claims := token.Claims.(jwt.MapClaims)
+
+		userId := claims["id"].(string)
+		role := claims["role"].(string)
+
+		customClaims := &JWTCustomClaim{
+			ID:   userId,
+			Role: role,
+		}
+
+		return customClaims, nil
+	}
+
+	return nil, ErrUnAuthorized
 }
