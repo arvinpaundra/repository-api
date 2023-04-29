@@ -13,4 +13,5 @@ type StudyProgramService interface {
 	Delete(ctx context.Context, studyProgramId string) error
 	FindAll(ctx context.Context, keyword string, limit int, offset int) ([]response.StudyProgramResponse, int, int, error)
 	FindById(ctx context.Context, studyProgramId string) (response.StudyProgramResponse, error)
+	FindByDepartementId(ctx context.Context, departementId string) ([]response.StudyProgramResponse, error)
 }

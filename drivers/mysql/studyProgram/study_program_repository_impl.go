@@ -49,7 +49,7 @@ func (repository StudyProgramRepositoryImpl) FindAll(ctx context.Context, keywor
 	}
 
 	var rec []domain.StudyProgram
-	err = repository.conn.WithContext(ctx).Model(&domain.StudyProgram{}).
+	err = repository.conn.WithContext(ctx).Model(&domain.StudyProgram{}).Preload("Departement").
 		Where("name LIKE ?", "%"+keyword+"%").Limit(limit).Offset(offset).
 		Order("name ASC").Find(&rec).Error
 	if err != nil {
@@ -62,7 +62,7 @@ func (repository StudyProgramRepositoryImpl) FindAll(ctx context.Context, keywor
 func (repository StudyProgramRepositoryImpl) FindById(ctx context.Context, studyProgramId string) (domain.StudyProgram, error) {
 	var rec domain.StudyProgram
 
-	err := repository.conn.WithContext(ctx).Model(&domain.StudyProgram{}).
+	err := repository.conn.WithContext(ctx).Model(&domain.StudyProgram{}).Preload("Departement").
 		Where("id = ?", studyProgramId).First(&rec).Error
 
 	if err != nil {
@@ -71,6 +71,18 @@ func (repository StudyProgramRepositoryImpl) FindById(ctx context.Context, study
 		}
 
 		return domain.StudyProgram{}, err
+	}
+
+	return rec, nil
+}
+
+func (repository StudyProgramRepositoryImpl) FindByDepartementId(ctx context.Context, departementId string) ([]domain.StudyProgram, error) {
+	var rec []domain.StudyProgram
+
+	err := repository.conn.WithContext(ctx).Model(&domain.StudyProgram{}).Preload("Departement").
+		Where("departement_id = ?", departementId).Find(&rec).Error
+	if err != nil {
+		return []domain.StudyProgram{}, err
 	}
 
 	return rec, nil

@@ -38,17 +38,17 @@ func (repository CollectionRepositoryImpl) Update(ctx context.Context, collectio
 	return nil
 }
 
-func (repository CollectionRepositoryImpl) FindAll(ctx context.Context, keyword string, limit int, offset int) ([]domain.Collection, int, error) {
+func (repository CollectionRepositoryImpl) FindAll(ctx context.Context, keyword string, visibility string, limit int, offset int) ([]domain.Collection, int, error) {
 	var err error
 
 	var totalRows int64
-	err = repository.conn.WithContext(ctx).Model(&domain.Collection{}).Where("name LIKE ?", "%"+keyword+"%").Count(&totalRows).Error
+	err = repository.conn.WithContext(ctx).Model(&domain.Collection{}).Where("name LIKE ? AND visibility LIKE ?", "%"+keyword+"%", "%"+visibility+"%").Count(&totalRows).Error
 	if err != nil {
 		return []domain.Collection{}, 0, err
 	}
 
 	var rec []domain.Collection
-	err = repository.conn.WithContext(ctx).Model(&domain.Collection{}).Where("name LIKE ?", "%"+keyword+"%").Limit(limit).Offset(offset).Find(&rec).Error
+	err = repository.conn.WithContext(ctx).Model(&domain.Collection{}).Where("name LIKE ? AND visibility LIKE ?", "%"+keyword+"%", "%"+visibility+"%").Limit(limit).Offset(offset).Find(&rec).Error
 	if err != nil {
 		return []domain.Collection{}, 0, err
 	}

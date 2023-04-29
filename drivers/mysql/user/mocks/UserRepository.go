@@ -37,6 +37,27 @@ func (_m *UserRepository) FindByEmail(ctx context.Context, email string) (domain
 	return r0, r1
 }
 
+// FindById provides a mock function with given fields: ctx, userId
+func (_m *UserRepository) FindById(ctx context.Context, userId string) (domain.User, error) {
+	ret := _m.Called(ctx, userId)
+
+	var r0 domain.User
+	if rf, ok := ret.Get(0).(func(context.Context, string) domain.User); ok {
+		r0 = rf(ctx, userId)
+	} else {
+		r0 = ret.Get(0).(domain.User)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, userId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Save provides a mock function with given fields: ctx, tx, _a2
 func (_m *UserRepository) Save(ctx context.Context, tx *gorm.DB, _a2 domain.User) error {
 	ret := _m.Called(ctx, tx, _a2)

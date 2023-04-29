@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS pemustakas (
   address TEXT,
   is_active ENUM('1', '0')  DEFAULT "0",
   is_collected_final_project ENUM('1', '0')  DEFAULT "0",
+  is_collected_internship_report ENUM('1', '0')  DEFAULT "0",
   avatar VARCHAR(255),
   created_at TIMESTAMP,
   updated_at TIMESTAMP,

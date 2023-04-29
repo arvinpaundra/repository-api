@@ -67,19 +67,8 @@ func (ctrl CategoryControllerImpl) HandlerUpdateCategory(c echo.Context) error {
 func (ctrl CategoryControllerImpl) HandlerFindAllCategories(c echo.Context) error {
 	keyword := c.QueryParam("keyword")
 
-	limit, err := strconv.Atoi(c.QueryParam("limit"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
-			"request.query.limit": "Invalid number format",
-		}))
-	}
-
-	page, err := strconv.Atoi(c.QueryParam("page"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
-			"request.query.page": "Invalid number format",
-		}))
-	}
+	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+	page, _ := strconv.Atoi(c.QueryParam("page"))
 
 	pagination := &helper.Pagination{
 		Limit: limit,

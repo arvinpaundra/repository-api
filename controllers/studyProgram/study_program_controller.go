@@ -8,4 +8,5 @@ type StudyProgramController interface {
 	HandlerDeleteStudyProgram(c echo.Context) error
 	HandlerFindAllStudyPrograms(c echo.Context) error
 	HandlerFindStudyProgramById(c echo.Context) error
+	HandlerFindByDepartementId(c echo.Context) error
 }

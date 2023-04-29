@@ -7,18 +7,20 @@ import (
 )
 
 type CollectionResponse struct {
-	ID        string    `json:"id"`
-	Name      string    `json:"name"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdateAt  time.Time `json:"updated_at"`
+	ID         string    `json:"id"`
+	Name       string    `json:"name"`
+	Visibility string    `json:"visibility"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdateAt   time.Time `json:"updated_at"`
 }
 
 func ToCollectionResponse(domainCollection domain.Collection) CollectionResponse {
 	return CollectionResponse{
-		ID:        domainCollection.ID,
-		Name:      domainCollection.Name,
-		CreatedAt: domainCollection.CreatedAt,
-		UpdateAt:  domainCollection.UpdatedAt,
+		ID:         domainCollection.ID,
+		Name:       domainCollection.Name,
+		Visibility: domainCollection.Visibility,
+		CreatedAt:  domainCollection.CreatedAt,
+		UpdateAt:   domainCollection.UpdatedAt,
 	}
 }
 

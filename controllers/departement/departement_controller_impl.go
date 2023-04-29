@@ -33,12 +33,7 @@ func (ctrl DepartementControllerImpl) HandlerCreateDepartement(c echo.Context) e
 	err := ctrl.departementService.Create(c.Request().Context(), req)
 
 	if err != nil {
-		switch err {
-		case utils.ErrStudyProgramNotFound:
-			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
-		default:
-			return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
-		}
+		return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
 	}
 
 	return c.JSON(http.StatusCreated, helper.SuccessCreatedResponse())
@@ -58,8 +53,6 @@ func (ctrl DepartementControllerImpl) HandlerUpdateDepartement(c echo.Context) e
 
 	if err != nil {
 		switch err {
-		case utils.ErrStudyProgramNotFound:
-			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
 		case utils.ErrDepartementNotFound:
 			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
 		default:
@@ -73,19 +66,8 @@ func (ctrl DepartementControllerImpl) HandlerUpdateDepartement(c echo.Context) e
 func (ctrl DepartementControllerImpl) HandlerFindAllDepartements(c echo.Context) error {
 	keyword := c.QueryParam("keyword")
 
-	limit, err := strconv.Atoi(c.QueryParam("limit"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
-			"request.query.limit": "Invalid number format",
-		}))
-	}
-
-	page, err := strconv.Atoi(c.QueryParam("page"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
-			"request.query.page": "Invalid number format",
-		}))
-	}
+	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+	page, _ := strconv.Atoi(c.QueryParam("page"))
 
 	pagination := &helper.Pagination{
 		Limit: limit,
@@ -119,23 +101,6 @@ func (ctrl DepartementControllerImpl) HandlerFindDepartementById(c echo.Context)
 	}
 
 	return c.JSON(http.StatusOK, helper.SuccessOKResponse(departement))
-}
-
-func (ctrl DepartementControllerImpl) HandlerFindDepartementsByStudyProgramId(c echo.Context) error {
-	studyProgramId := c.Param("studyProgramId")
-
-	departements, err := ctrl.departementService.FindByProgramStudyId(c.Request().Context(), studyProgramId)
-
-	if err != nil {
-		switch err {
-		case utils.ErrStudyProgramNotFound:
-			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
-		default:
-			return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
-		}
-	}
-
-	return c.JSON(http.StatusOK, helper.SuccessOKResponse(departements))
 }
 
 func (ctrl DepartementControllerImpl) HandlerDeleteDepartement(c echo.Context) error {

@@ -3,11 +3,13 @@ package request
 import "github.com/arvinpaundra/repository-api/models/domain"
 
 type UpdateStudyProgramRequest struct {
-	Name string `json:"name" form:"name" validate:"required"`
+	DepatementId string `json:"departement_id" form:"departement_id" validate:"required"`
+	Name         string `json:"name" form:"name" validate:"required"`
 }
 
 func (req *UpdateStudyProgramRequest) ToDomainStudyProgram() domain.StudyProgram {
 	return domain.StudyProgram{
-		Name: req.Name,
+		DepartementId: req.DepatementId,
+		Name:          req.Name,
 	}
 }

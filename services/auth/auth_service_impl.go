@@ -63,3 +63,21 @@ func (service AuthServiceImpl) ForgotPassword(ctx context.Context, req request.F
 
 	return nil
 }
+
+func (service AuthServiceImpl) ChangePassword(ctx context.Context, userId string, req request.ChangePasswordRequest) error {
+	user, err := service.userRepository.FindById(ctx, userId)
+
+	if err != nil {
+		return err
+	}
+
+	userDomain := domain.User{
+		Password: utils.HashPassword(req.RepeatedPassword),
+	}
+
+	if err := service.userRepository.Update(ctx, userDomain, user.Email); err != nil {
+		return err
+	}
+
+	return nil
+}

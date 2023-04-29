@@ -51,19 +51,8 @@ func (ctrl RequestAccessControllerImpl) HandlerFindAllRequestAccesses(c echo.Con
 	keyword := c.QueryParam("keyword")
 	status := c.QueryParam("status")
 
-	limit, err := strconv.Atoi(c.QueryParam("limit"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
-			"request.query.limit": "Invalid number format",
-		}))
-	}
-
-	page, err := strconv.Atoi(c.QueryParam("page"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
-			"request.query.page": "Invalid number format",
-		}))
-	}
+	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+	page, _ := strconv.Atoi(c.QueryParam("page"))
 
 	pagination := &helper.Pagination{
 		Limit: limit,

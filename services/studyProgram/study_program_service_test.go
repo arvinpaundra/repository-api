@@ -5,7 +5,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/arvinpaundra/repository-api/drivers/mysql/studyProgram/mocks"
+	departementMock "github.com/arvinpaundra/repository-api/drivers/mysql/departement/mocks"
+	stuProdMock "github.com/arvinpaundra/repository-api/drivers/mysql/studyProgram/mocks"
 	"github.com/arvinpaundra/repository-api/models/domain"
 	"github.com/arvinpaundra/repository-api/models/web/studyProgram/request"
 	studyProgram "github.com/arvinpaundra/repository-api/services/studyProgram"
@@ -16,7 +17,8 @@ import (
 )
 
 var (
-	studyProgramRepository mocks.StudyProgramRepository
+	studyProgramRepository stuProdMock.StudyProgramRepository
+	departementRepository  departementMock.DepartementRepository
 	studyProgramService    studyProgram.StudyProgramService
 
 	studyProgramDomain    domain.StudyProgram
@@ -28,7 +30,7 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	studyProgramService = studyProgram.NewStudyProgramService(&studyProgramRepository)
+	studyProgramService = studyProgram.NewStudyProgramService(&studyProgramRepository, &departementRepository)
 
 	studyProgramDomain = domain.StudyProgram{
 		ID:   uuid.NewString(),
