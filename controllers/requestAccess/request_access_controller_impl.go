@@ -87,3 +87,17 @@ func (ctrl RequestAccessControllerImpl) HandlerFindRequestAccessById(c echo.Cont
 
 	return c.JSON(http.StatusOK, helper.SuccessOKResponse(requestAccess))
 }
+
+func (ctrl RequestAccessControllerImpl) HandlerGetTotal(c echo.Context) error {
+	status := c.QueryParam("status")
+
+	total, err := ctrl.requestAccessService.GetTotal(c.Request().Context(), status)
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
+	}
+
+	return c.JSON(http.StatusOK, helper.SuccessOKResponse(map[string]interface{}{
+		"total": total,
+	}))
+}
