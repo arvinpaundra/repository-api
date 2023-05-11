@@ -12,6 +12,18 @@ import (
 	categoryController "github.com/arvinpaundra/repository-api/controllers/category"
 	categoryService "github.com/arvinpaundra/repository-api/services/category"
 
+	identityCardController "github.com/arvinpaundra/repository-api/controllers/identityCard"
+	identityCardService "github.com/arvinpaundra/repository-api/services/identityCard"
+
+	reportController "github.com/arvinpaundra/repository-api/controllers/report"
+	reportService "github.com/arvinpaundra/repository-api/services/report"
+
+	staffController "github.com/arvinpaundra/repository-api/controllers/staff"
+	staffService "github.com/arvinpaundra/repository-api/services/staff"
+
+	dashboardController "github.com/arvinpaundra/repository-api/controllers/dashboard"
+	dashboardSrvc "github.com/arvinpaundra/repository-api/services/dashboard"
+
 	collectionController "github.com/arvinpaundra/repository-api/controllers/collection"
 	collectionService "github.com/arvinpaundra/repository-api/services/collection"
 
@@ -77,13 +89,17 @@ func (rc *RouteConfig) New() {
 	pemustakaRepository := drivers.NewPemustakaRepository(rc.MySQl)
 	requestAccessRepository := drivers.NewRequestAccessRepository(rc.MySQl)
 
+	staffRepository := drivers.NewStaffRepository(rc.MySQl)
+	staffSrvc := staffService.NewStaffService(rc.MySQl, userRepository, staffRepository, roleRepository, rc.Cloudinary)
+	staffCtrl := staffController.NewStaffController(staffSrvc)
+
 	pemustakaSrvc := pemustakaService.NewPemustakaService(userRepository, pemustakaRepository, studyProgramRepository, departementRepository, roleRepository, requestAccessRepository, rc.Cloudinary, rc.MySQl)
 	pemustakaCtrl := pemustakaController.NewPemustakaController(pemustakaSrvc)
 
 	requestAccessSrvc := requestAccessService.NewRequestAccessService(requestAccessRepository, pemustakaRepository, rc.MySQl)
 	requestAccessCtrl := requestAccessController.NewRequestAccessController(requestAccessSrvc)
 
-	authSrvc := authService.NewAuthService(userRepository, exporationTokenRepository)
+	authSrvc := authService.NewAuthService(userRepository, exporationTokenRepository, rc.MySQl)
 	authCtrl := authController.NewAuthController(authSrvc)
 
 	mailingSrvc := mailingService.NewMailingService(exporationTokenRepository, userRepository, pemustakaRepository, *rc.Mailing)
@@ -111,6 +127,16 @@ func (rc *RouteConfig) New() {
 
 	authorService := authorService.NewAuthorService(authorRepository, repoRepository, pemustakaRepository)
 	authorCtrl := authorController.NewAuthorController(authorService)
+
+	dashboardService := dashboardSrvc.NewDashboardService(pemustakaRepository, repoRepository, requestAccessRepository)
+	dashboardCtrl := dashboardController.NewDashboardController(dashboardService)
+
+	identityCardSrvc := identityCardService.NewIdentityCardService(pemustakaRepository)
+	identityCardCtrl := identityCardController.NewIdentityCardController(identityCardSrvc)
+
+	reportRepository := drivers.NewReportRepository(rc.MySQl)
+	reportSrvc := reportService.NewReportService(pemustakaRepository, collectionRepository, staffRepository, reportRepository)
+	reportCtrl := reportController.NewReportController(reportSrvc)
 
 	// API version
 	v1 := rc.Echo.Group("/api/v1")
@@ -141,22 +167,22 @@ func (rc *RouteConfig) New() {
 
 	// departement routes
 	departement := v1.Group("/departements")
-	departement.POST("", departementCtrl.HandlerCreateDepartement, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan"}))
+	departement.POST("", departementCtrl.HandlerCreateDepartement, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator"}))
 	departement.GET("", departementCtrl.HandlerFindAllDepartements)
 
 	departementDetail := departement.Group("/:departementId")
-	departementDetail.PUT("", departementCtrl.HandlerUpdateDepartement, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan"}))
+	departementDetail.PUT("", departementCtrl.HandlerUpdateDepartement, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator"}))
 	departementDetail.GET("", departementCtrl.HandlerFindDepartementById)
 	departementDetail.GET("/study-programs", studyProgramCtrl.HandlerFindByDepartementId)
 	departementDetail.GET("/repositories", repositoryCtrl.HandlerFindByDepartementId)
 
 	// study program routes
 	studyProgram := v1.Group("/study-programs")
-	studyProgram.POST("", studyProgramCtrl.HandlerCreateStudyProgram, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan"}))
+	studyProgram.POST("", studyProgramCtrl.HandlerCreateStudyProgram, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator"}))
 	studyProgram.GET("", studyProgramCtrl.HandlerFindAllStudyPrograms)
 
 	studyProgramDetail := studyProgram.Group("/:studyProgramId")
-	studyProgramDetail.PUT("", studyProgramCtrl.HandlerUpdateStudyProgram, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan"}))
+	studyProgramDetail.PUT("", studyProgramCtrl.HandlerUpdateStudyProgram, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator"}))
 	studyProgramDetail.GET("", studyProgramCtrl.HandlerFindStudyProgramById)
 
 	// auth routes
@@ -169,6 +195,10 @@ func (rc *RouteConfig) New() {
 	forgotPassword.POST("", mailingCtrl.HandlerSendForgotPasswordWithExpirationToken)
 	forgotPassword.PUT("", authCtrl.HandlerForgotPassword)
 
+	authStaff := auth.Group("/staff")
+	authStaff.POST("/register", staffCtrl.HandlerRegister, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator"}))
+	authStaff.POST("/login", staffCtrl.HandlerLogin)
+
 	authPemustaka := auth.Group("/pemustaka")
 	authPemustaka.POST("/register", pemustakaCtrl.HandlerRegister)
 	authPemustaka.POST("/login", pemustakaCtrl.HandlerLogin)
@@ -176,22 +206,25 @@ func (rc *RouteConfig) New() {
 	// pemustaka routes
 	pemustaka := v1.Group("/pemustaka")
 	pemustaka.GET("", pemustakaCtrl.HandlerFindAllPemustaka)
+	pemustaka.POST("", pemustakaCtrl.HandleCreatePemustaka, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan"}))
 
-	pemustakaDetail := pemustaka.Group("/:pemustakaId", middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Mahasiswa", "Dosen"}))
+	pemustakaDetail := pemustaka.Group("/:pemustakaId", middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Kepala Perpustakaan", "Mahasiswa", "Dosen"}))
 	pemustakaDetail.PUT("", pemustakaCtrl.HandlerUpdatePemustaka)
 	pemustakaDetail.GET("", pemustakaCtrl.HandlerFindPemustakaById)
 
 	// request access routes
 	requestAccess := v1.Group("/request-accesses", middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan"}))
 	requestAccess.GET("", requestAccessCtrl.HandlerFindAllRequestAccesses)
+	requestAccess.GET("/total", requestAccessCtrl.HandlerGetTotal)
 
-	requestAccessDetail := requestAccess.Group("/:requestAccesId")
+	requestAccessDetail := requestAccess.Group("/:requestAccessId")
 	requestAccessDetail.GET("", requestAccessCtrl.HandlerFindRequestAccessById)
 	requestAccessDetail.PUT("", requestAccessCtrl.HandlerUpdateRequestAccess)
 
 	// repository routes
 	repository := v1.Group("/repositories")
 	repository.GET("", repositoryCtrl.HandlerFindAllRepositories)
+	repository.GET("/total", repositoryCtrl.HandlerGetTotalRepository, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Kepala Perpustakaan", "Pustakawan"}))
 	repository.POST("/final-projects", repositoryCtrl.HandlerCreateFinalProjectReport, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Mahasiswa"}))
 	repository.POST("/internship-report", repositoryCtrl.HandlerCreateInternshipReport, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Mahasiswa"}))
 	repository.POST("/research-report", repositoryCtrl.HandlerCreateResearchReport, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Kepala Perpustakaan", "Mahasiswa", "Dosen"}))
@@ -199,6 +232,7 @@ func (rc *RouteConfig) New() {
 	repositoryDetail := repository.Group("/:repositoryId")
 	repositoryDetail.GET("", repositoryCtrl.HandlerFindRepositoryById)
 	repositoryDetail.DELETE("", repositoryCtrl.HandlerDeleteRepository, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Kepala Perpustakaan", "Mahasiswa", "Dosen"}))
+	repositoryDetail.PUT("/confirm", repositoryCtrl.HandlerConfirmRepository, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Kepala Perpustakaan"}))
 
 	// author routes
 	author := v1.Group("/authors")
@@ -212,4 +246,29 @@ func (rc *RouteConfig) New() {
 	// examiner routes
 	examiner := v1.Group("/examiners", middlewares.IsAuthenticated())
 	examiner.GET("/:pemustakaId/repositories", repositoryCtrl.HandlerFindByExaminerId)
+
+	// staff routes
+	staff := v1.Group("/staffs", middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Kepala Perpustakaan"}))
+	staff.GET("", staffCtrl.HandlerFindAllStaffs)
+
+	staffDetail := staff.Group("/:staffId")
+	staffDetail.GET("", staffCtrl.HandlerFindStaffById)
+	staffDetail.PUT("", staffCtrl.HandlerUpdateStaff)
+	staffDetail.PUT("/signatures", staffCtrl.HandlerUploadSignature)
+
+	// dashboard routes
+	dashboard := v1.Group("/dashboard", middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Kepala Perpustakaan", "Pustakawan"}))
+	dashboard.GET("/overview", dashboardCtrl.HandlerOverview)
+
+	// identity card routes
+	identityCard := v1.Group("/identity-card")
+	identityCard.GET("/:pemustakaId", identityCardCtrl.HandlerGenerateIDCard, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Kepala Perpustakaan", "Mahasiswa", "Dosen"}))
+
+	// report routes
+	report := v1.Group("/reports", middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Kepala Perpustakaan"}))
+	report.POST("/surat-keterangan-penyerahan-laporan", reportCtrl.HandlerGetSuratKeteranganPenyerahanLaporan)
+
+	recapCollectedReport := report.Group("/recap-collected-report")
+	recapCollectedReport.GET("", reportCtrl.HandlerRecapCollectedReport)
+	recapCollectedReport.GET("/download", reportCtrl.HandlerDownloadRecapCollectedReport)
 }
