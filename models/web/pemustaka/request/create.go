@@ -1,40 +1,44 @@
 package request
 
-import (
-	"github.com/arvinpaundra/repository-api/models/domain"
-)
+import "github.com/arvinpaundra/repository-api/models/domain"
 
-type UpdatePemustakaRequest struct {
-	StudyProgramId              string `json:"study_program_id" form:"study_program_id" validate:"required"`
-	DepartementId               string `json:"departement_id" form:"departement_id" validate:"required"`
+type CreatePemustakaRequest struct {
 	RoleId                      string `json:"role_id" form:"role_id" validate:"required"`
+	DepartementId               string `json:"departement_id" form:"departement_id" validate:"required"`
+	StudyProgramId              string `json:"study_program_id" form:"study_program_id" validate:"required"`
 	Fullname                    string `json:"fullname" form:"fullname" validate:"required"`
-	Email                       string `json:"email" form:"email" validate:"required,email"`
-	IdentityNumber              string `json:"identity_number" form:"identity_number" validate:"required"`
-	YearGen                     string `json:"year_gen" form:"year_gen"`
-	Gender                      string `json:"gender" form:"gender"`
+	Email                       string `json:"email" form:"email" validate:"required"`
 	Telp                        string `json:"telp" form:"telp"`
 	BirthDate                   string `json:"birth_date" form:"birth_date"`
+	Gender                      string `json:"gender" form:"gender"`
 	Address                     string `json:"address" form:"address"`
+	IdentityNumber              string `json:"identity_number" form:"identity_number" validate:"required"`
+	YearGen                     string `json:"year_gen" form:"year_gen"`
 	IsActive                    string `json:"is_active" form:"is_active" validate:"required"`
 	IsCollectedFinalProject     string `json:"is_collected_final_project" form:"is_collected_final_project" validate:"required"`
 	IsCollectedInternshipReport string `json:"is_collected_internship_report" form:"is_collected_internship_report" validate:"required"`
 }
 
-func (req *UpdatePemustakaRequest) ToDomainPemustaka() domain.Pemustaka {
+func (req *CreatePemustakaRequest) ToPemustakaDomain() domain.Pemustaka {
 	return domain.Pemustaka{
+		RoleId:                      req.RoleId,
 		DepartementId:               req.DepartementId,
 		StudyProgramId:              req.StudyProgramId,
-		RoleId:                      req.RoleId,
 		Fullname:                    req.Fullname,
-		IdentityNumber:              req.IdentityNumber,
-		YearGen:                     req.YearGen,
-		Gender:                      req.Gender,
 		Telp:                        req.Telp,
 		BirthDate:                   req.BirthDate,
+		Gender:                      req.Gender,
 		Address:                     req.Address,
+		IdentityNumber:              req.IdentityNumber,
+		YearGen:                     req.YearGen,
 		IsActive:                    req.IsActive,
 		IsCollectedFinalProject:     req.IsCollectedFinalProject,
 		IsCollectedInternshipReport: req.IsCollectedInternshipReport,
+	}
+}
+
+func (req *CreatePemustakaRequest) ToUserDomain() domain.User {
+	return domain.User{
+		Email: req.Email,
 	}
 }
