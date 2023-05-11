@@ -14,4 +14,6 @@ type RepositoryController interface {
 	HandlerFindByExaminerId(c echo.Context) error
 	HandlerFindByCollectionId(c echo.Context) error
 	HandlerFindByDepartementId(c echo.Context) error
+	HandlerGetTotalRepository(c echo.Context) error
+	HandlerConfirmRepository(c echo.Context) error
 }
