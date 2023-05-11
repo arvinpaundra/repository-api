@@ -56,7 +56,7 @@ func (repository RequestAccessRepositoryImpl) FindAll(ctx context.Context, keywo
 		Preload(clause.Associations).Preload("Pemustaka.StudyProgram").Preload("Pemustaka.Departement").Preload("Pemustaka.Role").
 		Joins("INNER JOIN pemustakas ON request_accesses.pemustaka_id = pemustakas.id").
 		Where("pemustakas.fullname LIKE ? AND request_accesses.status LIKE ?", "%"+keyword+"%", "%"+status+"%").
-		Limit(limit).Offset(offset).Find(&rec).Error
+		Order("request_accesses.created_at DESC").Limit(limit).Offset(offset).Find(&rec).Error
 	if err != nil {
 		return []domain.RequestAccess{}, 0, err
 	}
@@ -81,4 +81,17 @@ func (repository RequestAccessRepositoryImpl) FindById(ctx context.Context, requ
 	}
 
 	return rec, nil
+}
+
+func (repository RequestAccessRepositoryImpl) Total(ctx context.Context, status string) (int, error) {
+	var total int64
+
+	err := repository.conn.WithContext(ctx).Model(&domain.RequestAccess{}).
+		Where("status LIKE ?", "%"+status+"%").Count(&total).Error
+
+	if err != nil {
+		return 0, err
+	}
+
+	return int(total), nil
 }
