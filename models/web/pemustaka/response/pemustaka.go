@@ -11,6 +11,7 @@ type PemustakaResponse struct {
 	UserId                      string    `json:"user_id"`
 	StudyProgramId              string    `json:"study_program_id"`
 	DepartementId               string    `json:"departement_id"`
+	RoleId                      string    `json:"role_id"`
 	StudyProgram                string    `json:"study_program"`
 	Departement                 string    `json:"departement"`
 	Role                        string    `json:"role"`
@@ -37,6 +38,7 @@ func ToPemustakaResponse(pemustakaDomain domain.Pemustaka) PemustakaResponse {
 		UserId:                      pemustakaDomain.UserId,
 		StudyProgramId:              pemustakaDomain.StudyProgramId,
 		DepartementId:               pemustakaDomain.DepartementId,
+		RoleId:                      pemustakaDomain.RoleId,
 		StudyProgram:                pemustakaDomain.StudyProgram.Name,
 		Departement:                 pemustakaDomain.Departement.Name,
 		Role:                        pemustakaDomain.Role.Role,

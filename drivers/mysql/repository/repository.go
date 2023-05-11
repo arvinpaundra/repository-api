@@ -19,4 +19,5 @@ type Repository interface {
 	FindByExaminerId(ctx context.Context, pemustakaId string, query request.RepositoryRequestQuery, limit int, offset int) ([]domain.Repository, int, error)
 	FindByCollectionId(ctx context.Context, collectionId string, query request.RepositoryRequestQuery, limit int, offset int) ([]domain.Repository, int, error)
 	FindByDepartementId(ctx context.Context, departementId string, query request.RepositoryRequestQuery, limit int, offset int) ([]domain.Repository, int, error)
+	GetTotal(ctx context.Context, status string) (int, error)
 }

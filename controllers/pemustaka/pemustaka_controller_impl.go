@@ -21,6 +21,35 @@ func NewPemustakaController(pemustakaService pemustaka.PemustakaService) Pemusta
 	}
 }
 
+func (ctrl PemustakaControllerImpl) HandleCreatePemustaka(c echo.Context) error {
+	var req request.CreatePemustakaRequest
+
+	_ = c.Bind(&req)
+
+	if err := helper.ValidateRequest(req); err != nil {
+		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(err))
+	}
+
+	err := ctrl.pemustakaService.Create(c.Request().Context(), req)
+
+	if err != nil {
+		switch err {
+		case utils.ErrEmailAlreadyUsed:
+			return c.JSON(http.StatusConflict, helper.ConflictResponse(err.Error()))
+		case utils.ErrStudyProgramNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrDepartementNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrRoleNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		default:
+			return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
+		}
+	}
+
+	return c.JSON(http.StatusCreated, helper.SuccessCreatedResponse())
+}
+
 func (ctrl PemustakaControllerImpl) HandlerRegister(c echo.Context) error {
 	var req request.RegisterPemustakaRequest
 
@@ -75,7 +104,7 @@ func (ctrl PemustakaControllerImpl) HandlerLogin(c echo.Context) error {
 			return c.JSON(http.StatusConflict, helper.ConflictResponse(utils.ErrAuthenticationFailed.Error()))
 		case utils.ErrPemustakaNotFound:
 			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
-		case utils.ErrWaitingForAcceptance:
+		case utils.ErrAccountNotActivated:
 			return c.JSON(http.StatusConflict, helper.ConflictResponse(err.Error()))
 		default:
 			return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
@@ -110,6 +139,10 @@ func (ctrl PemustakaControllerImpl) HandlerUpdatePemustaka(c echo.Context) error
 			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
 		case utils.ErrDepartementNotFound:
 			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrEmailAlreadyUsed:
+			return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
+				"email": err.Error(),
+			}))
 		default:
 			return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
 		}

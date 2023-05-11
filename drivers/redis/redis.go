@@ -2,6 +2,7 @@ package redis
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"log"
 	"strconv"
@@ -11,6 +12,7 @@ import (
 )
 
 type ConfigRedis struct {
+	REDIS_USERNAME string
 	REDIS_HOST     string
 	REDIS_PORT     string
 	REDIS_PASSWORD string
@@ -19,6 +21,7 @@ type ConfigRedis struct {
 
 func New() *ConfigRedis {
 	return &ConfigRedis{
+		REDIS_USERNAME: configs.GetConfig("REDIS_USERNAME"),
 		REDIS_HOST:     configs.GetConfig("REDIS_HOST"),
 		REDIS_PORT:     configs.GetConfig("REDIS_PORT"),
 		REDIS_PASSWORD: configs.GetConfig("REDIS_PASSWORD"),
@@ -31,9 +34,11 @@ func (config *ConfigRedis) Init(ctx context.Context) *redis.Client {
 	db, _ := strconv.Atoi(config.REDIS_DB)
 
 	client := redis.NewClient(&redis.Options{
-		Addr:     address,
-		Password: config.REDIS_PASSWORD,
-		DB:       db,
+		Username:  config.REDIS_USERNAME,
+		Addr:      address,
+		Password:  config.REDIS_PASSWORD,
+		DB:        db,
+		TLSConfig: &tls.Config{},
 	})
 
 	if _, err := client.Ping(ctx).Result(); err != nil {

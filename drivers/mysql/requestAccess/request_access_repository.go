@@ -12,4 +12,5 @@ type RequestAccessRepository interface {
 	Update(ctx context.Context, tx *gorm.DB, requestAccess domain.RequestAccess, requestAccessId string) error
 	FindAll(ctx context.Context, keyword string, status string, limit int, offset int) ([]domain.RequestAccess, int, error)
 	FindById(ctx context.Context, requestAccessId string) (domain.RequestAccess, error)
+	Total(ctx context.Context, status string) (int, error)
 }

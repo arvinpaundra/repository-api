@@ -97,6 +97,15 @@ func UnsupportedMediaTypeResponse(errors interface{}) BaseResponse {
 	}
 }
 
+// 422 - Unprocessable Request
+func UnprocessableContentResponse(message string) BaseResponse {
+	return BaseResponse{
+		Code:    http.StatusUnprocessableEntity,
+		Status:  "error",
+		Message: message,
+	}
+}
+
 // 500 - Internal Server Error
 func InternalServerErrorResponse(message string) BaseResponse {
 	return BaseResponse{

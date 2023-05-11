@@ -72,13 +72,13 @@ func (_m *UserRepository) Save(ctx context.Context, tx *gorm.DB, _a2 domain.User
 	return r0
 }
 
-// Update provides a mock function with given fields: ctx, _a1, email
-func (_m *UserRepository) Update(ctx context.Context, _a1 domain.User, email string) error {
-	ret := _m.Called(ctx, _a1, email)
+// Update provides a mock function with given fields: ctx, tx, _a2, email
+func (_m *UserRepository) Update(ctx context.Context, tx *gorm.DB, _a2 domain.User, email string) error {
+	ret := _m.Called(ctx, tx, _a2, email)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, domain.User, string) error); ok {
-		r0 = rf(ctx, _a1, email)
+	if rf, ok := ret.Get(0).(func(context.Context, *gorm.DB, domain.User, string) error); ok {
+		r0 = rf(ctx, tx, _a2, email)
 	} else {
 		r0 = ret.Error(0)
 	}

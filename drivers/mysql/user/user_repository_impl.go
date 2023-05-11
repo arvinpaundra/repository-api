@@ -28,8 +28,8 @@ func (repository UserRepositoryImpl) Save(ctx context.Context, tx *gorm.DB, user
 	return nil
 }
 
-func (repository UserRepositoryImpl) Update(ctx context.Context, user domain.User, email string) error {
-	err := repository.conn.WithContext(ctx).Model(&domain.User{}).Where("email = ?", email).Updates(&user).Error
+func (repository UserRepositoryImpl) Update(ctx context.Context, tx *gorm.DB, user domain.User, email string) error {
+	err := tx.WithContext(ctx).Model(&domain.User{}).Where("email = ?", email).Updates(&user).Error
 
 	if err != nil {
 		return err

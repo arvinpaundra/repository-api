@@ -19,4 +19,6 @@ type RepositoryService interface {
 	FindByExaminerId(ctx context.Context, pemustakaId string, query request.RepositoryRequestQuery, limit int, offset int) ([]response.RepositoryResponse, int, int, error)
 	FindByCollectionId(ctx context.Context, collectionId string, query request.RepositoryRequestQuery, limit int, offset int) ([]response.RepositoryResponse, int, int, error)
 	FindByDepartementId(ctx context.Context, departementId string, query request.RepositoryRequestQuery, limit int, offset int) ([]response.RepositoryResponse, int, int, error)
+	GetTotal(ctx context.Context, status string) (int, error)
+	Confirm(ctx context.Context, req request.ConfirmRequest, repositoryId string) error
 }

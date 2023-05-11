@@ -6,4 +6,5 @@ type RequestAccessController interface {
 	HandlerUpdateRequestAccess(c echo.Context) error
 	HandlerFindAllRequestAccesses(c echo.Context) error
 	HandlerFindRequestAccessById(c echo.Context) error
+	HandlerGetTotal(c echo.Context) error
 }

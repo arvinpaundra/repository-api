@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body
+    style="
+      font-family: 'Poppins', sans-serif;
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+      width: 450px;
+    "
+  >
+    <div
+      class="id-card-holder"
+      style="
+        width: 450px;
+        font-family: sans-serif;
+        padding: 16px;
+        border-radius: 10px;
+        overflow: hidden;
+        background-image: url(https://i.ibb.co/NL188dQ/white-wood.png);
+        filter: opacity(80%);
+      "
+    >
+      <div
+        class="id-card"
+        style="
+          padding: 0px;
+          text-align: center;
+          box-shadow: 0 0 1.5px 0px #b9b9b9;
+          border-radius: 12px;
+          overflow: hidden;
+        "
+      >
+        <div class="header" style="overflow: hidden; width: 100%; text-align: center">
+          <img
+            src="https://res.cloudinary.com/dxhv9xlwc/image/upload/v1683409867/assets/Politeknik_Negeri_Cilacap_r7erqo.png"
+            style="
+              width: 64px;
+              margin: 0px;
+              padding: 10px 10px 8px 15px;
+              box-sizing: border-box;
+              float: left;
+            "
+          />
+          <div
+            class="head-info"
+            style="
+              overflow: hidden;
+              padding: 10px 0px 0;
+              box-sizing: border-box;
+              width: 386px;
+              color: #000;
+              float: left;
+              text-align: center;
+              margin: 0 auto;
+            "
+          >
+            <p
+              style="
+                font-size: 16px;
+                font-weight: 600;
+                margin: 0 auto;
+                font-family: 'Poppins', sans-serif;
+                text-align: center;
+              "
+            >
+              KARTU E-PERPUSTAKAAN
+            </p>
+            <p
+              style="
+                font-size: 16px;
+                font-weight: 600;
+                margin: 0 auto;
+                font-family: 'Poppins', sans-serif;
+                text-align: center;
+              "
+            >
+              POLITEKNIK NEGERI CILACAP
+            </p>
+          </div>
+          <div class="clear" style="clear: both"></div>
+        </div>
+        <span
+          class="b-border"
+          style="height: 1px; display: block; background-color: #000; margin-top: 1px"
+        ></span>
+
+        <div
+          class="card-detail"
+          style="
+            width: 100%;
+            display: block;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+          "
+        >
+          <div class="stu-photo" style="float: left; width: 100px">
+            <img
+              src="{{.avatar}}"
+              alt="student image"
+              style="width: 85%; border-radius: 4px; box-sizing: border-box"
+            />
+          </div>
+          <div
+            class="stu-info"
+            style="
+              float: left;
+              width: calc(100% - 100px);
+              padding: 0px 5px 0 15px;
+              box-sizing: border-box;
+              text-align: left;
+              text-transform: capitalize;
+            "
+          >
+            <h3 style="font-size: 15px; margin: 0 0 8px 0; font-family: 'Poppins', sans-serif">
+              {{.fullname}}
+            </h3>
+            <p
+              style="
+                font-size: 11px;
+                margin: 0 0 3px 0;
+                font-weight: 300;
+                line-height: 17px;
+                font-family: 'Poppins', sans-serif;
+              "
+            >
+              Member ID :
+              <span
+                style="
+                  font-weight: 600;
+                  text-transform: uppercase;
+                  font-family: 'Poppins', sans-serif;
+                "
+              >
+                {{.memberCode}}
+              </span>
+            </p>
+            <p
+              style="
+                font-size: 11px;
+                margin: 0 0 3px 0;
+                font-weight: 300;
+                line-height: 17px;
+                font-family: 'Poppins', sans-serif;
+              "
+            >
+              Tgl. Bergabung :
+              <span
+                style="
+                  font-weight: 600;
+                  text-transform: uppercase;
+                  font-family: 'Poppins', sans-serif;
+                "
+              >
+                {{.createdAt}}
+              </span>
+            </p>
+            <p
+              style="
+                font-size: 11px;
+                margin: 0 0 3px 0;
+                font-weight: 300;
+                line-height: 17px;
+                font-family: 'Poppins', sans-serif;
+              "
+            >
+              Jurusan :
+              <span
+                style="
+                  font-weight: 600;
+                  text-transform: uppercase;
+                  font-family: 'Poppins', sans-serif;
+                "
+              >
+                {{.departement}}
+              </span>
+            </p>
+            <p
+              style="
+                font-size: 11px;
+                margin: 0 0 3px 0;
+                font-weight: 300;
+                line-height: 17px;
+                font-family: 'Poppins', sans-serif;
+              "
+            >
+              Alamat :
+              <span
+                style="
+                  font-weight: 600;
+                  text-transform: uppercase;
+                  font-family: 'Poppins', sans-serif;
+                "
+              >
+                {{.address}}
+              </span>
+            </p>
+          </div>
+
+          <div class="clear" style="clear: both"></div>
+        </div>
+
+        <div
+          style="
+            padding: 10px;
+            box-sizing: border-box;
+            text-align: right;
+            text-transform: capitalize;
+          "
+        >
+          <p
+            style="
+              font-size: 11px;
+              margin: 0 0 3px 0;
+              font-weight: 300;
+              line-height: 17px;
+              font-family: 'Poppins', sans-serif;
+            "
+          >
+            Mengetahui
+          </p>
+          <p
+            style="
+              font-size: 11px;
+              margin: 0 0 3px 0;
+              font-weight: 600;
+              text-transform: uppercase;
+              font-family: 'Poppins', sans-serif;
+            "
+          >
+            KEPALA PERPUSTAKAAN PNC
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

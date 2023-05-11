@@ -328,6 +328,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindAllRepositories(c echo.Context) 
 	collectionId := c.QueryParam("collection_id")
 	departementId := c.QueryParam("departement_id")
 	improvement := c.QueryParam("improvement")
+	status := c.QueryParam("status")
 
 	sort := c.QueryParam("sort")
 	if sort != "created_at ASC" && sort != "created_at DESC" {
@@ -341,6 +342,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindAllRepositories(c echo.Context) 
 		CollectionId:  collectionId,
 		DepartementId: departementId,
 		Improvement:   improvement,
+		Status:        status,
 		Sort:          sort,
 	}
 
@@ -625,4 +627,43 @@ func (ctrl RepositoryControllerImpl) HandlerFindByDepartementId(c echo.Context) 
 	pagination.TotalPages = totalPages
 
 	return c.JSON(http.StatusOK, helper.SuccessOKResponseWithPagination(repositories, pagination))
+}
+
+func (ctrl RepositoryControllerImpl) HandlerGetTotalRepository(c echo.Context) error {
+	status := c.QueryParam("status")
+
+	totalRepository, err := ctrl.repositoryService.GetTotal(c.Request().Context(), status)
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
+	}
+
+	return c.JSON(http.StatusOK, helper.SuccessOKResponse(map[string]interface{}{
+		"total_repositories": totalRepository,
+	}))
+}
+
+func (ctrl RepositoryControllerImpl) HandlerConfirmRepository(c echo.Context) error {
+	var req request.ConfirmRequest
+
+	repositoryId := c.Param("repositoryId")
+
+	_ = c.Bind(&req)
+
+	if err := helper.ValidateRequest(req); err != nil {
+		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(err))
+	}
+
+	err := ctrl.repositoryService.Confirm(c.Request().Context(), req, repositoryId)
+
+	if err != nil {
+		switch err {
+		case utils.ErrRepositoryNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		default:
+			return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
+		}
+	}
+
+	return c.JSON(http.StatusOK, helper.SuccessOKResponse(nil))
 }

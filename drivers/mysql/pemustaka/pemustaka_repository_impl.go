@@ -107,3 +107,15 @@ func (repository PemustakaRepositoryImpl) GetTotalPemustakaByDepartementId(ctx c
 
 	return int(totalRows), nil
 }
+
+func (repository PemustakaRepositoryImpl) GetTotal(ctx context.Context) (int, error) {
+	var total int64
+
+	err := repository.conn.WithContext(ctx).Model(&domain.Pemustaka{}).Count(&total).Error
+
+	if err != nil {
+		return 0, err
+	}
+
+	return int(total), nil
+}
