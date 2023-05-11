@@ -2,7 +2,6 @@ package pemustaka
 
 import (
 	"context"
-	"fmt"
 	"math"
 	"mime/multipart"
 
@@ -85,8 +84,6 @@ func (service PemustakaServiceImpl) Register(ctx context.Context, req request.Re
 	userDomain.Email = req.Email
 	userDomain.Password = hashPassword
 
-	fmt.Print(userDomain)
-
 	if err := service.userRepository.Save(ctx, tx, userDomain); err != nil {
 		if errorRollback := tx.Rollback().Error; errorRollback != nil {
 			return errorRollback
@@ -151,6 +148,68 @@ func (service PemustakaServiceImpl) Register(ctx context.Context, req request.Re
 	return nil
 }
 
+func (service PemustakaServiceImpl) Create(ctx context.Context, req request.CreatePemustakaRequest) error {
+	tx := service.tx.Begin()
+
+	if user, _ := service.userRepository.FindByEmail(ctx, req.Email); user.Email != "" {
+		return utils.ErrEmailAlreadyUsed
+	}
+
+	if _, err := service.roleRepository.FindById(ctx, req.RoleId); err != nil {
+		return err
+	}
+
+	departement, err := service.departementRepository.FindById(ctx, req.DepartementId)
+
+	if err != nil {
+		return err
+	}
+
+	if _, err := service.studyProgramRepository.FindByDepartementId(ctx, req.StudyProgramId); err != nil {
+		return err
+	}
+
+	userDomain := req.ToUserDomain()
+	userDomain.ID = uuid.NewString()
+	userDomain.Password = utils.HashPassword(configs.GetConfig("DEFAULT_USER_PASSWORD"))
+
+	if err := service.userRepository.Save(ctx, tx, userDomain); err != nil {
+		if errorRollback := tx.Rollback().Error; errorRollback != nil {
+			return errorRollback
+		}
+
+		return err
+	}
+
+	totalPemustaka, err := service.pemustakaRepository.GetTotalPemustakaByDepartementId(ctx, req.DepartementId)
+
+	if err != nil {
+		return err
+	}
+
+	memberCode := utils.GetMemberCode(totalPemustaka, departement.Code)
+
+	pemustakaDomain := req.ToPemustakaDomain()
+	pemustakaDomain.ID = uuid.NewString()
+	pemustakaDomain.UserId = userDomain.ID
+	pemustakaDomain.MemberCode = memberCode
+	pemustakaDomain.Avatar = configs.GetConfig("DEFAULT_AVATAR")
+
+	if err := service.pemustakaRepository.Save(ctx, tx, pemustakaDomain); err != nil {
+		if errorRollback := tx.Rollback().Error; errorRollback != nil {
+			return errorRollback
+		}
+
+		return err
+	}
+
+	if errorCommit := tx.Commit().Error; errorCommit != nil {
+		return errorCommit
+	}
+
+	return nil
+}
+
 func (service PemustakaServiceImpl) Login(ctx context.Context, req request.LoginPemustakaRequest) (string, error) {
 	user, err := service.userRepository.FindByEmail(ctx, req.Email)
 
@@ -167,11 +226,11 @@ func (service PemustakaServiceImpl) Login(ctx context.Context, req request.Login
 	pemustaka, err := service.pemustakaRepository.FindByUserId(ctx, user.ID)
 
 	if err != nil {
-		return "", utils.ErrPemustakaNotFound
+		return "", err
 	}
 
 	if pemustaka.IsActive == "0" {
-		return "", utils.ErrWaitingForAcceptance
+		return "", utils.ErrAccountNotActivated
 	}
 
 	token, _ := utils.GenerateToken(pemustaka.ID, pemustaka.Role.Role)
@@ -196,16 +255,31 @@ func (service PemustakaServiceImpl) Update(ctx context.Context, req request.Upda
 		return err
 	}
 
-	var avatarURL string
+	if user, _ := service.userRepository.FindByEmail(ctx, req.Email); user.Email != "" && user.ID != pemustaka.UserId {
+		return utils.ErrEmailAlreadyUsed
+	}
 
-	if avatar != nil && pemustaka.Avatar != configs.GetConfig("DEFAULT_AVATAR") {
-		if err := service.cloudinary.Delete(ctx, pemustaka.Avatar); err != nil {
-			return err
+	var userDomain domain.User
+	userDomain.Email = req.Email
+
+	if err := service.userRepository.Update(ctx, tx, userDomain, pemustaka.User.Email); err != nil {
+		if errorRollback := tx.Rollback().Error; errorRollback != nil {
+			return errorRollback
 		}
 
-		filename := utils.GetFilename()
+		return err
+	}
 
-		avatarURL, err = service.cloudinary.Upload(ctx, "avatars", filename, avatar)
+	var avatarURL string
+
+	if avatar != nil {
+		if pemustaka.Avatar != configs.GetConfig("DEFAULT_AVATAR") {
+			if err := service.cloudinary.Delete(ctx, pemustaka.Avatar); err != nil {
+				return err
+			}
+		}
+
+		avatarURL, err = service.cloudinary.Upload(ctx, "avatars", utils.GetFilename(), avatar)
 
 		if err != nil {
 			return err
