@@ -55,8 +55,8 @@ func (repo RepositoryImpl) FindAll(ctx context.Context, query request.Repository
 	var totalRows int64
 	err = repo.conn.WithContext(ctx).Model(&domain.Repository{}).
 		Where(
-			"title LIKE ? AND collection_id LIKE ? AND departement_id LIKE ? AND improvement LIKE ? AND status = ?",
-			"%"+query.Keyword+"%", "%"+query.CollectionId+"%", "%"+query.DepartementId+"%", "%"+query.Improvement+"%", "approved",
+			"title LIKE ? AND collection_id LIKE ? AND departement_id LIKE ? AND improvement LIKE ? AND status LIKE ?",
+			"%"+query.Keyword+"%", "%"+query.CollectionId+"%", "%"+query.DepartementId+"%", "%"+query.Improvement+"%", "%"+query.Status+"%",
 		).Count(&totalRows).Error
 	if err != nil {
 		return []domain.Repository{}, 0, err
@@ -66,8 +66,8 @@ func (repo RepositoryImpl) FindAll(ctx context.Context, query request.Repository
 	err = repo.conn.WithContext(ctx).Model(&domain.Repository{}).
 		Preload("Collection").Preload("Departement").Preload("Authors.Pemustaka").
 		Where(
-			"title LIKE ? AND collection_id LIKE ? AND departement_id LIKE ? AND improvement LIKE ? AND status = ?",
-			"%"+query.Keyword+"%", "%"+query.CollectionId+"%", "%"+query.DepartementId+"%", "%"+query.Improvement+"%", "approved",
+			"title LIKE ? AND collection_id LIKE ? AND departement_id LIKE ? AND improvement LIKE ? AND status LIKE ?",
+			"%"+query.Keyword+"%", "%"+query.CollectionId+"%", "%"+query.DepartementId+"%", "%"+query.Improvement+"%", "%"+query.Status+"%",
 		).Order(query.Sort).Limit(limit).Offset(offset).Find(&rec).Error
 	if err != nil {
 		return []domain.Repository{}, 0, err
@@ -233,4 +233,17 @@ func (repo RepositoryImpl) FindByDepartementId(ctx context.Context, departementI
 	}
 
 	return rec, int(totalRows), nil
+}
+
+func (repo RepositoryImpl) GetTotal(ctx context.Context, status string) (int, error) {
+	var total int64
+
+	err := repo.conn.WithContext(ctx).Model(&domain.Repository{}).
+		Where("status LIKE ?", "%"+status+"%").Count(&total).Error
+
+	if err != nil {
+		return 0, err
+	}
+
+	return int(total), nil
 }
