@@ -96,3 +96,13 @@ func (service RequestAccessServiceImpl) FindById(ctx context.Context, requestAcc
 
 	return response.ToRequestAccessResponse(requestAccess), nil
 }
+
+func (service RequestAccessServiceImpl) GetTotal(ctx context.Context, status string) (int, error) {
+	total, err := service.requestAccessRepository.Total(ctx, status)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return total, nil
+}
