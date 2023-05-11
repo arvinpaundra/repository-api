@@ -36,6 +36,9 @@ var (
 	// error staff not found
 	ErrStaffNotFound = errors.New("Staff not found")
 
+	// error head of library not found
+	ErrHeadOfLibraryNotFound = errors.New("Head of library not found")
+
 	// error repository not found
 	ErrRepositoryNotFound = errors.New("Repository not found")
 
@@ -66,9 +69,6 @@ var (
 	// error link has been expired
 	ErrLinkExpired = errors.New("Link has been expired")
 
-	// error waiting for acceptance to activate pemustaka account
-	ErrWaitingForAcceptance = errors.New("Account is waiting for acceptance")
-
 	// error pemustaka already collected final project
 	ErrAlreadyCollectedFinalProject = errors.New("Pemustaka already collected final project")
 
@@ -89,4 +89,16 @@ var (
 
 	// error unauthorized user
 	ErrUnAuthorized = errors.New("User unauthorized")
+
+	// error account status not activated
+	ErrAccountNotActivated = errors.New("Account not activated yet")
+
+	// error head of library have not upload the signature yet
+	ErrHeadOfLibraryNotUploadSignature = errors.New("Head of library is not upload the signature yet")
+
+	// error pemustaka not collected final project report
+	ErrNotCollectedFinalProject = errors.New("Pemustka is not collected final project report yet")
+
+	// error pemustaka not collected internship report
+	ErrNotCollectedInternshipReport = errors.New("Pemustaka is not collected internship report yet")
 )
