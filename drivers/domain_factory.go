@@ -8,9 +8,11 @@ import (
 	"github.com/arvinpaundra/repository-api/drivers/mysql/departement"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/document"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/pemustaka"
+	"github.com/arvinpaundra/repository-api/drivers/mysql/report"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/repository"
 	requestAccess "github.com/arvinpaundra/repository-api/drivers/mysql/requestAccess"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/role"
+	"github.com/arvinpaundra/repository-api/drivers/mysql/staff"
 	studyProgram "github.com/arvinpaundra/repository-api/drivers/mysql/studyProgram"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/user"
 	expirationToken "github.com/arvinpaundra/repository-api/drivers/redis/expirationToken"
@@ -68,4 +70,12 @@ func NewContributorRepository(conn *gorm.DB) contributor.ContributorRepository {
 
 func NewDocumentRepository(conn *gorm.DB) document.DocumentRepository {
 	return document.NewSQLRepository(conn)
+}
+
+func NewStaffRepository(conn *gorm.DB) staff.StaffRepository {
+	return staff.NewSQLRepository(conn)
+}
+
+func NewReportRepository(conn *gorm.DB) report.ReportRepository {
+	return report.NewSQLRepository(conn)
 }
