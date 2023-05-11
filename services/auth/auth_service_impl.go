@@ -10,24 +10,30 @@ import (
 	"github.com/arvinpaundra/repository-api/models/domain"
 	"github.com/arvinpaundra/repository-api/models/web/auth/request"
 	"github.com/arvinpaundra/repository-api/utils"
+	"gorm.io/gorm"
 )
 
 type AuthServiceImpl struct {
 	userRepository            user.UserRepository
 	expirationTokenRepository expirationToken.ExpirationTokenRepository
+	tx                        *gorm.DB
 }
 
 func NewAuthService(
 	userRepository user.UserRepository,
 	expirationTokenRepository expirationToken.ExpirationTokenRepository,
+	tx *gorm.DB,
 ) AuthService {
 	return AuthServiceImpl{
 		userRepository:            userRepository,
 		expirationTokenRepository: expirationTokenRepository,
+		tx:                        tx,
 	}
 }
 
 func (service AuthServiceImpl) ForgotPassword(ctx context.Context, req request.ForgotPasswordRequest) error {
+	tx := service.tx.Begin()
+
 	decodedToken, err := base64.RawURLEncoding.DecodeString(req.Base64Token)
 
 	if err != nil {
@@ -57,14 +63,24 @@ func (service AuthServiceImpl) ForgotPassword(ctx context.Context, req request.F
 		Password: hashPassword,
 	}
 
-	if err := service.userRepository.Update(ctx, user, email); err != nil {
+	if err := service.userRepository.Update(ctx, tx, user, email); err != nil {
+		if errorRollback := tx.Rollback().Error; errorRollback != nil {
+			return errorRollback
+		}
+
 		return err
+	}
+
+	if errorCommit := tx.Commit().Error; errorCommit != nil {
+		return errorCommit
 	}
 
 	return nil
 }
 
 func (service AuthServiceImpl) ChangePassword(ctx context.Context, userId string, req request.ChangePasswordRequest) error {
+	tx := service.tx.Begin()
+
 	user, err := service.userRepository.FindById(ctx, userId)
 
 	if err != nil {
@@ -75,8 +91,15 @@ func (service AuthServiceImpl) ChangePassword(ctx context.Context, userId string
 		Password: utils.HashPassword(req.RepeatedPassword),
 	}
 
-	if err := service.userRepository.Update(ctx, userDomain, user.Email); err != nil {
+	if err := service.userRepository.Update(ctx, tx, userDomain, user.Email); err != nil {
+		if errorRollback := tx.Rollback().Error; errorRollback != nil {
+			return errorRollback
+		}
 		return err
+	}
+
+	if errorCommit := tx.Commit().Error; errorCommit != nil {
+		return errorCommit
 	}
 
 	return nil

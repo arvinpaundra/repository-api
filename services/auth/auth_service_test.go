@@ -14,6 +14,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"gorm.io/gorm"
 )
 
 var (
@@ -26,10 +27,11 @@ var (
 
 	ctx   context.Context
 	token string
+	tx    *gorm.DB
 )
 
 func TestMain(m *testing.M) {
-	authService = auth.NewAuthService(&userRepository, &expirationTokenRepository)
+	authService = auth.NewAuthService(&userRepository, &expirationTokenRepository, tx)
 
 	userDomain = domain.User{
 		ID:       uuid.NewString(),
