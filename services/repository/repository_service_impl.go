@@ -746,3 +746,39 @@ func (service RepositoryServiceImpl) FindByDepartementId(ctx context.Context, de
 
 	return response.ToRepositoriesResponse(repositories), totalRows, int(totalPages), nil
 }
+
+func (service RepositoryServiceImpl) GetTotal(ctx context.Context, status string) (int, error) {
+	total, err := service.repository.GetTotal(ctx, status)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return total, nil
+}
+
+func (service RepositoryServiceImpl) Confirm(ctx context.Context, req request.ConfirmRequest, repositoryId string) error {
+	tx := service.tx.Begin()
+
+	if _, err := service.repository.FindById(ctx, repositoryId); err != nil {
+		return err
+	}
+
+	repositoryDomain := domain.Repository{
+		Status: req.Status,
+	}
+
+	if err := service.repository.Update(ctx, tx, repositoryDomain, repositoryId); err != nil {
+		if errorRollback := tx.Rollback().Error; errorRollback != nil {
+			return errorRollback
+		}
+
+		return err
+	}
+
+	if errorCommit := tx.Commit().Error; errorCommit != nil {
+		return errorCommit
+	}
+
+	return nil
+}
