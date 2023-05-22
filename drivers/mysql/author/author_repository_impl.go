@@ -41,7 +41,7 @@ func (repository AuthorRepositoryImpl) Delete(ctx context.Context, repositoryId 
 func (repository AuthorRepositoryImpl) FindByRepositoryId(ctx context.Context, repositoryId string) ([]domain.Author, error) {
 	var rec []domain.Author
 
-	err := repository.conn.WithContext(ctx).Model(&domain.Author{}).Preload("Pemustaka").
+	err := repository.conn.WithContext(ctx).Model(&domain.Author{}).Preload("Pemustaka.User").
 		Where("repository_id = ?", repositoryId).Find(&rec).Error
 
 	if err != nil {
