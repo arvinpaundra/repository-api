@@ -25,67 +25,29 @@ func (ctrl RepositoryControllerImpl) HandlerCreateFinalProjectReport(c echo.Cont
 	var req request.CreateFinalProjectReportRequest
 	validationErrors := make(helper.ValidationError)
 
-	validityPage, _ := c.FormFile("validity_page")
-
-	if validityPage == nil {
-		validationErrors["validity_page"] = "This field is required"
+	files := request.RepositoryInputFiles{
+		"validity_page":          nil,
+		"cover_and_list_content": nil,
+		"chp_one":                nil,
+		"chp_two":                nil,
+		"chp_three":              nil,
+		"chp_four":               nil,
+		"chp_five":               nil,
+		"bibliography":           nil,
 	}
 
-	coverAndListContent, _ := c.FormFile("cover_and_list_content")
+	for key, file := range files {
+		file, _ = c.FormFile(key)
 
-	if coverAndListContent == nil {
-		validationErrors["cover_and_list_content"] = "This field is required"
-	}
-
-	chpOne, _ := c.FormFile("chp_one")
-
-	if chpOne == nil {
-		validationErrors["chp_one"] = "This field is required"
-	}
-
-	chpTwo, _ := c.FormFile("chp_two")
-
-	if chpTwo == nil {
-		validationErrors["chp_two"] = "This field is required"
-	}
-
-	chpThree, _ := c.FormFile("chp_three")
-
-	if chpThree == nil {
-		validationErrors["chp_three"] = "This field is required"
-	}
-
-	chpFour, _ := c.FormFile("chp_four")
-
-	if chpFour == nil {
-		validationErrors["chp_four"] = "This field is required"
-	}
-
-	chpFive, _ := c.FormFile("chp_five")
-
-	if chpFive == nil {
-		validationErrors["chp_five"] = "This field is required"
-	}
-
-	bibliography, _ := c.FormFile("bibliography")
-
-	if bibliography == nil {
-		validationErrors["bibliography"] = "This field is required"
+		if file == nil {
+			validationErrors[key] = "This field is required"
+		} else {
+			files[key] = file
+		}
 	}
 
 	if len(validationErrors) != 0 {
 		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(validationErrors))
-	}
-
-	files := request.RepositoryInputFiles{
-		ValidityPage:        validityPage,
-		CoverAndListContent: coverAndListContent,
-		ChpOne:              chpOne,
-		ChpTwo:              chpTwo,
-		ChpThree:            chpThree,
-		ChpFour:             chpFour,
-		ChpFive:             chpFive,
-		Bibliography:        bibliography,
 	}
 
 	_ = c.Bind(&req)
@@ -124,67 +86,29 @@ func (ctrl RepositoryControllerImpl) HandlerCreateInternshipReport(c echo.Contex
 	var req request.CreateInternshipReportRequest
 	validationErrors := make(helper.ValidationError)
 
-	validityPage, _ := c.FormFile("validity_page")
-
-	if validityPage == nil {
-		validationErrors["validity_page"] = "This field is required"
+	files := request.RepositoryInputFiles{
+		"validity_page":          nil,
+		"cover_and_list_content": nil,
+		"chp_one":                nil,
+		"chp_two":                nil,
+		"chp_three":              nil,
+		"chp_four":               nil,
+		"chp_five":               nil,
+		"bibliography":           nil,
 	}
 
-	coverAndListContent, _ := c.FormFile("cover_and_list_content")
+	for key, file := range files {
+		file, _ = c.FormFile(key)
 
-	if coverAndListContent == nil {
-		validationErrors["cover_and_list_content"] = "This field is required"
-	}
-
-	chpOne, _ := c.FormFile("chp_one")
-
-	if chpOne == nil {
-		validationErrors["chp_one"] = "This field is required"
-	}
-
-	chpTwo, _ := c.FormFile("chp_two")
-
-	if chpTwo == nil {
-		validationErrors["chp_two"] = "This field is required"
-	}
-
-	chpThree, _ := c.FormFile("chp_three")
-
-	if chpThree == nil {
-		validationErrors["chp_three"] = "This field is required"
-	}
-
-	chpFour, _ := c.FormFile("chp_four")
-
-	if chpFour == nil {
-		validationErrors["chp_four"] = "This field is required"
-	}
-
-	chpFive, _ := c.FormFile("chp_five")
-
-	if chpFive == nil {
-		validationErrors["chp_five"] = "This field is required"
-	}
-
-	bibliography, _ := c.FormFile("bibliography")
-
-	if bibliography == nil {
-		validationErrors["bibliography"] = "This field is required"
+		if file == nil {
+			validationErrors[key] = "This field is required"
+		} else {
+			files[key] = file
+		}
 	}
 
 	if len(validationErrors) != 0 {
 		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(validationErrors))
-	}
-
-	files := request.RepositoryInputFiles{
-		ValidityPage:        validityPage,
-		CoverAndListContent: coverAndListContent,
-		ChpOne:              chpOne,
-		ChpTwo:              chpTwo,
-		ChpThree:            chpThree,
-		ChpFour:             chpFour,
-		ChpFive:             chpFive,
-		Bibliography:        bibliography,
 	}
 
 	_ = c.Bind(&req)
@@ -219,67 +143,29 @@ func (ctrl RepositoryControllerImpl) HandlerCreateResearchReport(c echo.Context)
 	var req request.CreateResearchReportRequest
 	validationErrors := make(helper.ValidationError)
 
-	validityPage, _ := c.FormFile("validity_page")
-
-	if validityPage == nil {
-		validationErrors["validity_page"] = "This field is required"
+	files := request.RepositoryInputFiles{
+		"validity_page":          nil,
+		"cover_and_list_content": nil,
+		"chp_one":                nil,
+		"chp_two":                nil,
+		"chp_three":              nil,
+		"chp_four":               nil,
+		"chp_five":               nil,
+		"bibliography":           nil,
 	}
 
-	coverAndListContent, _ := c.FormFile("cover_and_list_content")
+	for key, file := range files {
+		file, _ = c.FormFile(key)
 
-	if coverAndListContent == nil {
-		validationErrors["cover_and_list_content"] = "This field is required"
-	}
-
-	chpOne, _ := c.FormFile("chp_one")
-
-	if chpOne == nil {
-		validationErrors["chp_one"] = "This field is required"
-	}
-
-	chpTwo, _ := c.FormFile("chp_two")
-
-	if chpTwo == nil {
-		validationErrors["chp_two"] = "This field is required"
-	}
-
-	chpThree, _ := c.FormFile("chp_three")
-
-	if chpThree == nil {
-		validationErrors["chp_three"] = "This field is required"
-	}
-
-	chpFour, _ := c.FormFile("chp_four")
-
-	if chpFour == nil {
-		validationErrors["chp_four"] = "This field is required"
-	}
-
-	chpFive, _ := c.FormFile("chp_five")
-
-	if chpFive == nil {
-		validationErrors["chp_five"] = "This field is required"
-	}
-
-	bibliography, _ := c.FormFile("bibliography")
-
-	if bibliography == nil {
-		validationErrors["bibliography"] = "This field is required"
+		if file == nil {
+			validationErrors[key] = "This field is required"
+		} else {
+			files[key] = file
+		}
 	}
 
 	if len(validationErrors) != 0 {
 		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(validationErrors))
-	}
-
-	files := request.RepositoryInputFiles{
-		ValidityPage:        validityPage,
-		CoverAndListContent: coverAndListContent,
-		ChpOne:              chpOne,
-		ChpTwo:              chpTwo,
-		ChpThree:            chpThree,
-		ChpFour:             chpFour,
-		ChpFive:             chpFive,
-		Bibliography:        bibliography,
 	}
 
 	_ = c.Bind(&req)
@@ -306,6 +192,170 @@ func (ctrl RepositoryControllerImpl) HandlerCreateResearchReport(c echo.Context)
 	return c.JSON(http.StatusNotFound, helper.SuccessCreatedResponse())
 }
 
+func (ctrl RepositoryControllerImpl) HandlerUpdateFinalProjectReport(c echo.Context) error {
+	var req request.UpdateFinalProjectReportRequest
+
+	repositoryId := c.Param("repositoryId")
+
+	files := request.RepositoryInputFiles{
+		"validity_page":          nil,
+		"cover_and_list_content": nil,
+		"chp_one":                nil,
+		"chp_two":                nil,
+		"chp_three":              nil,
+		"chp_four":               nil,
+		"chp_five":               nil,
+		"bibliography":           nil,
+	}
+
+	for key, file := range files {
+		file, _ = c.FormFile(key)
+
+		if file != nil {
+			files[key] = file
+		}
+	}
+
+	_ = c.Bind(&req)
+
+	if err := helper.ValidateRequest(req); err != nil {
+		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(err))
+	}
+
+	err := ctrl.repositoryService.UpdateFinalProjectReport(c.Request().Context(), req, files, repositoryId)
+
+	if err != nil {
+		switch err {
+		case utils.ErrRepositoryNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrCollectionNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrCategoryNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrDepartementNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrPemustakaNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrMentorNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrExaminerNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrDocumentsNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		default:
+			return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
+		}
+	}
+
+	return c.JSON(http.StatusOK, helper.SuccessOKResponse(nil))
+}
+
+func (ctrl RepositoryControllerImpl) HandlerUpdateInternshipReport(c echo.Context) error {
+	var req request.UpdateInternshipReportRequest
+
+	repositoryId := c.Param("repositoryId")
+
+	files := request.RepositoryInputFiles{
+		"validity_page":          nil,
+		"cover_and_list_content": nil,
+		"chp_one":                nil,
+		"chp_two":                nil,
+		"chp_three":              nil,
+		"chp_four":               nil,
+		"chp_five":               nil,
+		"bibliography":           nil,
+	}
+
+	for key, file := range files {
+		file, _ = c.FormFile(key)
+
+		if file != nil {
+			files[key] = file
+		}
+	}
+
+	_ = c.Bind(&req)
+
+	if err := helper.ValidateRequest(req); err != nil {
+		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(err))
+	}
+
+	err := ctrl.repositoryService.UpdateInternshipReport(c.Request().Context(), req, files, repositoryId)
+
+	if err != nil {
+		switch err {
+		case utils.ErrRepositoryNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrCollectionNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrDepartementNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrPemustakaNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrMentorNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrDocumentsNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		default:
+			return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
+		}
+	}
+
+	return c.JSON(http.StatusOK, helper.SuccessOKResponse(nil))
+}
+
+func (ctrl RepositoryControllerImpl) HandlerUpdateResearchReport(c echo.Context) error {
+	var req request.UpdateResearchReportRequest
+
+	repositoryId := c.Param("repositoryId")
+
+	files := request.RepositoryInputFiles{
+		"validity_page":          nil,
+		"cover_and_list_content": nil,
+		"chp_one":                nil,
+		"chp_two":                nil,
+		"chp_three":              nil,
+		"chp_four":               nil,
+		"chp_five":               nil,
+		"bibliography":           nil,
+	}
+
+	for key, file := range files {
+		file, _ = c.FormFile(key)
+
+		if file != nil {
+			files[key] = file
+		}
+	}
+
+	_ = c.Bind(&req)
+
+	if err := helper.ValidateRequest(req); err != nil {
+		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(err))
+	}
+
+	err := ctrl.repositoryService.UpdateResearchReport(c.Request().Context(), req, files, repositoryId)
+
+	if err != nil {
+		switch err {
+		case utils.ErrRepositoryNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrCollectionNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrDepartementNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrPemustakaNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrDocumentsNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		default:
+			return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
+		}
+	}
+
+	return c.JSON(http.StatusOK, helper.SuccessOKResponse(nil))
+}
+
 func (ctrl RepositoryControllerImpl) HandlerDeleteRepository(c echo.Context) error {
 	repositoryId := c.Param("repositoryId")
 
@@ -327,6 +377,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindAllRepositories(c echo.Context) 
 	keyword := c.QueryParam("keyword")
 	collectionId := c.QueryParam("collection_id")
 	departementId := c.QueryParam("departement_id")
+	categoryId := c.QueryParam("category_id")
 	improvement := c.QueryParam("improvement")
 	status := c.QueryParam("status")
 
@@ -341,6 +392,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindAllRepositories(c echo.Context) 
 		Keyword:       keyword,
 		CollectionId:  collectionId,
 		DepartementId: departementId,
+		CategoryId:    categoryId,
 		Improvement:   improvement,
 		Status:        status,
 		Sort:          sort,
@@ -389,6 +441,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindByAuthorId(c echo.Context) error
 	keyword := c.QueryParam("keyword")
 	collectionId := c.QueryParam("collection_id")
 	departementId := c.QueryParam("departement_id")
+	categoryId := c.QueryParam("category_id")
 	improvement := c.QueryParam("improvement")
 	status := c.QueryParam("status")
 
@@ -403,6 +456,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindByAuthorId(c echo.Context) error
 		Keyword:       keyword,
 		CollectionId:  collectionId,
 		DepartementId: departementId,
+		CategoryId:    categoryId,
 		Improvement:   improvement,
 		Status:        status,
 		Sort:          sort,
@@ -439,6 +493,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindByMentorId(c echo.Context) error
 	keyword := c.QueryParam("keyword")
 	collectionId := c.QueryParam("collection_id")
 	departementId := c.QueryParam("departement_id")
+	categoryId := c.QueryParam("category_id")
 	improvement := c.QueryParam("improvement")
 	status := c.QueryParam("status")
 
@@ -453,6 +508,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindByMentorId(c echo.Context) error
 		Keyword:       keyword,
 		CollectionId:  collectionId,
 		DepartementId: departementId,
+		CategoryId:    categoryId,
 		Improvement:   improvement,
 		Status:        status,
 		Sort:          sort,
@@ -489,6 +545,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindByExaminerId(c echo.Context) err
 	keyword := c.QueryParam("keyword")
 	collectionId := c.QueryParam("collection_id")
 	departementId := c.QueryParam("departement_id")
+	categoryId := c.QueryParam("category_id")
 	improvement := c.QueryParam("improvement")
 	status := c.QueryParam("status")
 
@@ -503,6 +560,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindByExaminerId(c echo.Context) err
 		Keyword:       keyword,
 		CollectionId:  collectionId,
 		DepartementId: departementId,
+		CategoryId:    categoryId,
 		Improvement:   improvement,
 		Status:        status,
 		Sort:          sort,
@@ -538,6 +596,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindByCollectionId(c echo.Context) e
 
 	keyword := c.QueryParam("keyword")
 	departementId := c.QueryParam("departement_id")
+	categoryId := c.QueryParam("category_id")
 	improvement := c.QueryParam("improvement")
 	status := c.QueryParam("status")
 
@@ -551,6 +610,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindByCollectionId(c echo.Context) e
 	query := request.RepositoryRequestQuery{
 		Keyword:       keyword,
 		DepartementId: departementId,
+		CategoryId:    categoryId,
 		Improvement:   improvement,
 		Status:        status,
 		Sort:          sort,
@@ -586,6 +646,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindByDepartementId(c echo.Context) 
 
 	keyword := c.QueryParam("keyword")
 	collectionId := c.QueryParam("collection_id")
+	categoryId := c.QueryParam("category_id")
 	improvement := c.QueryParam("improvement")
 	status := c.QueryParam("status")
 
@@ -599,6 +660,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindByDepartementId(c echo.Context) 
 	query := request.RepositoryRequestQuery{
 		Keyword:      keyword,
 		CollectionId: collectionId,
+		CategoryId:   categoryId,
 		Improvement:  improvement,
 		Status:       status,
 		Sort:         sort,

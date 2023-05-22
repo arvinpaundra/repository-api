@@ -6,6 +6,9 @@ type RepositoryController interface {
 	HandlerCreateFinalProjectReport(c echo.Context) error
 	HandlerCreateInternshipReport(c echo.Context) error
 	HandlerCreateResearchReport(c echo.Context) error
+	HandlerUpdateFinalProjectReport(c echo.Context) error
+	HandlerUpdateInternshipReport(c echo.Context) error
+	HandlerUpdateResearchReport(c echo.Context) error
 	HandlerDeleteRepository(c echo.Context) error
 	HandlerFindAllRepositories(c echo.Context) error
 	HandlerFindRepositoryById(c echo.Context) error
