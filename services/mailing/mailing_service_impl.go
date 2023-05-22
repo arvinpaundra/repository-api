@@ -10,7 +10,7 @@ import (
 	"github.com/arvinpaundra/repository-api/drivers/mysql/pemustaka"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/user"
 	expirationToken "github.com/arvinpaundra/repository-api/drivers/redis/expirationToken"
-	"github.com/arvinpaundra/repository-api/helper"
+	"github.com/arvinpaundra/repository-api/helper/mailing"
 	"github.com/arvinpaundra/repository-api/models/web/mailing/request"
 	"github.com/arvinpaundra/repository-api/utils"
 	"github.com/google/uuid"
@@ -20,14 +20,14 @@ type MailingServiceImpl struct {
 	expirationTokenRepository expirationToken.ExpirationTokenRepository
 	userRepository            user.UserRepository
 	pemustakaRepository       pemustaka.PemustakaRepository
-	mailing                   helper.Mailing
+	mailing                   mailing.Mailing
 }
 
 func NewMailingService(
 	expirationTokenRepository expirationToken.ExpirationTokenRepository,
 	userRepository user.UserRepository,
 	pemustakaRepository pemustaka.PemustakaRepository,
-	mailing helper.Mailing,
+	mailing mailing.Mailing,
 ) MailingService {
 	return MailingServiceImpl{
 		expirationTokenRepository: expirationTokenRepository,
