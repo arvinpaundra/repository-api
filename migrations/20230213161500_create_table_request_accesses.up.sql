@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS request_accesses (
   pemustaka_id VARCHAR(200) NOT NULL,
   support_evidence TEXT NOT NULL,
   status ENUM('pending', 'accepted', 'denied') DEFAULT 'pending',
+  reasons TEXT,
   created_at TIMESTAMP,
   updated_at TIMESTAMP,
   CONSTRAINT FOREIGN KEY (pemustaka_id) REFERENCES pemustakas(id)
