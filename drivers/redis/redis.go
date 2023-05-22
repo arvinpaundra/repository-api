@@ -7,36 +7,36 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/arvinpaundra/repository-api/configs"
 	"github.com/go-redis/redis/v8"
 )
 
-type ConfigRedis struct {
-	REDIS_USERNAME string
-	REDIS_HOST     string
-	REDIS_PORT     string
-	REDIS_PASSWORD string
-	REDIS_DB       string
+type Redis struct {
+	USERNAME string
+	HOST     string
+	PORT     string
+	PASSWORD string
+	DB       string
 }
 
-func New() *ConfigRedis {
-	return &ConfigRedis{
-		REDIS_USERNAME: configs.GetConfig("REDIS_USERNAME"),
-		REDIS_HOST:     configs.GetConfig("REDIS_HOST"),
-		REDIS_PORT:     configs.GetConfig("REDIS_PORT"),
-		REDIS_PASSWORD: configs.GetConfig("REDIS_PASSWORD"),
-		REDIS_DB:       configs.GetConfig("REDIS_DB"),
+// NewRedis create new instance for Redis
+func NewRedis(username, password, host, port, db string) *Redis {
+	return &Redis{
+		USERNAME: username,
+		PASSWORD: password,
+		HOST:     host,
+		PORT:     port,
+		DB:       db,
 	}
 }
 
-func (config *ConfigRedis) Init(ctx context.Context) *redis.Client {
-	address := fmt.Sprintf("%s:%s", config.REDIS_HOST, config.REDIS_PORT)
-	db, _ := strconv.Atoi(config.REDIS_DB)
+func (config *Redis) Init(ctx context.Context) *redis.Client {
+	address := fmt.Sprintf("%s:%s", config.HOST, config.PORT)
+	db, _ := strconv.Atoi(config.DB)
 
 	client := redis.NewClient(&redis.Options{
-		Username:  config.REDIS_USERNAME,
+		Username:  config.USERNAME,
 		Addr:      address,
-		Password:  config.REDIS_PASSWORD,
+		Password:  config.PASSWORD,
 		DB:        db,
 		TLSConfig: &tls.Config{},
 	})
