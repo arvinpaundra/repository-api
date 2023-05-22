@@ -77,7 +77,7 @@
           class="block-grid"
         >
           <div style="border-collapse: collapse; display: table; width: 100%">
-            <div class="col num12" style="background-color: transparent">
+            <div style="min-width: 320px; background-color: transparent">
               <div style="background-color: transparent; width: 100% !important">
                 <div
                   style="
@@ -85,36 +85,9 @@
                     border-left: 0px solid transparent;
                     border-bottom: 0px solid transparent;
                     border-right: 0px solid transparent;
-                    padding-top: 0px;
-                    padding-bottom: 0px;
-                    padding-right: 0px;
-                    padding-left: 0px;
+                    padding: 24px 0 0 0;
                   "
                 >
-                  <div
-                    style="
-                      font-size: 12px;
-                      line-height: 14px;
-                      color: #ffffff;
-                      font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
-                      text-align: left;
-                    "
-                  >
-                    <p
-                      style="margin: 24px 0; font-size: 12px; line-height: 14px; text-align: center"
-                    >
-                      <span
-                        style="
-                          font-size: 20px;
-                          line-height: 33px;
-                          font-weight: 600;
-                          font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
-                        "
-                      >
-                        Hore, akunmu telah terverifikasi!
-                      </span>
-                    </p>
-                  </div>
                   <div>
                     <div
                       style="
@@ -134,8 +107,9 @@
                           font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
                         "
                       >
-                        Akun kamu telah berhasil terverifikasi dan sekarang menjadi bagian dari
-                        REKSI PNC. Selamat datang di dunia pengetahuan yang tak terbatas!
+                        Maaf, pesan ini untuk memberitahukan bahwa kami menemui beberapa masalah
+                        dalam upaya pengunggahan karya tulis ilmiah milik kamu. Kami sangat mengerti
+                        usaha dan dedikasi yang telah kamu berikan.
                       </p>
 
                       <p
@@ -146,7 +120,7 @@
                           font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
                         "
                       >
-                        Berikut adalah data yang telah kamu berikan:
+                        Berikut adalah detail karya tulis ilmiah yang telah kamu unggah:
                       </p>
 
                       <div
@@ -156,22 +130,67 @@
                           font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
                         "
                       >
-                        <p style="margin: 0 0 4px 0">
-                          <strong>Nama Lengkap:</strong> {{.fullname}}
-                        </p>
-                        <p style="margin: 0 0 4px 0"><strong>NIM:</strong> {{.identity_number}}</p>
+                        <p style="margin: 0 0 4px 0"><strong>Judul:</strong> {{.title}}</p>
+                        <p style="margin: 0 0 4px 0"><strong>Penulis:</strong> {{.authors}}</p>
+                        <p style="margin: 0 0 4px 0"><strong>Koleksi:</strong> {{.collection}}</p>
+                        <p style="margin: 0 0 4px 0"><strong>Kategori:</strong> {{.category}}</p>
                         <p style="margin: 0 0 4px 0"><strong>Jurusan:</strong> {{.departement}}</p>
                         <p style="margin: 0 0 4px 0">
-                          <strong>Program Studi:</strong> {{.study_program}}
+                          <strong>Tanggal Divalidasi:</strong> {{.date_validated}}
                         </p>
-                        <p style="margin: 0 0 4px 0"><strong>Alamat Email:</strong> {{.email}}</p>
-                        <p style="margin: 0 0 4px 0"><strong>Role:</strong> {{.role}}</p>
-                        {{if .year_gen}}
-                        <p style="margin: 0 0 4px 0">
-                          <strong>Tahun Angkatan:</strong> {{.year_gen}}
-                        </p>
-                        {{end}}
                       </div>
+
+                      <p
+                        style="
+                          margin: 12px 0 0 0;
+                          font-size: 14px;
+                          line-height: 21px;
+                          font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
+                        "
+                      >
+                        Agar karya tulis kamu dapat diterima di masa depan, kami sarankan untuk
+                        memperhatikan beberapa hal berikut:
+                      </p>
+
+                      <ol style="padding-left: 16px">
+                        <li
+                          style="
+                            margin: 12px 0 0 0;
+                            font-size: 14px;
+                            line-height: 21px;
+                            font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
+                          "
+                        >
+                          Pastikan karya tulis ilmiah kamu mengikuti format penulisan yang sesuai.
+                          Periksa pedoman penulisan ilmiah, seperti tata bahasa, struktur, kutipan,
+                          dan referensi agar sesuai dengan standar yang berlaku.
+                        </li>
+                        <li
+                          style="
+                            margin: 12px 0 0 0;
+                            font-size: 14px;
+                            line-height: 21px;
+                            font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
+                          "
+                        >
+                          Pastikan kamu telah memilih koleksi, kategori, dan jurusan yang sesuai
+                          dengan topik dan bidang karya tulis ilmiah kamu. Pemilihan yang tepat akan
+                          membantu kami dalam mengkategorikan dan menemukan karya tulis kamu dengan
+                          lebih baik.
+                        </li>
+                        <li
+                          style="
+                            margin: 12px 0 0 0;
+                            font-size: 14px;
+                            line-height: 21px;
+                            font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
+                          "
+                        >
+                          Pastikan urutan pengungahan file sesuai dengan instruksi yang diberikan.
+                          Periksa kembali langkah-langkah yang telah kami sampaikan untuk mengunggah
+                          karya tulis ilmiah agar tidak terjadi kekeliruan.
+                        </li>
+                      </ol>
                     </div>
                   </div>
                   <div

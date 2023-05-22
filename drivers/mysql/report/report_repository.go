@@ -7,5 +7,5 @@ import (
 )
 
 type ReportRepository interface {
-	RecapCollectedReport(ctx context.Context, yearGen string, collectionId string) ([]domain.Report, error)
+	RecapCollectedReport(ctx context.Context, roleId, yearGen, collectionId string) ([]domain.Report, error)
 }

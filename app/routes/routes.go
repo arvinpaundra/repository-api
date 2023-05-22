@@ -2,8 +2,8 @@ package routes
 
 import (
 	"github.com/arvinpaundra/repository-api/drivers"
-	"github.com/arvinpaundra/repository-api/helper"
 	"github.com/arvinpaundra/repository-api/helper/cloudinary"
+	"github.com/arvinpaundra/repository-api/helper/mailing"
 	"github.com/arvinpaundra/repository-api/middlewares"
 	"github.com/go-redis/redis/v8"
 	"github.com/labstack/echo/v4"
@@ -59,7 +59,7 @@ type RouteConfig struct {
 	Echo       *echo.Echo
 	MySQl      *gorm.DB
 	Redis      *redis.Client
-	Mailing    *helper.Mailing
+	Mailing    *mailing.Mailing
 	Cloudinary cloudinary.Cloudinary
 }
 
@@ -96,7 +96,7 @@ func (rc *RouteConfig) New() {
 	pemustakaSrvc := pemustakaService.NewPemustakaService(userRepository, pemustakaRepository, studyProgramRepository, departementRepository, roleRepository, requestAccessRepository, rc.Cloudinary, rc.MySQl)
 	pemustakaCtrl := pemustakaController.NewPemustakaController(pemustakaSrvc)
 
-	requestAccessSrvc := requestAccessService.NewRequestAccessService(requestAccessRepository, pemustakaRepository, rc.MySQl)
+	requestAccessSrvc := requestAccessService.NewRequestAccessService(requestAccessRepository, pemustakaRepository, *rc.Mailing, rc.MySQl)
 	requestAccessCtrl := requestAccessController.NewRequestAccessController(requestAccessSrvc)
 
 	authSrvc := authService.NewAuthService(userRepository, exporationTokenRepository, rc.MySQl)
@@ -115,12 +115,14 @@ func (rc *RouteConfig) New() {
 	repositorySrvc := repositoryService.NewRepositoryService(
 		collectionRepository,
 		departementRepository,
+		categoryRepository,
 		pemustakaRepository,
 		authorRepository,
 		contributorRepository,
 		repoRepository,
 		documentRepository,
 		rc.Cloudinary,
+		*rc.Mailing,
 		rc.MySQl,
 	)
 	repositoryCtrl := repositoryController.NewRepositoryController(repositorySrvc)
@@ -200,7 +202,7 @@ func (rc *RouteConfig) New() {
 	authStaff.POST("/login", staffCtrl.HandlerLogin)
 
 	authPemustaka := auth.Group("/pemustaka")
-	authPemustaka.POST("/register", pemustakaCtrl.HandlerRegister)
+	authPemustaka.POST("/register", pemustakaCtrl.HandlerRegister, middlewares.UploadSupportEvidence())
 	authPemustaka.POST("/login", pemustakaCtrl.HandlerLogin)
 
 	// pemustaka routes
@@ -209,7 +211,7 @@ func (rc *RouteConfig) New() {
 	pemustaka.POST("", pemustakaCtrl.HandleCreatePemustaka, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan"}))
 
 	pemustakaDetail := pemustaka.Group("/:pemustakaId", middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Kepala Perpustakaan", "Mahasiswa", "Dosen"}))
-	pemustakaDetail.PUT("", pemustakaCtrl.HandlerUpdatePemustaka)
+	pemustakaDetail.PUT("", pemustakaCtrl.HandlerUpdatePemustaka, middlewares.UploadAvatarValidator())
 	pemustakaDetail.GET("", pemustakaCtrl.HandlerFindPemustakaById)
 
 	// request access routes
@@ -225,9 +227,18 @@ func (rc *RouteConfig) New() {
 	repository := v1.Group("/repositories")
 	repository.GET("", repositoryCtrl.HandlerFindAllRepositories)
 	repository.GET("/total", repositoryCtrl.HandlerGetTotalRepository, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Kepala Perpustakaan", "Pustakawan"}))
-	repository.POST("/final-projects", repositoryCtrl.HandlerCreateFinalProjectReport, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Mahasiswa"}))
-	repository.POST("/internship-report", repositoryCtrl.HandlerCreateInternshipReport, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Mahasiswa"}))
-	repository.POST("/research-report", repositoryCtrl.HandlerCreateResearchReport, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Kepala Perpustakaan", "Mahasiswa", "Dosen"}))
+
+	finalProject := repository.Group("/final-projects", middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Mahasiswa"}), middlewares.UploadRepositoryFiles())
+	finalProject.POST("", repositoryCtrl.HandlerCreateFinalProjectReport)
+	finalProject.PUT("/:repositoryId", repositoryCtrl.HandlerUpdateFinalProjectReport)
+
+	internshipReport := repository.Group("/internship-reports", middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Mahasiswa"}), middlewares.UploadRepositoryFiles())
+	internshipReport.POST("", repositoryCtrl.HandlerCreateInternshipReport)
+	internshipReport.PUT("/:repositoryId", repositoryCtrl.HandlerUpdateInternshipReport)
+
+	researchReport := repository.Group("/research-reports", middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Dosen", "Mahasiswa"}), middlewares.UploadRepositoryFiles())
+	researchReport.POST("", repositoryCtrl.HandlerCreateResearchReport)
+	researchReport.PUT("/:repositoryId", repositoryCtrl.HandlerUpdateResearchReport)
 
 	repositoryDetail := repository.Group("/:repositoryId")
 	repositoryDetail.GET("", repositoryCtrl.HandlerFindRepositoryById)
@@ -253,7 +264,7 @@ func (rc *RouteConfig) New() {
 
 	staffDetail := staff.Group("/:staffId")
 	staffDetail.GET("", staffCtrl.HandlerFindStaffById)
-	staffDetail.PUT("", staffCtrl.HandlerUpdateStaff)
+	staffDetail.PUT("", staffCtrl.HandlerUpdateStaff, middlewares.UploadAvatarValidator())
 	staffDetail.PUT("/signatures", staffCtrl.HandlerUploadSignature)
 
 	// dashboard routes

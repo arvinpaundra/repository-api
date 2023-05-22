@@ -68,7 +68,6 @@
         <div
           style="
             margin: 0 16px;
-            min-width: 320px;
             overflow-wrap: break-word;
             word-wrap: break-word;
             word-break: break-word;
@@ -85,36 +84,9 @@
                     border-left: 0px solid transparent;
                     border-bottom: 0px solid transparent;
                     border-right: 0px solid transparent;
-                    padding-top: 0px;
-                    padding-bottom: 0px;
-                    padding-right: 0px;
-                    padding-left: 0px;
+                    padding: 24px 0 0 0;
                   "
                 >
-                  <div
-                    style="
-                      font-size: 12px;
-                      line-height: 14px;
-                      color: #ffffff;
-                      font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
-                      text-align: left;
-                    "
-                  >
-                    <p
-                      style="margin: 24px 0; font-size: 12px; line-height: 14px; text-align: center"
-                    >
-                      <span
-                        style="
-                          font-size: 20px;
-                          line-height: 33px;
-                          font-weight: 600;
-                          font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
-                        "
-                      >
-                        Hore, akunmu telah terverifikasi!
-                      </span>
-                    </p>
-                  </div>
                   <div>
                     <div
                       style="
@@ -134,8 +106,9 @@
                           font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
                         "
                       >
-                        Akun kamu telah berhasil terverifikasi dan sekarang menjadi bagian dari
-                        REKSI PNC. Selamat datang di dunia pengetahuan yang tak terbatas!
+                        <strong>Selamat!</strong> Karya tulis ilmiah yang kamu unggah telah
+                        disetujui. Kami sangat menghargai kontribusimu dan semangatmu dalam berbagi
+                        pengetahuan.
                       </p>
 
                       <p
@@ -146,7 +119,7 @@
                           font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
                         "
                       >
-                        Berikut adalah data yang telah kamu berikan:
+                        Berikut adalah detail karya tulis ilmiah yang telah kamu unggah:
                       </p>
 
                       <div
@@ -156,21 +129,14 @@
                           font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
                         "
                       >
-                        <p style="margin: 0 0 4px 0">
-                          <strong>Nama Lengkap:</strong> {{.fullname}}
-                        </p>
-                        <p style="margin: 0 0 4px 0"><strong>NIM:</strong> {{.identity_number}}</p>
+                        <p style="margin: 0 0 4px 0"><strong>Judul:</strong> {{.title}}</p>
+                        <p style="margin: 0 0 4px 0"><strong>Penulis:</strong> {{.authors}}</p>
+                        <p style="margin: 0 0 4px 0"><strong>Koleksi:</strong> {{.collection}}</p>
+                        <p style="margin: 0 0 4px 0"><strong>Kategori:</strong> {{.category}}</p>
                         <p style="margin: 0 0 4px 0"><strong>Jurusan:</strong> {{.departement}}</p>
                         <p style="margin: 0 0 4px 0">
-                          <strong>Program Studi:</strong> {{.study_program}}
+                          <strong>Tanggal Divalidasi:</strong> {{.date_validated}}
                         </p>
-                        <p style="margin: 0 0 4px 0"><strong>Alamat Email:</strong> {{.email}}</p>
-                        <p style="margin: 0 0 4px 0"><strong>Role:</strong> {{.role}}</p>
-                        {{if .year_gen}}
-                        <p style="margin: 0 0 4px 0">
-                          <strong>Tahun Angkatan:</strong> {{.year_gen}}
-                        </p>
-                        {{end}}
                       </div>
                     </div>
                   </div>

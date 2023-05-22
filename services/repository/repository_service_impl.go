@@ -7,6 +7,7 @@ import (
 
 	"github.com/arvinpaundra/repository-api/configs"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/author"
+	"github.com/arvinpaundra/repository-api/drivers/mysql/category"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/collection"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/contributor"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/departement"
@@ -14,6 +15,7 @@ import (
 	"github.com/arvinpaundra/repository-api/drivers/mysql/pemustaka"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/repository"
 	"github.com/arvinpaundra/repository-api/helper/cloudinary"
+	"github.com/arvinpaundra/repository-api/helper/mailing"
 	"github.com/arvinpaundra/repository-api/models/domain"
 	"github.com/arvinpaundra/repository-api/models/web/repository/request"
 	"github.com/arvinpaundra/repository-api/models/web/repository/response"
@@ -25,35 +27,41 @@ import (
 type RepositoryServiceImpl struct {
 	collectionRepository  collection.CollectionRepository
 	departementRepository departement.DepartementRepository
+	categoryRepository    category.CategoryRepository
 	pemustakaRepository   pemustaka.PemustakaRepository
 	authorRepository      author.AuthorRepository
 	contributorRepository contributor.ContributorRepository
 	repository            repository.Repository
 	documentRepository    document.DocumentRepository
 	cloudinary            cloudinary.Cloudinary
+	mailing               mailing.Mailing
 	tx                    *gorm.DB
 }
 
 func NewRepositoryService(
 	collectionRepository collection.CollectionRepository,
 	departementRepository departement.DepartementRepository,
+	categoryRepository category.CategoryRepository,
 	pemustakaRepository pemustaka.PemustakaRepository,
 	authorRepository author.AuthorRepository,
 	contributorRepository contributor.ContributorRepository,
 	repository repository.Repository,
 	documentRepository document.DocumentRepository,
 	cloudinary cloudinary.Cloudinary,
+	mailing mailing.Mailing,
 	tx *gorm.DB,
 ) RepositoryService {
 	return RepositoryServiceImpl{
 		collectionRepository:  collectionRepository,
 		departementRepository: departementRepository,
+		categoryRepository:    categoryRepository,
 		pemustakaRepository:   pemustakaRepository,
 		authorRepository:      authorRepository,
 		contributorRepository: contributorRepository,
 		repository:            repository,
 		documentRepository:    documentRepository,
 		cloudinary:            cloudinary,
+		mailing:               mailing,
 		tx:                    tx,
 	}
 }
@@ -62,6 +70,10 @@ func (service RepositoryServiceImpl) CreateFinalProjectReport(ctx context.Contex
 	tx := service.tx.Begin()
 
 	if _, err := service.collectionRepository.FindById(ctx, configs.GetConfig("ID_FINAL_PROJECT")); err != nil {
+		return err
+	}
+
+	if _, err := service.categoryRepository.FindById(ctx, repositoryDTO.CategoryId); err != nil {
 		return err
 	}
 
@@ -95,49 +107,49 @@ func (service RepositoryServiceImpl) CreateFinalProjectReport(ctx context.Contex
 		return utils.ErrExaminerNotFound
 	}
 
-	validityPageURL, err := service.cloudinary.Upload(ctx, "validity-pages", utils.GetFilename(), files.ValidityPage)
+	validityPageURL, err := service.cloudinary.Upload(ctx, "validity-pages", utils.GetFilename(), files["validity_page"])
 
 	if err != nil {
 		return err
 	}
 
-	coverAndListContentURL, err := service.cloudinary.Upload(ctx, "covers", utils.GetFilename(), files.CoverAndListContent)
+	coverAndListContentURL, err := service.cloudinary.Upload(ctx, "covers", utils.GetFilename(), files["cover_and_list_content"])
 
 	if err != nil {
 		return err
 	}
 
-	chpOneURL, err := service.cloudinary.Upload(ctx, "bab1", utils.GetFilename(), files.ChpOne)
+	chpOneURL, err := service.cloudinary.Upload(ctx, "bab1", utils.GetFilename(), files["chp_one"])
 
 	if err != nil {
 		return err
 	}
 
-	chpTwoURL, err := service.cloudinary.Upload(ctx, "bab2", utils.GetFilename(), files.ChpTwo)
+	chpTwoURL, err := service.cloudinary.Upload(ctx, "bab2", utils.GetFilename(), files["chp_two"])
 
 	if err != nil {
 		return err
 	}
 
-	chpThreeURL, err := service.cloudinary.Upload(ctx, "bab3", utils.GetFilename(), files.ChpThree)
+	chpThreeURL, err := service.cloudinary.Upload(ctx, "bab3", utils.GetFilename(), files["chp_three"])
 
 	if err != nil {
 		return err
 	}
 
-	chpFourURL, err := service.cloudinary.Upload(ctx, "bab4", utils.GetFilename(), files.ChpFour)
+	chpFourURL, err := service.cloudinary.Upload(ctx, "bab4", utils.GetFilename(), files["chp_four"])
 
 	if err != nil {
 		return err
 	}
 
-	chpFiveURL, err := service.cloudinary.Upload(ctx, "bab5", utils.GetFilename(), files.ChpFive)
+	chpFiveURL, err := service.cloudinary.Upload(ctx, "bab5", utils.GetFilename(), files["chp_five"])
 
 	if err != nil {
 		return err
 	}
 
-	bibliographyURL, err := service.cloudinary.Upload(ctx, "bibliographies", utils.GetFilename(), files.Bibliography)
+	bibliographyURL, err := service.cloudinary.Upload(ctx, "bibliographies", utils.GetFilename(), files["bibliography"])
 
 	if err != nil {
 		return err
@@ -147,6 +159,7 @@ func (service RepositoryServiceImpl) CreateFinalProjectReport(ctx context.Contex
 		ID:            uuid.NewString(),
 		CollectionId:  configs.GetConfig("ID_FINAL_PROJECT"),
 		DepartementId: repositoryDTO.DepartementId,
+		CategoryId:    repositoryDTO.CategoryId,
 		Title:         repositoryDTO.Title,
 		Abstract:      repositoryDTO.Abstract,
 		DateValidated: repositoryDTO.DateValidated,
@@ -285,6 +298,10 @@ func (service RepositoryServiceImpl) CreateInternshipReport(ctx context.Context,
 		return err
 	}
 
+	if _, err := service.categoryRepository.FindById(ctx, repositoryDTO.CategoryId); err != nil {
+		return err
+	}
+
 	if _, err := service.departementRepository.FindById(ctx, repositoryDTO.DepartementId); err != nil {
 		return err
 	}
@@ -303,49 +320,49 @@ func (service RepositoryServiceImpl) CreateInternshipReport(ctx context.Context,
 		return err
 	}
 
-	validityPageURL, err := service.cloudinary.Upload(ctx, "validity-pages", utils.GetFilename(), files.ValidityPage)
+	validityPageURL, err := service.cloudinary.Upload(ctx, "validity-pages", utils.GetFilename(), files["validity_page"])
 
 	if err != nil {
 		return err
 	}
 
-	coverAndListContentURL, err := service.cloudinary.Upload(ctx, "covers", utils.GetFilename(), files.CoverAndListContent)
+	coverAndListContentURL, err := service.cloudinary.Upload(ctx, "covers", utils.GetFilename(), files["cover_and_list_content"])
 
 	if err != nil {
 		return err
 	}
 
-	chpOneURL, err := service.cloudinary.Upload(ctx, "bab1", utils.GetFilename(), files.ChpOne)
+	chpOneURL, err := service.cloudinary.Upload(ctx, "bab1", utils.GetFilename(), files["chp_one"])
 
 	if err != nil {
 		return err
 	}
 
-	chpTwoURL, err := service.cloudinary.Upload(ctx, "bab2", utils.GetFilename(), files.ChpTwo)
+	chpTwoURL, err := service.cloudinary.Upload(ctx, "bab2", utils.GetFilename(), files["chp_two"])
 
 	if err != nil {
 		return err
 	}
 
-	chpThreeURL, err := service.cloudinary.Upload(ctx, "bab3", utils.GetFilename(), files.ChpThree)
+	chpThreeURL, err := service.cloudinary.Upload(ctx, "bab3", utils.GetFilename(), files["chp_three"])
 
 	if err != nil {
 		return err
 	}
 
-	chpFourURL, err := service.cloudinary.Upload(ctx, "bab4", utils.GetFilename(), files.ChpFour)
+	chpFourURL, err := service.cloudinary.Upload(ctx, "bab4", utils.GetFilename(), files["chp_four"])
 
 	if err != nil {
 		return err
 	}
 
-	chpFiveURL, err := service.cloudinary.Upload(ctx, "bab5", utils.GetFilename(), files.ChpFive)
+	chpFiveURL, err := service.cloudinary.Upload(ctx, "bab5", utils.GetFilename(), files["chp_five"])
 
 	if err != nil {
 		return err
 	}
 
-	bibliographyURL, err := service.cloudinary.Upload(ctx, "bibliographies", utils.GetFilename(), files.Bibliography)
+	bibliographyURL, err := service.cloudinary.Upload(ctx, "bibliographies", utils.GetFilename(), files["bibliography"])
 
 	if err != nil {
 		return err
@@ -355,6 +372,7 @@ func (service RepositoryServiceImpl) CreateInternshipReport(ctx context.Context,
 		ID:            uuid.NewString(),
 		CollectionId:  configs.GetConfig("ID_INTERNSHIP_REPORT"),
 		DepartementId: repositoryDTO.DepartementId,
+		CategoryId:    repositoryDTO.CategoryId,
 		Title:         repositoryDTO.Title,
 		Improvement:   "0",
 		DateValidated: repositoryDTO.DateValidated,
@@ -445,6 +463,10 @@ func (service RepositoryServiceImpl) CreateResearchReport(ctx context.Context, r
 		return err
 	}
 
+	if _, err := service.categoryRepository.FindById(ctx, repositoryDTO.CategoryId); err != nil {
+		return err
+	}
+
 	if _, err := service.departementRepository.FindById(ctx, repositoryDTO.DepartementId); err != nil {
 		return err
 	}
@@ -457,49 +479,49 @@ func (service RepositoryServiceImpl) CreateResearchReport(ctx context.Context, r
 		}
 	}
 
-	validityPageURL, err := service.cloudinary.Upload(ctx, "validity-pages", utils.GetFilename(), files.ValidityPage)
+	validityPageURL, err := service.cloudinary.Upload(ctx, "validity-pages", utils.GetFilename(), files["validity_page"])
 
 	if err != nil {
 		return err
 	}
 
-	coverAndListContentURL, err := service.cloudinary.Upload(ctx, "covers", utils.GetFilename(), files.CoverAndListContent)
+	coverAndListContentURL, err := service.cloudinary.Upload(ctx, "covers", utils.GetFilename(), files["cover_and_list_content"])
 
 	if err != nil {
 		return err
 	}
 
-	chpOneURL, err := service.cloudinary.Upload(ctx, "bab1", utils.GetFilename(), files.ChpOne)
+	chpOneURL, err := service.cloudinary.Upload(ctx, "bab1", utils.GetFilename(), files["chp_one"])
 
 	if err != nil {
 		return err
 	}
 
-	chpTwoURL, err := service.cloudinary.Upload(ctx, "bab2", utils.GetFilename(), files.ChpTwo)
+	chpTwoURL, err := service.cloudinary.Upload(ctx, "bab2", utils.GetFilename(), files["chp_two"])
 
 	if err != nil {
 		return err
 	}
 
-	chpThreeURL, err := service.cloudinary.Upload(ctx, "bab3", utils.GetFilename(), files.ChpThree)
+	chpThreeURL, err := service.cloudinary.Upload(ctx, "bab3", utils.GetFilename(), files["chp_three"])
 
 	if err != nil {
 		return err
 	}
 
-	chpFourURL, err := service.cloudinary.Upload(ctx, "bab4", utils.GetFilename(), files.ChpFour)
+	chpFourURL, err := service.cloudinary.Upload(ctx, "bab4", utils.GetFilename(), files["chp_four"])
 
 	if err != nil {
 		return err
 	}
 
-	chpFiveURL, err := service.cloudinary.Upload(ctx, "bab5", utils.GetFilename(), files.ChpFive)
+	chpFiveURL, err := service.cloudinary.Upload(ctx, "bab5", utils.GetFilename(), files["chp_five"])
 
 	if err != nil {
 		return err
 	}
 
-	bibliographyURL, err := service.cloudinary.Upload(ctx, "bibliographies", utils.GetFilename(), files.Bibliography)
+	bibliographyURL, err := service.cloudinary.Upload(ctx, "bibliographies", utils.GetFilename(), files["bibliography"])
 
 	if err != nil {
 		return err
@@ -509,6 +531,7 @@ func (service RepositoryServiceImpl) CreateResearchReport(ctx context.Context, r
 		ID:            uuid.NewString(),
 		CollectionId:  repositoryDTO.CollectionId,
 		DepartementId: repositoryDTO.DepartementId,
+		CategoryId:    repositoryDTO.CategoryId,
 		Title:         repositoryDTO.Title,
 		Abstract:      repositoryDTO.Abstract,
 		DateValidated: repositoryDTO.DateValidated,
@@ -556,6 +579,675 @@ func (service RepositoryServiceImpl) CreateResearchReport(ctx context.Context, r
 	}
 
 	if err := service.documentRepository.Save(ctx, tx, documentDomain); err != nil {
+		if errorRollback := tx.Rollback().Error; errorRollback != nil {
+			return errorRollback
+		}
+
+		return err
+	}
+
+	if errorCommit := tx.Commit().Error; errorCommit != nil {
+		return errorCommit
+	}
+
+	return nil
+}
+
+func (service RepositoryServiceImpl) UpdateFinalProjectReport(ctx context.Context, repositoryDTO request.UpdateFinalProjectReportRequest, files request.RepositoryInputFiles, repositoryId string) error {
+	tx := service.tx.Begin()
+
+	if _, err := service.repository.FindById(ctx, repositoryId); err != nil {
+		return err
+	}
+
+	if _, err := service.collectionRepository.FindById(ctx, configs.GetConfig("ID_FINAL_PROJECT")); err != nil {
+		return err
+	}
+
+	if _, err := service.categoryRepository.FindById(ctx, repositoryDTO.CategoryId); err != nil {
+		return err
+	}
+
+	if _, err := service.departementRepository.FindById(ctx, repositoryDTO.DepartementId); err != nil {
+		return err
+	}
+
+	if _, err := service.pemustakaRepository.FindById(ctx, repositoryDTO.Author); err != nil {
+		return err
+	}
+
+	if _, err := service.pemustakaRepository.FindById(ctx, repositoryDTO.FirstMentor); err != nil {
+		return utils.ErrMentorNotFound
+	}
+
+	if _, err := service.pemustakaRepository.FindById(ctx, repositoryDTO.SecondMentor); err != nil {
+		return utils.ErrMentorNotFound
+	}
+
+	if _, err := service.pemustakaRepository.FindById(ctx, repositoryDTO.FirstExaminer); err != nil {
+		return utils.ErrExaminerNotFound
+	}
+
+	if _, err := service.pemustakaRepository.FindById(ctx, repositoryDTO.SecondExaminer); err != nil {
+		return utils.ErrExaminerNotFound
+	}
+
+	document, err := service.documentRepository.FindByRepositoryId(ctx, repositoryId)
+
+	if err != nil {
+		return err
+	}
+
+	contributors, err := service.contributorRepository.FindByRepositoryId(ctx, repositoryId)
+
+	if err != nil {
+		return err
+	}
+
+	var validityPageURL string
+	if files["validity_page"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.ValidityPage); err != nil {
+			return err
+		}
+
+		validityPageURL, err = service.cloudinary.Upload(ctx, "validity-pages", utils.GetFilename(), files["validity_page"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var coverAndListContentURL string
+	if files["cover_and_list_content"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.CoverAndListContent); err != nil {
+			return err
+		}
+
+		coverAndListContentURL, err = service.cloudinary.Upload(ctx, "covers", utils.GetFilename(), files["cover_and_list_content"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var chpOneURL string
+	if files["chp_one"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.ChpOne); err != nil {
+			return err
+		}
+
+		chpOneURL, err = service.cloudinary.Upload(ctx, "bab1", utils.GetFilename(), files["chp_one"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var chpTwoURL string
+	if files["chp_two"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.ChpTwo); err != nil {
+			return err
+		}
+
+		chpTwoURL, err = service.cloudinary.Upload(ctx, "bab2", utils.GetFilename(), files["chp_two"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var chpThreeURL string
+	if files["chp_three"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.ChpThree); err != nil {
+			return err
+		}
+
+		chpThreeURL, err = service.cloudinary.Upload(ctx, "bab3", utils.GetFilename(), files["chp_three"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var chpFourURL string
+	if files["chp_four"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.ChpFour); err != nil {
+			return err
+		}
+
+		chpFourURL, err = service.cloudinary.Upload(ctx, "bab4", utils.GetFilename(), files["chp_four"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var chpFiveURL string
+	if files["chp_five"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.ChpFive); err != nil {
+			return err
+		}
+
+		chpFiveURL, err = service.cloudinary.Upload(ctx, "bab5", utils.GetFilename(), files["chp_five"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var bibliographyURL string
+	if files["bibliography"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.Bibliography); err != nil {
+			return err
+		}
+
+		bibliographyURL, err = service.cloudinary.Upload(ctx, "bibliographies", utils.GetFilename(), files["bibliography"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	newRepository := domain.Repository{
+		DepartementId: repositoryDTO.DepartementId,
+		CategoryId:    repositoryDTO.CategoryId,
+		Title:         repositoryDTO.Title,
+		Abstract:      repositoryDTO.Abstract,
+		Improvement:   repositoryDTO.Improvement,
+		RelatedTitle:  repositoryDTO.RelatedTitle,
+		UpdateDesc:    repositoryDTO.UpdateDesc,
+		DateValidated: repositoryDTO.DateValidated,
+		Status:        repositoryDTO.Status,
+	}
+
+	if err := service.repository.Update(ctx, tx, newRepository, repositoryId); err != nil {
+		if errorRollback := tx.Rollback().Error; errorRollback != nil {
+			return errorRollback
+		}
+
+		return err
+	}
+
+	firstMentor := domain.Contributor{
+		RepositoryId:  repositoryId,
+		PemustakaId:   repositoryDTO.FirstMentor,
+		ContributedAs: "Pembimbing 1",
+	}
+
+	if err := service.contributorRepository.Update(ctx, tx, contributors[0].ID, firstMentor); err != nil {
+		if errorRollback := tx.Rollback().Error; errorRollback != nil {
+			return errorRollback
+		}
+
+		return err
+	}
+
+	secondMentor := domain.Contributor{
+		RepositoryId:  repositoryId,
+		PemustakaId:   repositoryDTO.SecondMentor,
+		ContributedAs: "Pembimbing 2",
+	}
+
+	if err := service.contributorRepository.Update(ctx, tx, contributors[1].ID, secondMentor); err != nil {
+		if errorRollback := tx.Rollback().Error; errorRollback != nil {
+			return errorRollback
+		}
+
+		return err
+	}
+
+	firstExaminer := domain.Contributor{
+		RepositoryId:  repositoryId,
+		PemustakaId:   repositoryDTO.FirstExaminer,
+		ContributedAs: "Penguji 1",
+	}
+
+	if err := service.contributorRepository.Update(ctx, tx, contributors[2].ID, firstExaminer); err != nil {
+		if errorRollback := tx.Rollback().Error; errorRollback != nil {
+			return errorRollback
+		}
+
+		return err
+	}
+
+	secondExaminer := domain.Contributor{
+		RepositoryId:  repositoryId,
+		PemustakaId:   repositoryDTO.SecondExaminer,
+		ContributedAs: "Penguji 2",
+	}
+
+	if err := service.contributorRepository.Update(ctx, tx, contributors[3].ID, secondExaminer); err != nil {
+		if errorRollback := tx.Rollback().Error; errorRollback != nil {
+			return errorRollback
+		}
+
+		return err
+	}
+
+	newDocument := domain.Document{
+		ValidityPage:        validityPageURL,
+		CoverAndListContent: coverAndListContentURL,
+		ChpOne:              chpOneURL,
+		ChpTwo:              chpTwoURL,
+		ChpThree:            chpThreeURL,
+		ChpFour:             chpFourURL,
+		ChpFive:             chpFiveURL,
+		Bibliography:        bibliographyURL,
+	}
+
+	if err := service.documentRepository.Update(ctx, tx, newDocument, repositoryId); err != nil {
+		if errorRollback := tx.Rollback().Error; errorRollback != nil {
+			return errorRollback
+		}
+
+		return err
+	}
+
+	if errorCommit := tx.Commit().Error; errorCommit != nil {
+		return errorCommit
+	}
+
+	return nil
+}
+
+func (service RepositoryServiceImpl) UpdateInternshipReport(ctx context.Context, repositoryDTO request.UpdateInternshipReportRequest, files request.RepositoryInputFiles, repositoryId string) error {
+	tx := service.tx.Begin()
+
+	if _, err := service.repository.FindById(ctx, repositoryId); err != nil {
+		return err
+	}
+
+	if _, err := service.collectionRepository.FindById(ctx, configs.GetConfig("ID_INTERNSHIP_REPORT")); err != nil {
+		return err
+	}
+
+	if _, err := service.categoryRepository.FindById(ctx, repositoryDTO.CategoryId); err != nil {
+		return err
+	}
+
+	if _, err := service.departementRepository.FindById(ctx, repositoryDTO.DepartementId); err != nil {
+		return err
+	}
+
+	if _, err := service.pemustakaRepository.FindById(ctx, repositoryDTO.Author); err != nil {
+		return err
+	}
+
+	if _, err := service.pemustakaRepository.FindById(ctx, repositoryDTO.Mentor); err != nil {
+		return utils.ErrMentorNotFound
+	}
+
+	document, err := service.documentRepository.FindByRepositoryId(ctx, repositoryId)
+
+	if err != nil {
+		return err
+	}
+
+	contributors, err := service.contributorRepository.FindByRepositoryId(ctx, repositoryId)
+
+	if err != nil {
+		return err
+	}
+
+	var validityPageURL string
+	if files["validity_page"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.ValidityPage); err != nil {
+			return err
+		}
+
+		validityPageURL, err = service.cloudinary.Upload(ctx, "validity-pages", utils.GetFilename(), files["validity_page"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var coverAndListContentURL string
+	if files["cover_and_list_content"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.CoverAndListContent); err != nil {
+			return err
+		}
+
+		coverAndListContentURL, err = service.cloudinary.Upload(ctx, "covers", utils.GetFilename(), files["cover_and_list_content"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var chpOneURL string
+	if files["chp_one"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.ChpOne); err != nil {
+			return err
+		}
+
+		chpOneURL, err = service.cloudinary.Upload(ctx, "bab1", utils.GetFilename(), files["chp_one"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var chpTwoURL string
+	if files["chp_two"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.ChpTwo); err != nil {
+			return err
+		}
+
+		chpTwoURL, err = service.cloudinary.Upload(ctx, "bab2", utils.GetFilename(), files["chp_two"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var chpThreeURL string
+	if files["chp_three"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.ChpThree); err != nil {
+			return err
+		}
+
+		chpThreeURL, err = service.cloudinary.Upload(ctx, "bab3", utils.GetFilename(), files["chp_three"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var chpFourURL string
+	if files["chp_four"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.ChpFour); err != nil {
+			return err
+		}
+
+		chpFourURL, err = service.cloudinary.Upload(ctx, "bab4", utils.GetFilename(), files["chp_four"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var chpFiveURL string
+	if files["chp_five"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.ChpFive); err != nil {
+			return err
+		}
+
+		chpFiveURL, err = service.cloudinary.Upload(ctx, "bab5", utils.GetFilename(), files["chp_five"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var bibliographyURL string
+	if files["bibliography"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.Bibliography); err != nil {
+			return err
+		}
+
+		bibliographyURL, err = service.cloudinary.Upload(ctx, "bibliographies", utils.GetFilename(), files["bibliography"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	newRepository := domain.Repository{
+		DepartementId: repositoryDTO.DepartementId,
+		CategoryId:    repositoryDTO.CategoryId,
+		Title:         repositoryDTO.Title,
+		DateValidated: repositoryDTO.DateValidated,
+		Status:        repositoryDTO.Status,
+	}
+
+	if err := service.repository.Update(ctx, tx, newRepository, repositoryId); err != nil {
+		if errorRollback := tx.Rollback().Error; errorRollback != nil {
+			return errorRollback
+		}
+
+		return err
+	}
+
+	mentor := domain.Contributor{
+		RepositoryId:  repositoryId,
+		PemustakaId:   repositoryDTO.Mentor,
+		ContributedAs: "Pembimbing Magang",
+	}
+
+	if err := service.contributorRepository.Update(ctx, tx, contributors[0].ID, mentor); err != nil {
+		if errorRollback := tx.Rollback().Error; errorRollback != nil {
+			return errorRollback
+		}
+
+		return err
+	}
+
+	newDocument := domain.Document{
+		ValidityPage:        validityPageURL,
+		CoverAndListContent: coverAndListContentURL,
+		ChpOne:              chpOneURL,
+		ChpTwo:              chpTwoURL,
+		ChpThree:            chpThreeURL,
+		ChpFour:             chpFourURL,
+		ChpFive:             chpFiveURL,
+		Bibliography:        bibliographyURL,
+	}
+
+	if err := service.documentRepository.Update(ctx, tx, newDocument, repositoryId); err != nil {
+		if errorRollback := tx.Rollback().Error; errorRollback != nil {
+			return errorRollback
+		}
+
+		return err
+	}
+
+	if errorCommit := tx.Commit().Error; errorCommit != nil {
+		return errorCommit
+	}
+
+	return nil
+}
+
+func (service RepositoryServiceImpl) UpdateResearchReport(ctx context.Context, repositoryDTO request.UpdateResearchReportRequest, files request.RepositoryInputFiles, repositoryId string) error {
+	tx := service.tx.Begin()
+
+	if _, err := service.repository.FindById(ctx, repositoryId); err != nil {
+		return err
+	}
+
+	if _, err := service.collectionRepository.FindById(ctx, repositoryDTO.CollectionId); err != nil {
+		return err
+	}
+
+	if _, err := service.categoryRepository.FindById(ctx, repositoryDTO.CategoryId); err != nil {
+		return err
+	}
+
+	if _, err := service.departementRepository.FindById(ctx, repositoryDTO.DepartementId); err != nil {
+		return err
+	}
+
+	authors := strings.Split(repositoryDTO.Authors[0], ",")
+
+	for _, author := range authors {
+		if _, err := service.pemustakaRepository.FindById(ctx, author); err != nil {
+			return err
+		}
+	}
+
+	document, err := service.documentRepository.FindByRepositoryId(ctx, repositoryId)
+
+	if err != nil {
+		return err
+	}
+
+	var validityPageURL string
+	if files["validity_page"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.ValidityPage); err != nil {
+			return err
+		}
+
+		validityPageURL, err = service.cloudinary.Upload(ctx, "validity-pages", utils.GetFilename(), files["validity_page"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var coverAndListContentURL string
+	if files["cover_and_list_content"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.CoverAndListContent); err != nil {
+			return err
+		}
+
+		coverAndListContentURL, err = service.cloudinary.Upload(ctx, "covers", utils.GetFilename(), files["cover_and_list_content"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var chpOneURL string
+	if files["chp_one"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.ChpOne); err != nil {
+			return err
+		}
+
+		chpOneURL, err = service.cloudinary.Upload(ctx, "bab1", utils.GetFilename(), files["chp_one"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var chpTwoURL string
+	if files["chp_two"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.ChpTwo); err != nil {
+			return err
+		}
+
+		chpTwoURL, err = service.cloudinary.Upload(ctx, "bab2", utils.GetFilename(), files["chp_two"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var chpThreeURL string
+	if files["chp_three"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.ChpThree); err != nil {
+			return err
+		}
+
+		chpThreeURL, err = service.cloudinary.Upload(ctx, "bab3", utils.GetFilename(), files["chp_three"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var chpFourURL string
+	if files["chp_four"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.ChpFour); err != nil {
+			return err
+		}
+
+		chpFourURL, err = service.cloudinary.Upload(ctx, "bab4", utils.GetFilename(), files["chp_four"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var chpFiveURL string
+	if files["chp_five"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.ChpFive); err != nil {
+			return err
+		}
+
+		chpFiveURL, err = service.cloudinary.Upload(ctx, "bab5", utils.GetFilename(), files["chp_five"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var bibliographyURL string
+	if files["bibliography"] != nil {
+		if err := service.cloudinary.Delete(ctx, document.Bibliography); err != nil {
+			return err
+		}
+
+		bibliographyURL, err = service.cloudinary.Upload(ctx, "bibliographies", utils.GetFilename(), files["bibliography"])
+
+		if err != nil {
+			return err
+		}
+	}
+
+	newRepository := domain.Repository{
+		CollectionId:  repositoryDTO.CollectionId,
+		DepartementId: repositoryDTO.DepartementId,
+		CategoryId:    repositoryDTO.CategoryId,
+		Title:         repositoryDTO.Title,
+		Abstract:      repositoryDTO.Abstract,
+		DateValidated: repositoryDTO.DateValidated,
+		Status:        repositoryDTO.Status,
+	}
+
+	if err := service.repository.Update(ctx, tx, newRepository, repositoryId); err != nil {
+		if errorRollback := tx.Rollback().Error; errorRollback != nil {
+			return errorRollback
+		}
+
+		return err
+	}
+
+	currentAuthors, err := service.authorRepository.FindByRepositoryId(ctx, repositoryId)
+
+	if err != nil {
+		return err
+	}
+
+	// delete all current authors from db
+	for _, author := range currentAuthors {
+		if err := service.authorRepository.Delete(ctx, repositoryId, author.PemustakaId); err != nil {
+			return err
+		}
+	}
+
+	// insert new authors to db
+	newAuthors := make([]domain.Author, 0)
+
+	for _, author := range authors {
+		newAuthors = append(newAuthors, domain.Author{
+			ID:           uuid.NewString(),
+			RepositoryId: repositoryId,
+			PemustakaId:  author,
+		})
+	}
+
+	if err := service.authorRepository.Save(ctx, tx, newAuthors); err != nil {
+		if errorRollback := tx.Rollback().Error; errorRollback != nil {
+			return errorRollback
+		}
+
+		return err
+	}
+
+	newDocument := domain.Document{
+		ValidityPage:        validityPageURL,
+		CoverAndListContent: coverAndListContentURL,
+		ChpOne:              chpOneURL,
+		ChpTwo:              chpTwoURL,
+		ChpThree:            chpThreeURL,
+		ChpFour:             chpFourURL,
+		ChpFive:             chpFiveURL,
+		Bibliography:        bibliographyURL,
+	}
+
+	if err := service.documentRepository.Update(ctx, tx, newDocument, repositoryId); err != nil {
 		if errorRollback := tx.Rollback().Error; errorRollback != nil {
 			return errorRollback
 		}
@@ -760,7 +1452,9 @@ func (service RepositoryServiceImpl) GetTotal(ctx context.Context, status string
 func (service RepositoryServiceImpl) Confirm(ctx context.Context, req request.ConfirmRequest, repositoryId string) error {
 	tx := service.tx.Begin()
 
-	if _, err := service.repository.FindById(ctx, repositoryId); err != nil {
+	repository, err := service.repository.FindById(ctx, repositoryId)
+
+	if err != nil {
 		return err
 	}
 
@@ -774,6 +1468,42 @@ func (service RepositoryServiceImpl) Confirm(ctx context.Context, req request.Co
 		}
 
 		return err
+	}
+
+	authors, err := service.authorRepository.FindByRepositoryId(ctx, repositoryId)
+
+	if err != nil {
+		return err
+	}
+
+	authorsName := make([]string, 0)
+
+	for _, author := range authors {
+		authorsName = append(authorsName, author.Pemustaka.Fullname)
+	}
+
+	// make authors from array to single line string
+	concatenatedAuthors := strings.Join(authorsName, ", ")
+
+	repositoryToMail := mailing.Repository{
+		Title:         repository.Title,
+		Authors:       concatenatedAuthors,
+		Collection:    repository.Collection.Name,
+		Category:      repository.Category.Name,
+		Departement:   repository.Departement.Name,
+		DateValidated: repository.DateValidated,
+	}
+
+	if req.Status == "approved" {
+		if err := service.mailing.SendVerifiedRepositoryMail(authors[0].Pemustaka.User.Email, "Pengunggahan Karya Tulis Ilmiah Diterima!", repositoryToMail); err != nil {
+			return err
+		}
+	}
+
+	if req.Status == "denied" {
+		if err := service.mailing.SendDeniedRepositoryMail(authors[0].Pemustaka.User.Email, "Pengunggahan Karya Tulis Ilmiah Ditolak!", repositoryToMail); err != nil {
+			return err
+		}
 	}
 
 	if errorCommit := tx.Commit().Error; errorCommit != nil {

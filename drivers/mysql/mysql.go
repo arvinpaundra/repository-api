@@ -4,37 +4,36 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/arvinpaundra/repository-api/configs"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-type MySQLConfig struct {
-	MYSQL_USERNAME string
-	MYSQL_PASSWORD string
-	MYSQL_HOST     string
-	MYSQL_DBNAME   string
-	MYSQL_PORT     string
+type MySQL struct {
+	USERNAME string
+	PASSWORD string
+	HOST     string
+	DBNAME   string
+	PORT     string
 }
 
-// init mysql configs
-func New() *MySQLConfig {
-	return &MySQLConfig{
-		MYSQL_USERNAME: configs.GetConfig("MYSQL_USERNAME"),
-		MYSQL_PASSWORD: configs.GetConfig("MYSQL_PASSWORD"),
-		MYSQL_HOST:     configs.GetConfig("MYSQL_HOST"),
-		MYSQL_DBNAME:   configs.GetConfig("MYSQL_DBNAME"),
-		MYSQL_PORT:     configs.GetConfig("MYSQL_PORT"),
+// NewMySQL create new instace for MySQL
+func NewMySQL(username, password, host, port, dbName string) *MySQL {
+	return &MySQL{
+		USERNAME: username,
+		PASSWORD: password,
+		HOST:     host,
+		DBNAME:   dbName,
+		PORT:     port,
 	}
 }
 
-func (config *MySQLConfig) Init() *gorm.DB {
+func (config *MySQL) Init() *gorm.DB {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		config.MYSQL_USERNAME,
-		config.MYSQL_PASSWORD,
-		config.MYSQL_HOST,
-		config.MYSQL_PORT,
-		config.MYSQL_DBNAME,
+		config.USERNAME,
+		config.PASSWORD,
+		config.HOST,
+		config.PORT,
+		config.DBNAME,
 	)
 
 	db, err := gorm.Open(mysql.Open(dsn))

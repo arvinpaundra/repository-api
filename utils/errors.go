@@ -101,4 +101,7 @@ var (
 
 	// error pemustaka not collected internship report
 	ErrNotCollectedInternshipReport = errors.New("Pemustaka is not collected internship report yet")
+
+	// error file type must be .pdf
+	ErrFileTypeMustBePDF = errors.New("Acceptable file type is .pdf")
 )

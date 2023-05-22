@@ -6,6 +6,7 @@ import (
 
 	"github.com/arvinpaundra/repository-api/drivers/mysql/pemustaka"
 	requestAccess "github.com/arvinpaundra/repository-api/drivers/mysql/requestAccess"
+	"github.com/arvinpaundra/repository-api/helper/mailing"
 	"github.com/arvinpaundra/repository-api/models/domain"
 	"github.com/arvinpaundra/repository-api/models/web/requestAccess/request"
 	"github.com/arvinpaundra/repository-api/models/web/requestAccess/response"
@@ -15,18 +16,20 @@ import (
 type RequestAccessServiceImpl struct {
 	requestAccessRepository requestAccess.RequestAccessRepository
 	pemustakaRepository     pemustaka.PemustakaRepository
-
-	tx *gorm.DB
+	mailing                 mailing.Mailing
+	tx                      *gorm.DB
 }
 
 func NewRequestAccessService(
 	requestAccessRepository requestAccess.RequestAccessRepository,
 	pemustakaRepository pemustaka.PemustakaRepository,
+	mailing mailing.Mailing,
 	tx *gorm.DB,
 ) RequestAccessService {
 	return RequestAccessServiceImpl{
 		requestAccessRepository: requestAccessRepository,
 		pemustakaRepository:     pemustakaRepository,
+		mailing:                 mailing,
 		tx:                      tx,
 	}
 }
@@ -40,7 +43,9 @@ func (service RequestAccessServiceImpl) Update(ctx context.Context, requestAcces
 		return err
 	}
 
-	if _, err := service.pemustakaRepository.FindById(ctx, requestAccess.PemustakaId); err != nil {
+	pemustaka, err := service.pemustakaRepository.FindById(ctx, requestAccess.PemustakaId)
+
+	if err != nil {
 		return err
 	}
 
@@ -64,6 +69,26 @@ func (service RequestAccessServiceImpl) Update(ctx context.Context, requestAcces
 				return errorRollback
 			}
 
+			return err
+		}
+
+		data := mailing.User{
+			Fullname:       pemustaka.Fullname,
+			Email:          pemustaka.User.Email,
+			IdentityNumber: pemustaka.IdentityNumber,
+			Departement:    pemustaka.Departement.Name,
+			StudyProgram:   pemustaka.StudyProgram.Name,
+			Role:           pemustaka.Role.Role,
+			YearGen:        pemustaka.YearGen,
+		}
+
+		if err := service.mailing.SendVerifiedRegisterMail("Permintaan Akses REKSI PNC Diterima!", data); err != nil {
+			return err
+		}
+	}
+
+	if requestAccessDTO.Status == "denied" {
+		if err := service.mailing.SendDeniedRegisterMail(pemustaka.User.Email, "Permintaan Akses REKSI PNC Ditolak!", requestAccessDTO.Reasons); err != nil {
 			return err
 		}
 	}

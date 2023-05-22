@@ -8,10 +8,12 @@ import (
 
 type RepositoryResponse struct {
 	ID            string    `json:"id"`
+	CollectionId  string    `json:"collection_id"`
 	Title         string    `json:"title"`
 	DateValidated string    `json:"date_validated"`
 	Collection    string    `json:"collection"`
 	Departement   string    `json:"departement"`
+	Category      string    `json:"category"`
 	Authors       []Author  `json:"authors"`
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
@@ -19,6 +21,9 @@ type RepositoryResponse struct {
 
 type DetailRepositoryResponse struct {
 	ID            string        `json:"id"`
+	DepartementId string        `json:"departement_id"`
+	CategoryId    string        `json:"category_id"`
+	CollectionId  string        `json:"collection_id"`
 	Title         string        `json:"title"`
 	Abstract      string        `json:"abstract"`
 	Improvement   string        `json:"improvement"`
@@ -28,6 +33,7 @@ type DetailRepositoryResponse struct {
 	Status        string        `json:"status"`
 	Collection    string        `json:"collection"`
 	Departement   string        `json:"departement"`
+	Category      string        `json:"category"`
 	Authors       []Author      `json:"authors"`
 	Contributors  []Contributor `json:"contributors,omitempty"`
 	Documents     Documents     `json:"documents,omitempty"`
@@ -36,6 +42,7 @@ type DetailRepositoryResponse struct {
 }
 
 type Documents struct {
+	RepositoryId        string `json:"repository_id"`
 	ValidityPage        string `json:"validity_page"`
 	CoverAndListContent string `json:"cover_and_list_content"`
 	ChpOne              string `json:"chp_one"`
@@ -47,20 +54,25 @@ type Documents struct {
 }
 
 type Author struct {
-	AuthorId    string `json:"author_id"`
-	PemustakaId string `json:"pemustaka_id"`
-	Fullname    string `json:"fullname"`
+	AuthorId     string `json:"author_id"`
+	RepositoryId string `json:"repository_id"`
+	PemustakaId  string `json:"pemustaka_id"`
+	Fullname     string `json:"fullname"`
 }
 
 type Contributor struct {
-	ContributorId string `json:"contributor_id"`
-	PemustakaId   string `json:"pemustaka_id"`
-	Fullname      string `json:"fullname"`
-	ContributedAs string `json:"contributed_as"`
+	ContributorId  string `json:"contributor_id"`
+	RepositoryId   string `json:"repository_id"`
+	PemustakaId    string `json:"pemustaka_id"`
+	Fullname       string `json:"fullname"`
+	IdentityNumber string `json:"identity_number"`
+	Departement    string `json:"departement"`
+	ContributedAs  string `json:"contributed_as"`
 }
 
 func ToRepositoryDocumentsResponse(documents domain.Document) Documents {
 	return Documents{
+		RepositoryId:        documents.RepositoryId,
 		ValidityPage:        documents.ValidityPage,
 		CoverAndListContent: documents.CoverAndListContent,
 		ChpOne:              documents.ChpOne,
@@ -77,9 +89,10 @@ func ToArrayAuthorResponse(authorsFromDomain []domain.Author) []Author {
 
 	for _, author := range authorsFromDomain {
 		authors = append(authors, Author{
-			AuthorId:    author.ID,
-			PemustakaId: author.Pemustaka.ID,
-			Fullname:    author.Pemustaka.Fullname,
+			AuthorId:     author.ID,
+			RepositoryId: author.RepositoryId,
+			PemustakaId:  author.Pemustaka.ID,
+			Fullname:     author.Pemustaka.Fullname,
 		})
 	}
 
@@ -91,10 +104,13 @@ func ToArrayContributorResponse(contributorsFromDomain []domain.Contributor) []C
 
 	for _, contributor := range contributorsFromDomain {
 		contributors = append(contributors, Contributor{
-			ContributorId: contributor.ID,
-			PemustakaId:   contributor.PemustakaId,
-			Fullname:      contributor.Pemustaka.Fullname,
-			ContributedAs: contributor.ContributedAs,
+			ContributorId:  contributor.ID,
+			RepositoryId:   contributor.RepositoryId,
+			PemustakaId:    contributor.PemustakaId,
+			Fullname:       contributor.Pemustaka.Fullname,
+			IdentityNumber: contributor.Pemustaka.IdentityNumber,
+			Departement:    contributor.Pemustaka.Departement.Name,
+			ContributedAs:  contributor.ContributedAs,
 		})
 	}
 
@@ -104,6 +120,9 @@ func ToArrayContributorResponse(contributorsFromDomain []domain.Contributor) []C
 func ToRepositoryResponse(repository domain.Repository, authors []Author, contributors []Contributor, documents Documents) DetailRepositoryResponse {
 	return DetailRepositoryResponse{
 		ID:            repository.ID,
+		DepartementId: repository.DepartementId,
+		CategoryId:    repository.CategoryId,
+		CollectionId:  repository.CollectionId,
 		Title:         repository.Title,
 		Abstract:      repository.Abstract,
 		Improvement:   repository.Improvement,
@@ -113,6 +132,7 @@ func ToRepositoryResponse(repository domain.Repository, authors []Author, contri
 		Status:        repository.Status,
 		Collection:    repository.Collection.Name,
 		Departement:   repository.Departement.Name,
+		Category:      repository.Category.Name,
 		Authors:       authors,
 		Contributors:  contributors,
 		Documents:     documents,
@@ -127,10 +147,12 @@ func ToRepositoriesResponse(repositoriesFromDomain []domain.Repository) []Reposi
 	for _, repository := range repositoriesFromDomain {
 		repositories = append(repositories, RepositoryResponse{
 			ID:            repository.ID,
+			CollectionId:  repository.CollectionId,
 			Title:         repository.Title,
 			DateValidated: repository.DateValidated,
 			Collection:    repository.Collection.Name,
 			Departement:   repository.Departement.Name,
+			Category:      repository.Category.Name,
 			Authors:       ToArrayAuthorResponse(repository.Authors),
 			CreatedAt:     repository.CreatedAt,
 			UpdatedAt:     repository.UpdatedAt,

@@ -8,6 +8,15 @@ var ForgotPassword string
 //go:embed template-verified-register.html
 var VerifiedRegister string
 
+//go:embed template-denied-register.html
+var DeniedRegister string
+
+//go:embed template-verified-repository.html
+var VerifiedRepository string
+
+//go:embed template-denied-repository.html
+var DeniedRepository string
+
 //go:embed template-id-card.html
 var IDCard string
 

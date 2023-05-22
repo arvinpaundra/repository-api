@@ -11,7 +11,8 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main ./app/main.go
 
-FROM surnet/alpine-wkhtmltopdf:3.12-0.12.6-small AS wkhtmltopdf
+# download image wkhtmltopdf
+FROM surnet/alpine-wkhtmltopdf:3.17.0-0.12.6-full AS wkhtmltopdf
 
 FROM alpine:latest
 
@@ -37,8 +38,9 @@ RUN apk add --no-cache \
 RUN apk add --no-cache ca-certificates
 
 COPY --from=builder /app/main .
-COPY --from=wkhtmltopdf /bin/wkhtmltopdf /bin/wkhtmltopdf
+COPY --from=wkhtmltopdf /bin/wkhtmltopdf /usr/bin/wkhtmltopdf
+COPY --from=wkhtmltopdf /bin/wkhtmltoimage /usr/bin/wkhtmltoimage
 
-EXPOSE 80
+EXPOSE 8080
 
 CMD ["./main"]

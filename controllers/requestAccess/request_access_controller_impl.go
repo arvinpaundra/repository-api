@@ -31,6 +31,12 @@ func (ctrl RequestAccessControllerImpl) HandlerUpdateRequestAccess(c echo.Contex
 		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(err))
 	}
 
+	if req.Status == "denied" && req.Reasons == "" {
+		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
+			"reasons": "This field is required",
+		}))
+	}
+
 	err := ctrl.requestAccessService.Update(c.Request().Context(), req, requestAccessId)
 
 	if err != nil {

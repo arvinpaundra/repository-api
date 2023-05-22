@@ -7,6 +7,7 @@ type RequestAccess struct {
 	PemustakaId     string
 	SupportEvidence string
 	Status          string
+	Reasons         string
 	Pemustaka       Pemustaka
 	CreatedAt       time.Time
 	UpdatedAt       time.Time

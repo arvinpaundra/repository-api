@@ -13,6 +13,7 @@ import (
 	"github.com/arvinpaundra/repository-api/drivers/mysql/report"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/staff"
 	"github.com/arvinpaundra/repository-api/helper"
+	"github.com/arvinpaundra/repository-api/models/domain"
 	requestReport "github.com/arvinpaundra/repository-api/models/web/report/request"
 	"github.com/arvinpaundra/repository-api/models/web/report/response"
 	requestStaff "github.com/arvinpaundra/repository-api/models/web/staff/request"
@@ -42,7 +43,7 @@ func NewReportService(
 }
 
 func (service ReportServiceImpl) SuratKeteranganPenyerahanLaporan(ctx context.Context, req requestReport.SuratKeteranganPenyerahanLaporanRequest) ([]byte, error) {
-	wkhtmltopdf.SetPath("C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe")
+	wkhtmltopdf.SetPath(configs.GetConfig("WKHTMLTOPDF_PATH"))
 
 	pemustaka, err := service.pemustakaRepository.FindById(ctx, req.PemustakaId)
 
@@ -120,7 +121,22 @@ func (service ReportServiceImpl) SuratKeteranganPenyerahanLaporan(ctx context.Co
 }
 
 func (service ReportServiceImpl) RecapCollectedReport(ctx context.Context, yearGen string, collectionId string) ([]response.RecapCollectedReportResponse, error) {
-	reports, err := service.reportRepository.RecapCollectedReport(ctx, yearGen, collectionId)
+
+	collection, err := service.collectionRepository.FindById(ctx, collectionId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var reports []domain.Report
+
+	if collection.Visibility == "Semua" {
+		reports, err = service.reportRepository.RecapCollectedReport(ctx, "", yearGen, collectionId)
+	} else if collection.Visibility == "Dosen" {
+		reports, err = service.reportRepository.RecapCollectedReport(ctx, configs.GetConfig("ID_ROLE_DOSEN"), yearGen, collectionId)
+	} else {
+		reports, err = service.reportRepository.RecapCollectedReport(ctx, configs.GetConfig("ID_ROLE_MAHASISWA"), yearGen, collectionId)
+	}
 
 	if err != nil {
 		return []response.RecapCollectedReportResponse{}, err
@@ -130,7 +146,7 @@ func (service ReportServiceImpl) RecapCollectedReport(ctx context.Context, yearG
 }
 
 func (service ReportServiceImpl) DownloadRecapCollectedReport(ctx context.Context, query requestReport.QueryRecapCollectedReport) ([]byte, error) {
-	wkhtmltopdf.SetPath("C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe")
+	wkhtmltopdf.SetPath(configs.GetConfig("WKHTMLTOPDF_PATH"))
 
 	collection, err := service.collectionRepository.FindById(ctx, query.CollectionId)
 
@@ -138,7 +154,15 @@ func (service ReportServiceImpl) DownloadRecapCollectedReport(ctx context.Contex
 		return nil, err
 	}
 
-	reports, err := service.reportRepository.RecapCollectedReport(ctx, query.YearGen, query.CollectionId)
+	var reports []domain.Report
+
+	if collection.Visibility == "Semua" {
+		reports, err = service.reportRepository.RecapCollectedReport(ctx, "", query.YearGen, query.CollectionId)
+	} else if collection.Visibility == "Dosen" {
+		reports, err = service.reportRepository.RecapCollectedReport(ctx, configs.GetConfig("ID_ROLE_DOSEN"), query.YearGen, query.CollectionId)
+	} else {
+		reports, err = service.reportRepository.RecapCollectedReport(ctx, configs.GetConfig("ID_ROLE_MAHASISWA"), query.YearGen, query.CollectionId)
+	}
 
 	if err != nil {
 		return nil, err
@@ -150,28 +174,36 @@ func (service ReportServiceImpl) DownloadRecapCollectedReport(ctx context.Contex
 		return nil, err
 	}
 
+	if len(staff) == 0 {
+		return nil, utils.ErrHeadOfLibraryNotFound
+	}
+
 	tmpl, err := template.New("").Funcs(template.FuncMap{
 		"add": add,
+		"sub": sub,
 	}).Parse(templates.RekapPenyerahanLaporan)
 
 	if err != nil {
 		return nil, err
 	}
 
-	total := 0
+	totalCollected := 0
+	totalNotCollected := 0
 
 	for _, report := range reports {
-		total += int(report.PemustakaCount)
+		totalCollected += int(report.PemustakaCount)
+		totalNotCollected += int(report.TotalPemustakas - report.PemustakaCount)
 	}
 
 	data := map[string]interface{}{
-		"collection":    collection.Name,
-		"yearGen":       query.YearGen,
-		"reports":       reports,
-		"total":         total,
-		"dateIssued":    helper.FormatDate(time.Now()),
-		"headOfLibrary": staff[0].Fullname,
-		"nip":           staff[0].Nip,
+		"collection":        collection.Name,
+		"yearGen":           query.YearGen,
+		"reports":           reports,
+		"totalCollected":    totalCollected,
+		"totalNotCollected": totalNotCollected,
+		"dateIssued":        helper.FormatDate(time.Now()),
+		"headOfLibrary":     staff[0].Fullname,
+		"nip":               staff[0].Nip,
 	}
 
 	var buff bytes.Buffer
@@ -209,4 +241,8 @@ func (service ReportServiceImpl) DownloadRecapCollectedReport(ctx context.Contex
 
 func add(a, b int) int {
 	return a + b
+}
+
+func sub(a, b int64) int {
+	return int(a - b)
 }

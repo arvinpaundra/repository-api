@@ -11,6 +11,9 @@ type RepositoryService interface {
 	CreateFinalProjectReport(ctx context.Context, repositoryDTO request.CreateFinalProjectReportRequest, files request.RepositoryInputFiles) error
 	CreateInternshipReport(ctx context.Context, repositoryDTO request.CreateInternshipReportRequest, files request.RepositoryInputFiles) error
 	CreateResearchReport(ctx context.Context, repositoryDTO request.CreateResearchReportRequest, files request.RepositoryInputFiles) error
+	UpdateFinalProjectReport(ctx context.Context, repositoryDTO request.UpdateFinalProjectReportRequest, files request.RepositoryInputFiles, repositoryId string) error
+	UpdateInternshipReport(ctx context.Context, repositoryDTO request.UpdateInternshipReportRequest, files request.RepositoryInputFiles, repositoryId string) error
+	UpdateResearchReport(ctx context.Context, repositoryDTO request.UpdateResearchReportRequest, files request.RepositoryInputFiles, repositoryId string) error
 	Delete(ctx context.Context, repositoryId string) error
 	FindAll(ctx context.Context, query request.RepositoryRequestQuery, limit int, offset int) ([]response.RepositoryResponse, int, int, error)
 	FindById(ctx context.Context, repositoryId string) (response.DetailRepositoryResponse, error)

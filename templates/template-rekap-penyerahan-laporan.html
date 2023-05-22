@@ -234,12 +234,21 @@
           ></strong
         >
       </p>
+      {{if .yearGen}}
       <p
         class="BodyText"
         style="margin-top: 0.55pt; text-align: center; line-height: 150%; font-size: 14pt"
       >
         <strong><span style="font-family: Arial">TAHUN ANGKATAN {{.yearGen}}</span></strong>
       </p>
+      {{else}}
+      <p
+        class="BodyText"
+        style="margin-top: 0.55pt; text-align: center; line-height: 150%; font-size: 14pt"
+      >
+        <strong><span style="font-family: Arial">SEMUA TAHUN ANGKATAN</span></strong>
+      </p>
+      {{end}}
       <p
         class="BodyText"
         style="margin-top: 0.55pt; text-align: center; line-height: 150%; font-size: 14pt"
@@ -306,7 +315,24 @@
                 class="BodyText"
                 style="margin-top: 0.55pt; text-align: center; line-height: 150%; font-size: 12pt"
               >
-                <strong><span style="font-family: Arial">Jumlah</span></strong>
+                <strong><span style="font-family: Arial">Sudah Mengumpulkan</span></strong>
+              </p>
+            </td>
+            <td
+              style="
+                width: 143.35pt;
+                border-left: 0.75pt solid #000000;
+                border-bottom: 0.75pt solid #000000;
+                padding-right: 5.03pt;
+                padding-left: 5.03pt;
+                vertical-align: middle;
+              "
+            >
+              <p
+                class="BodyText"
+                style="margin-top: 0.55pt; text-align: center; line-height: 150%; font-size: 12pt"
+              >
+                <strong><span style="font-family: Arial">Belum Mengumpulkan</span></strong>
               </p>
             </td>
           </tr>
@@ -328,7 +354,7 @@
                 class="BodyText"
                 style="margin-top: 0.55pt; text-align: center; line-height: 150%; font-size: 12pt"
               >
-                <span style="font-family: Arial">{{add $index 1}}</span>
+                <span style="font-family: Arial">{{add $index 1}}.</span>
               </p>
             </td>
             <td
@@ -360,6 +386,26 @@
                 style="margin-top: 0.55pt; text-align: center; line-height: 150%; font-size: 12pt"
               >
                 <span style="font-family: Arial">{{$element.PemustakaCount}}</span>
+              </p>
+            </td>
+            <td
+              style="
+                width: 143.35pt;
+                border-top: 0.75pt solid #000000;
+                border-left: 0.75pt solid #000000;
+                border-bottom: 0.75pt solid #000000;
+                padding-right: 5.03pt;
+                padding-left: 5.03pt;
+                vertical-align: middle;
+              "
+            >
+              <p
+                class="BodyText"
+                style="margin-top: 0.55pt; text-align: center; line-height: 150%; font-size: 12pt"
+              >
+                <span style="font-family: Arial"
+                  >{{sub $element.TotalPemustakas $element.PemustakaCount}}</span
+                >
               </p>
             </td>
           </tr>
@@ -397,7 +443,25 @@
                 class="BodyText"
                 style="margin-top: 0.55pt; text-align: center; line-height: 150%; font-size: 12pt"
               >
-                <span style="font-family: Arial">{{.total}}</span>
+                <span style="font-family: Arial">{{.totalCollected}}</span>
+              </p>
+            </td>
+            <td
+              style="
+                width: 143.35pt;
+                border-top: 0.75pt solid #000000;
+                border-left: 0.75pt solid #000000;
+                border-bottom: 0.75pt solid #000000;
+                padding-right: 5.03pt;
+                padding-left: 5.03pt;
+                vertical-align: middle;
+              "
+            >
+              <p
+                class="BodyText"
+                style="margin-top: 0.55pt; text-align: center; line-height: 150%; font-size: 12pt"
+              >
+                <span style="font-family: Arial">{{.totalNotCollected}}</span>
               </p>
             </td>
           </tr>

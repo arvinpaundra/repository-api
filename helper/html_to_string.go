@@ -5,8 +5,8 @@ import (
 	"html/template"
 )
 
-func RenderHTMLToString(text string, data map[string]string) (string, error) {
-	tmpl, err := template.New("").Parse(text)
+func RenderHTMLToString(text string, funcMap template.FuncMap, data map[string]interface{}) (string, error) {
+	tmpl, err := template.New("").Funcs(funcMap).Parse(text)
 
 	if err != nil {
 		return "", err
