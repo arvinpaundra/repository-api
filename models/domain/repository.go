@@ -6,6 +6,7 @@ type Repository struct {
 	ID            string
 	CollectionId  string
 	DepartementId string
+	CategoryId    string
 	Title         string
 	Abstract      string
 	Improvement   string
@@ -15,6 +16,7 @@ type Repository struct {
 	Status        string
 	Collection    Collection
 	Departement   Departement
+	Category      Category
 	Documents     Document
 	Authors       []Author
 	Contributors  []Contributor
