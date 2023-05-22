@@ -35,21 +35,13 @@ func (service IdentityCardServiceImpl) Generate(ctx context.Context, pemustakaId
 		return nil, err
 	}
 
-	var address string
-
-	if pemustaka.Address == "" {
-		address = "Belum diisi"
-	} else {
-		address = pemustaka.Address
-	}
-
 	idCardData := map[string]string{
 		"avatar":      pemustaka.Avatar,
 		"fullname":    pemustaka.Fullname,
 		"memberCode":  pemustaka.MemberCode,
 		"createdAt":   helper.FormatDate(pemustaka.CreatedAt),
 		"departement": pemustaka.Departement.Name,
-		"address":     address,
+		"address":     pemustaka.Address,
 	}
 
 	// parse and keep html string and the data into buff
