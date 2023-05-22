@@ -193,7 +193,7 @@
                 font-family: 'Poppins', sans-serif;
               "
             >
-              Alamat :
+              Alamat : {{if .address}}
               <span
                 style="
                   font-weight: 600;
@@ -203,6 +203,17 @@
               >
                 {{.address}}
               </span>
+              {{else}}
+              <span
+                style="
+                  font-weight: 600;
+                  text-transform: uppercase;
+                  font-family: 'Poppins', sans-serif;
+                "
+              >
+                Belum Diisi
+              </span>
+              {{end}}
             </p>
           </div>
 
