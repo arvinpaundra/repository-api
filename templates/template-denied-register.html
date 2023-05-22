@@ -7,10 +7,6 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
   </head>
   <body
     class="clean-body"
@@ -111,68 +107,9 @@
                           font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
                         "
                       >
-                        Hore, akunmu telah terverifikasi!
+                        Maaf, permintaan akses ditolak!
                       </span>
                     </p>
-                  </div>
-                  <div>
-                    <div
-                      style="
-                        font-size: 12px;
-                        line-height: 18px;
-                        color: #b8b8c0;
-                        font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
-                        text-align: left;
-                      "
-                    >
-                      <p
-                        style="
-                          margin: 0;
-                          font-size: 14px;
-                          line-height: 21px;
-                          text-align: justify;
-                          font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
-                        "
-                      >
-                        Akun kamu telah berhasil terverifikasi dan sekarang menjadi bagian dari
-                        REKSI PNC. Selamat datang di dunia pengetahuan yang tak terbatas!
-                      </p>
-
-                      <p
-                        style="
-                          margin: 12px 0 0 0;
-                          font-size: 14px;
-                          line-height: 21px;
-                          font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
-                        "
-                      >
-                        Berikut adalah data yang telah kamu berikan:
-                      </p>
-
-                      <div
-                        style="
-                          margin: 12px 0 0 0;
-                          font-size: 14px;
-                          font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
-                        "
-                      >
-                        <p style="margin: 0 0 4px 0">
-                          <strong>Nama Lengkap:</strong> {{.fullname}}
-                        </p>
-                        <p style="margin: 0 0 4px 0"><strong>NIM:</strong> {{.identity_number}}</p>
-                        <p style="margin: 0 0 4px 0"><strong>Jurusan:</strong> {{.departement}}</p>
-                        <p style="margin: 0 0 4px 0">
-                          <strong>Program Studi:</strong> {{.study_program}}
-                        </p>
-                        <p style="margin: 0 0 4px 0"><strong>Alamat Email:</strong> {{.email}}</p>
-                        <p style="margin: 0 0 4px 0"><strong>Role:</strong> {{.role}}</p>
-                        {{if .year_gen}}
-                        <p style="margin: 0 0 4px 0">
-                          <strong>Tahun Angkatan:</strong> {{.year_gen}}
-                        </p>
-                        {{end}}
-                      </div>
-                    </div>
                   </div>
                   <div
                     style="
@@ -191,7 +128,68 @@
                         text-align: left;
                       "
                     >
-                      <p style="margin: 0; font-size: 14px; line-height: 21px; text-align: right">
+                      <p
+                        style="
+                          margin: 0;
+                          font-size: 14px;
+                          line-height: 21px;
+                          text-align: justify;
+                          font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
+                        "
+                      >
+                        Dengan menyesal, kami ingin memberitahukan bahwa registrasi Anda telah
+                        ditolak. Setelah melakukan evaluasi yang cermat, kami menemukan beberapa
+                        ketidaksesuaian dengan informasi yang Anda berikan.
+                      </p>
+
+                      <p
+                        style="
+                          margin: 12px 0 0 0;
+                          font-size: 14px;
+                          line-height: 21px;
+                          font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
+                        "
+                      >
+                        Berikut adalah alasan penolakan registrasi Anda:
+                      </p>
+
+                      <div
+                        style="
+                          margin: 12px 0 0 0;
+                          font-size: 14px;
+                          font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
+                        "
+                      >
+                        <p>{{.reasons}}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    style="
+                      padding-right: 10px;
+                      padding-left: 10px;
+                      padding-top: 0px;
+                      padding-bottom: 10px;
+                    "
+                  >
+                    <div
+                      style="
+                        font-size: 12px;
+                        line-height: 18px;
+                        color: #b8b8c0;
+                        font-family: 'Poppins';
+                        text-align: left;
+                      "
+                    >
+                      <p
+                        style="
+                          margin: 0;
+                          font-size: 14px;
+                          line-height: 21px;
+                          text-align: right;
+                          font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
+                        "
+                      >
                         <br />
                         Salam hangat!
                         <br />
@@ -210,6 +208,7 @@
                   >
                     <a href="{{.base_url}}" target="_blank">
                       <img
+                        class="center fullwidth"
                         align="center"
                         border="0"
                         src="https://res.cloudinary.com/dxhv9xlwc/image/upload/v1684640752/assets/blast-off_z0yxy4.png"
