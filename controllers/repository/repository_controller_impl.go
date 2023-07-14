@@ -36,11 +36,11 @@ func (ctrl RepositoryControllerImpl) HandlerCreateFinalProjectReport(c echo.Cont
 		"bibliography":           nil,
 	}
 
-	for key, file := range files {
-		file, _ = c.FormFile(key)
+	for key := range files {
+		file, _ := c.FormFile(key)
 
 		if file == nil {
-			validationErrors[key] = "This field is required"
+			validationErrors[key] = "Bagian ini wajib diisi"
 		} else {
 			files[key] = file
 		}
@@ -97,11 +97,11 @@ func (ctrl RepositoryControllerImpl) HandlerCreateInternshipReport(c echo.Contex
 		"bibliography":           nil,
 	}
 
-	for key, file := range files {
-		file, _ = c.FormFile(key)
+	for key := range files {
+		file, _ := c.FormFile(key)
 
 		if file == nil {
-			validationErrors[key] = "This field is required"
+			validationErrors[key] = "Bagian ini wajib diisi"
 		} else {
 			files[key] = file
 		}
@@ -154,11 +154,11 @@ func (ctrl RepositoryControllerImpl) HandlerCreateResearchReport(c echo.Context)
 		"bibliography":           nil,
 	}
 
-	for key, file := range files {
-		file, _ = c.FormFile(key)
+	for key := range files {
+		file, _ := c.FormFile(key)
 
 		if file == nil {
-			validationErrors[key] = "This field is required"
+			validationErrors[key] = "Bagian ini wajib diisi"
 		} else {
 			files[key] = file
 		}
@@ -208,8 +208,8 @@ func (ctrl RepositoryControllerImpl) HandlerUpdateFinalProjectReport(c echo.Cont
 		"bibliography":           nil,
 	}
 
-	for key, file := range files {
-		file, _ = c.FormFile(key)
+	for key := range files {
+		file, _ := c.FormFile(key)
 
 		if file != nil {
 			files[key] = file
@@ -266,8 +266,8 @@ func (ctrl RepositoryControllerImpl) HandlerUpdateInternshipReport(c echo.Contex
 		"bibliography":           nil,
 	}
 
-	for key, file := range files {
-		file, _ = c.FormFile(key)
+	for key := range files {
+		file, _ := c.FormFile(key)
 
 		if file != nil {
 			files[key] = file
@@ -320,8 +320,8 @@ func (ctrl RepositoryControllerImpl) HandlerUpdateResearchReport(c echo.Context)
 		"bibliography":           nil,
 	}
 
-	for key, file := range files {
-		file, _ = c.FormFile(key)
+	for key := range files {
+		file, _ := c.FormFile(key)
 
 		if file != nil {
 			files[key] = file

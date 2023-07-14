@@ -2,7 +2,6 @@ package cloudinary
 
 import (
 	"context"
-	"fmt"
 	"mime/multipart"
 	"time"
 
@@ -42,7 +41,7 @@ func (c CloudinaryImpl) Upload(ctx context.Context, folder string, filename stri
 
 	result, err := c.cloudinary.Upload.Upload(timeout, fileBuffer, uploader.UploadParams{
 		PublicID: filename,
-		Folder:   fmt.Sprintf("%s", folder),
+		Folder:   folder,
 	})
 
 	if err != nil {
