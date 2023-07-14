@@ -51,9 +51,9 @@ func validatorErrorMessage(validationError error) ValidationError {
 func msgForTag(fieldError validator.FieldError) string {
 	switch fieldError.Tag() {
 	case "required":
-		return "This field is required"
+		return "Bagian in iwajib diisi"
 	case "email":
-		return "Invalid email"
+		return "Email tidak valid"
 	}
 
 	return fieldError.Error()

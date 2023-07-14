@@ -33,7 +33,7 @@ func (ctrl RequestAccessControllerImpl) HandlerUpdateRequestAccess(c echo.Contex
 
 	if req.Status == "denied" && req.Reasons == "" {
 		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
-			"reasons": "This field is required",
+			"reasons": "Bagian ini wajib diisi",
 		}))
 	}
 

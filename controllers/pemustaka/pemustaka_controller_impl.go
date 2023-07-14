@@ -57,7 +57,7 @@ func (ctrl PemustakaControllerImpl) HandlerRegister(c echo.Context) error {
 
 	if supportEvidence == nil {
 		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
-			"support_evidence": "This field is required",
+			"support_evidence": "Bagian ini wajib diisi",
 		}))
 	}
 
