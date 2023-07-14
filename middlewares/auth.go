@@ -6,8 +6,8 @@ import (
 	"github.com/arvinpaundra/repository-api/configs"
 	"github.com/arvinpaundra/repository-api/helper"
 	"github.com/arvinpaundra/repository-api/utils"
+	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 func CheckRoles(roles []string) echo.MiddlewareFunc {
@@ -32,5 +32,5 @@ func CheckRoles(roles []string) echo.MiddlewareFunc {
 }
 
 func IsAuthenticated() echo.MiddlewareFunc {
-	return middleware.JWT([]byte(configs.GetConfig("JWT_SECRET")))
+	return echojwt.JWT([]byte(configs.GetConfig("JWT_SECRET")))
 }

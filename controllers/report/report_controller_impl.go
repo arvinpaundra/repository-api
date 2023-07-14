@@ -41,6 +41,10 @@ func (ctrl ReportControllerImpl) HandlerGetSuratKeteranganPenyerahanLaporan(c ec
 			return c.JSON(http.StatusUnprocessableEntity, helper.UnprocessableContentResponse(err.Error()))
 		case utils.ErrNotCollectedInternshipReport:
 			return c.JSON(http.StatusUnprocessableEntity, helper.UnprocessableContentResponse(err.Error()))
+		case utils.ErrRepositoryNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrHeadOfLibraryNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
 		default:
 			return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))
 		}
@@ -66,7 +70,7 @@ func (ctrl ReportControllerImpl) HandlerDownloadRecapCollectedReport(c echo.Cont
 	collectionId := c.QueryParam("collection_id")
 	if collectionId == "" {
 		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
-			"request.query.collection_id": "This field is required",
+			"request.query.collection_id": "Bagian ini wajib diisi",
 		}))
 	}
 
@@ -82,6 +86,8 @@ func (ctrl ReportControllerImpl) HandlerDownloadRecapCollectedReport(c echo.Cont
 	if err != nil {
 		switch err {
 		case utils.ErrCollectionNotFound:
+			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
+		case utils.ErrHeadOfLibraryNotFound:
 			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
 		default:
 			return c.JSON(http.StatusInternalServerError, helper.InternalServerErrorResponse(err.Error()))

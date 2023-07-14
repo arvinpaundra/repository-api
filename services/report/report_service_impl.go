@@ -11,6 +11,7 @@ import (
 	"github.com/arvinpaundra/repository-api/drivers/mysql/collection"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/pemustaka"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/report"
+	"github.com/arvinpaundra/repository-api/drivers/mysql/repository"
 	"github.com/arvinpaundra/repository-api/drivers/mysql/staff"
 	"github.com/arvinpaundra/repository-api/helper"
 	"github.com/arvinpaundra/repository-api/models/domain"
@@ -26,6 +27,7 @@ type ReportServiceImpl struct {
 	staffRepository      staff.StaffRepository
 	collectionRepository collection.CollectionRepository
 	reportRepository     report.ReportRepository
+	repository           repository.Repository
 }
 
 func NewReportService(
@@ -33,12 +35,14 @@ func NewReportService(
 	collectionRepository collection.CollectionRepository,
 	staffRepository staff.StaffRepository,
 	reportRepository report.ReportRepository,
+	repository repository.Repository,
 ) ReportService {
 	return ReportServiceImpl{
 		pemustakaRepository:  pemustakaRepository,
 		collectionRepository: collectionRepository,
 		staffRepository:      staffRepository,
 		reportRepository:     reportRepository,
+		repository:           repository,
 	}
 }
 
@@ -60,6 +64,13 @@ func (service ReportServiceImpl) SuratKeteranganPenyerahanLaporan(ctx context.Co
 	}
 
 	collection, err := service.collectionRepository.FindById(ctx, req.CollectionId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	repository, err := service.repository.FindById(ctx, req.RepositoryId)
+
 	if err != nil {
 		return nil, err
 	}
@@ -68,6 +79,10 @@ func (service ReportServiceImpl) SuratKeteranganPenyerahanLaporan(ctx context.Co
 
 	if err != nil {
 		return nil, err
+	}
+
+	if len(staff) == 0 {
+		return nil, utils.ErrHeadOfLibraryNotFound
 	}
 
 	tmpl, err := template.New("").Parse(templates.SuratKeteranganPenyerahanLaporan)
@@ -81,7 +96,7 @@ func (service ReportServiceImpl) SuratKeteranganPenyerahanLaporan(ctx context.Co
 		"identityNumber": pemustaka.IdentityNumber,
 		"programStudy":   pemustaka.StudyProgram.Name,
 		"collection":     collection.Name,
-		"title":          req.Title,
+		"title":          repository.Title,
 		"dateIssued":     helper.FormatDate(time.Now()),
 		"headOfLibrary":  staff[0].Fullname,
 		"nip":            staff[0].Nip,

@@ -40,7 +40,7 @@ func UploadRepositoryFiles() echo.MiddlewareFunc {
 					fileSize := file.Size
 
 					if fileSize > 5000000 {
-						validationErrors[key] = "Max. size is 5MB"
+						validationErrors[key] = "Ukuran maks. 5MB"
 					}
 
 					// check file extension
@@ -71,13 +71,13 @@ func UploadAvatarValidator() echo.MiddlewareFunc {
 				// check file size
 				fileSize := file.Size
 				if fileSize > 1000000 {
-					err["avatar"] = "Max. size is 1MB"
+					err["avatar"] = "Ukuran maks. 1MB"
 				}
 
 				// check file extension
 				fileExtension := filepath.Ext(file.Filename)
 				if fileExtension != ".jpg" && fileExtension != ".png" && fileExtension != ".jpeg" && fileExtension != ".webp" {
-					err["avatar"] = "Acceptable file type are .jpg, .png, .jpeg, .webp"
+					err["avatar"] = "Hanya dapat mengunggah berkas berformat .jpg, .png, .jpeg, .webp"
 				}
 			}
 
@@ -101,12 +101,12 @@ func UploadSupportEvidence() echo.MiddlewareFunc {
 				// check file size
 				fileSize := file.Size
 				if fileSize > 2000000 {
-					err["support_evidence"] = "Max. size is 2MB"
+					err["support_evidence"] = "Ukuran maks. 2MB"
 				}
 
 				fileExtension := filepath.Ext(file.Filename)
 				if fileExtension != ".jpg" && fileExtension != ".png" && fileExtension != ".jpeg" {
-					err["support_evidence"] = "Acceptable file type are .jpg, .png, .jpeg"
+					err["support_evidence"] = "Hanya dapat mengunggah berkas berformat .jpg, .png, .jpeg"
 				}
 			}
 

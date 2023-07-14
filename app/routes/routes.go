@@ -137,7 +137,7 @@ func (rc *RouteConfig) New() {
 	identityCardCtrl := identityCardController.NewIdentityCardController(identityCardSrvc)
 
 	reportRepository := drivers.NewReportRepository(rc.MySQl)
-	reportSrvc := reportService.NewReportService(pemustakaRepository, collectionRepository, staffRepository, reportRepository)
+	reportSrvc := reportService.NewReportService(pemustakaRepository, collectionRepository, staffRepository, reportRepository, repoRepository)
 	reportCtrl := reportController.NewReportController(reportSrvc)
 
 	// API version
