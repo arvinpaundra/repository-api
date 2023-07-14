@@ -1,0 +1,7 @@
+# env
+.env
+.env.production
+.env.development
+
+# test coverage output
+cover.out

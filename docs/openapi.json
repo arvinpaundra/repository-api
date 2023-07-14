@@ -1,0 +1,3568 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "API Spec for Repository Scientific Papers",
+    "version": "1.0.0",
+    "description": "Repository Scientific Papers API is a backend project build with Golang to accomplish my associate degree study."
+  },
+  "tags": [
+    {
+      "name": "Category",
+      "description": "API Spec for Category of Repositories"
+    },
+    {
+      "name": "Collection",
+      "description": "API Spec for Collection of Repositories"
+    },
+    {
+      "name": "Role",
+      "description": "API Spec for User Role"
+    },
+    {
+      "name": "Departement",
+      "description": "API Spec for Departement"
+    },
+    {
+      "name": "Study Program",
+      "description": "API Spec for Study Program"
+    },
+    {
+      "name": "Auth",
+      "description": "API Spec for User Auth"
+    },
+    {
+      "name": "Pemustaka",
+      "description": "API Spec for Pemustaka"
+    },
+    {
+      "name": "Request Access",
+      "description": "API Spec for Request Access"
+    },
+    {
+      "name": "Repository",
+      "description": "API Spec for Repository"
+    },
+    {
+      "name": "Author",
+      "description": "API Spec for Author"
+    },
+    {
+      "name": "Mentor",
+      "description": "API Spec for Mentor"
+    },
+    {
+      "name": "Examiner",
+      "description": "API Spec for Examiner"
+    }
+  ],
+  "servers": [{ "url": "http://localhost:8080/api/v1", "description": "Local environment" }],
+  "paths": {
+    "/categories": {
+      "post": {
+        "tags": ["Category"],
+        "summary": "Create category",
+        "description": "Create category",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "name": "Programming"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success create category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "code": 201,
+                  "status": "success",
+                  "message": "CREATED"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Category"],
+        "summary": "List all categories",
+        "description": "List all categories",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "programming"
+            },
+            "name": "keyword",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 10
+            },
+            "required": true,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 1
+            },
+            "required": true,
+            "name": "page",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get all categories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Category"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "status": "success",
+                  "message": "OK",
+                  "data": [
+                    {
+                      "id": "850c3915-16ea-4e2f-b068-5e25108ff681",
+                      "name": "Multimedia",
+                      "created_at": "2022-12-31T23:04:17+07:00",
+                      "updated_at": "2022-12-31T23:04:17+07:00"
+                    },
+                    {
+                      "id": "eb2b5257-0380-4afc-9ab7-c41915f0672e",
+                      "name": "Networking",
+                      "created_at": "2022-12-31T23:15:43+07:00",
+                      "updated_at": "2022-12-31T23:20:24+07:00"
+                    }
+                  ],
+                  "pagination": {
+                    "page": 1,
+                    "limit": 10,
+                    "total_rows": 2,
+                    "total_pages": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/{categoryId}": {
+      "put": {
+        "tags": ["Category"],
+        "summary": "Update category",
+        "description": "Update category",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "categoryId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "name": "Programming"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success update category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "status": "success",
+                  "message": "OK"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Category"],
+        "description": "Get category by id category",
+        "summary": "Get category by id",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "categoryId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get category by id category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Category"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": {
+                      "id": "eb2b5257-0380-4afc-9ab7-c41915f0672e",
+                      "name": "Networking",
+                      "created_at": "2022-12-31T23:15:43+07:00",
+                      "updated_at": "2022-12-31T23:20:24+07:00"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/{categoryId}/repositories": {
+      "get": {
+        "tags": ["Category"],
+        "description": "List all repositories by category",
+        "summary": "List all repositories by category",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "7113062c-ed11-4404-aa7a-c39684b678e7"
+            },
+            "name": "categoryId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "keyword",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "collection_id",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "improvement",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "created_at DESC"
+            },
+            "name": "sort",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 10
+            },
+            "name": "limit",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 1
+            },
+            "name": "page",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get list all repositories by category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#components/schemas/Repositories"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "$ref": "#components/schemas/Pagination"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": [
+                      {
+                        "id": "d3f7e5d3-ef05-4d9f-93a0-6da3967ea3f6",
+                        "title": "Judul Test 1",
+                        "date_validated": "",
+                        "collection": "Laporan Tugas Akhir",
+                        "category": "Programming",
+                        "authors": [
+                          {
+                            "author_id": "a0f8818f-c7de-4cf1-947c-494e8c3e138a",
+                            "pemustaka_id": "d75127d3-6671-4ef4-b5ac-f4df99991f17",
+                            "fullname": "Arvin Paundra Ardana"
+                          }
+                        ],
+                        "created_at": "2023-02-17T01:39:54+07:00",
+                        "updated_at": "2023-02-17T01:39:54+07:00"
+                      }
+                    ],
+                    "pagination": {
+                      "page": 1,
+                      "limit": 10,
+                      "total_rows": 1,
+                      "total_pages": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/collections": {
+      "post": {
+        "tags": ["Collection"],
+        "description": "Create collection",
+        "summary": "Crete collection",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "name": "Laporan Tugas Akhir"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success create collection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 201,
+                    "status": "success",
+                    "message": "CREATED"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Collection"],
+        "description": "List all collections",
+        "summary": "List all collections",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "keyword",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 10
+            },
+            "required": true,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 1
+            },
+            "required": true,
+            "name": "page",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success get all collections",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Collection"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "example": {
+                    "code": 201,
+                    "status": "success",
+                    "message": "OK",
+                    "data": [
+                      {
+                        "id": "849229b7-b224-4391-8cf9-9f01122e3667",
+                        "name": "Laporan Tugas Akhir",
+                        "created_at": "2023-01-01T15:44:03+07:00",
+                        "updated_at": "2023-01-01T15:46:18+07:00"
+                      },
+                      {
+                        "id": "b6467238-590c-4bd6-b468-054bfe10de59",
+                        "name": "Laporan Hasil Magang",
+                        "created_at": "2023-01-01T15:43:51+07:00",
+                        "updated_at": "2023-01-01T15:43:51+07:00"
+                      }
+                    ],
+                    "pagination": {
+                      "page": 1,
+                      "limit": 10,
+                      "total_rows": 2,
+                      "total_pages": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/collections/{collectionId}": {
+      "put": {
+        "tags": ["Collection"],
+        "summary": "Update collection",
+        "description": "Update collection",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "collectionId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "name": "Laporan Hasil Magang"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success update collection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Collection"],
+        "description": "Get collection by id collection",
+        "summary": "Get collection by id",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "collectionId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get collection by id collection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Collection"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": {
+                      "id": "849229b7-b224-4391-8cf9-9f01122e3667",
+                      "name": "Laporan Tugas Akhir",
+                      "created_at": "2023-01-01T15:44:03+07:00",
+                      "updated_at": "2023-01-01T15:46:18+07:00"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/collections/{collectionId}/repositories": {
+      "get": {
+        "tags": ["Collection"],
+        "description": "List all repositories by collection",
+        "summary": "List all repositories by collection",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "849229b7-b224-4391-8cf9-9f01122e3667"
+            },
+            "name": "collectionId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "keyword",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "category_id",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "improvement",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "created_at DESC"
+            },
+            "name": "sort",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 10
+            },
+            "name": "limit",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 1
+            },
+            "name": "page",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get list all repositories by collection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#components/schemas/Repositories"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "$ref": "#components/schemas/Pagination"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": [
+                      {
+                        "id": "d3f7e5d3-ef05-4d9f-93a0-6da3967ea3f6",
+                        "title": "Judul Test 1",
+                        "date_validated": "",
+                        "collection": "Laporan Tugas Akhir",
+                        "category": "Programming",
+                        "authors": [
+                          {
+                            "author_id": "a0f8818f-c7de-4cf1-947c-494e8c3e138a",
+                            "pemustaka_id": "d75127d3-6671-4ef4-b5ac-f4df99991f17",
+                            "fullname": "Arvin Paundra Ardana"
+                          }
+                        ],
+                        "created_at": "2023-02-17T01:39:54+07:00",
+                        "updated_at": "2023-02-17T01:39:54+07:00"
+                      }
+                    ],
+                    "pagination": {
+                      "page": 1,
+                      "limit": 10,
+                      "total_rows": 1,
+                      "total_pages": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/roles": {
+      "post": {
+        "tags": ["Role"],
+        "description": "Create role",
+        "summary": "Create role",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string"
+                  },
+                  "visibility": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "role": "Mahasiswa",
+                  "visibility": "pemustaka"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success create role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 201,
+                    "status": "success",
+                    "message": "CREATED"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Role"],
+        "summary": "List all roles",
+        "description": "List all roles",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "visibility",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get all roles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Role"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "status": "success",
+                  "message": "OK",
+                  "data": [
+                    {
+                      "id": "fade66ce-4290-4b66-bf07-37205aea3ce7",
+                      "role": "Dosen",
+                      "visibility": "pemustaka",
+                      "created_at": "2023-01-02T05:54:10+07:00",
+                      "updated_at": "2023-01-02T05:55:03+07:00"
+                    },
+                    {
+                      "id": "c0e4b0f2-6338-40df-be43-9173bf48bcd1",
+                      "role": "Mahasiswa",
+                      "visibility": "pemustaka",
+                      "created_at": "2023-01-02T05:54:02+07:00",
+                      "updated_at": "2023-01-02T05:54:02+07:00"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/roles/{roleId}": {
+      "put": {
+        "tags": ["Role"],
+        "summary": "Update role",
+        "description": "Update role",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "roleId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string"
+                  },
+                  "visibility": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "role": "Dosen",
+                "visibility": "pemustaka"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success update role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Role"],
+        "description": "Get role by id role",
+        "summary": "Get role by id",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "roleId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get role by id role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Role"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": {
+                      "id": "c0e4b0f2-6338-40df-be43-9173bf48bcd1",
+                      "role": "Mahasiswa",
+                      "visibility": "pemustaka",
+                      "created_at": "2023-01-02T05:54:02+07:00",
+                      "updated_at": "2023-01-02T05:54:02+07:00"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/departements": {
+      "post": {
+        "tags": ["Departement"],
+        "description": "Create departement",
+        "summary": "Create departement",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "code": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "name": "Teknik Informatika",
+                  "code": "TI"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success create departement",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 201,
+                    "status": "success",
+                    "message": "CREATED"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Departement"],
+        "summary": "List all departements",
+        "description": "List all departements",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "keyword",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 10
+            },
+            "required": true,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 1
+            },
+            "required": true,
+            "name": "page",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get all departements",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Departement"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "status": "success",
+                  "message": "OK",
+                  "data": [
+                    {
+                      "id": "d78d2cd9-6c6f-4fbc-bd9a-ad77e86e0641",
+                      "name": "Teknik Informatika",
+                      "code": "TI",
+                      "created_at": "2023-03-13T01:44:14+07:00",
+                      "updated_at": "2023-03-13T01:44:14+07:00"
+                    },
+                    {
+                      "id": "da40f830-d500-4087-94a3-420024c9010c",
+                      "name": "Teknik Mesin",
+                      "code": "TM",
+                      "created_at": "2023-03-13T01:45:06+07:00",
+                      "updated_at": "2023-03-13T01:45:06+07:00"
+                    },
+                    {
+                      "id": "f1a16f25-79cf-4a80-bf8c-9e8294627ddc",
+                      "name": "Teknik Pengendalian dan Pencemaran Lingkungan",
+                      "code": "TPPL",
+                      "created_at": "2023-03-13T01:44:52+07:00",
+                      "updated_at": "2023-03-13T01:44:52+07:00"
+                    }
+                  ],
+                  "pagination": {
+                    "page": 1,
+                    "limit": 10,
+                    "total_rows": 2,
+                    "total_pages": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/departements/{departementId}": {
+      "put": {
+        "tags": ["Departement"],
+        "summary": "Update departement",
+        "description": "Update departement",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "departementId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "code": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "name": "D3 - Teknik Informatika",
+                "code": "TI"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success update departement",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Departement"],
+        "description": "Get departement by id departement",
+        "summary": "Get departement by id",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "d533fd7a-7da8-4e88-a126-331c1a2dc4b0"
+            },
+            "required": true,
+            "name": "departementId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get departement by id departement",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/Departement"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": {
+                      "id": "d533fd7a-7da8-4e88-a126-331c1a2dc4b0",
+                      "name": "Teknik Informatika",
+                      "study_program": "D-3 Teknik Informatika",
+                      "code": "TI",
+                      "created_at": "2023-01-03T09:57:56+07:00",
+                      "updated_at": "2023-01-03T10:02:50+07:00"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/study-programs": {
+      "post": {
+        "tags": ["Study Program"],
+        "description": "Create study program",
+        "summary": "Create study program",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "departement_id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "departement_id": "d78d2cd9-6c6f-4fbc-bd9a-ad77e86e0641",
+                  "name": "D3 - Teknik Informatika"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success create study program",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 201,
+                    "status": "success",
+                    "message": "CREATED"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Study Program"],
+        "summary": "List all study programs",
+        "description": "List all study programs",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "keyword",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 10
+            },
+            "required": true,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 1
+            },
+            "required": true,
+            "name": "page",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get all study programs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/StudyProgram"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "status": "success",
+                  "message": "OK",
+                  "data": [
+                    {
+                      "id": "c837de18-3c59-41df-a28b-ed96f147f710",
+                      "departement_id": "d78d2cd9-6c6f-4fbc-bd9a-ad77e86e0641",
+                      "name": "D-3 Teknik Elektronika",
+                      "created_at": "2023-01-02T21:52:00+07:00",
+                      "updated_at": "2023-01-02T21:54:18+07:00"
+                    },
+                    {
+                      "id": "bdcc445e-3129-46d2-bae5-6ad490d7e5a4",
+                      "departement_id": "d78d2cd9-6c6f-4fbc-bd9a-ad77e86e0641",
+                      "name": "D-3 Teknik Informatika",
+                      "created_at": "2023-01-02T21:51:53+07:00",
+                      "updated_at": "2023-01-02T21:51:53+07:00"
+                    }
+                  ],
+                  "pagination": {
+                    "page": 1,
+                    "limit": 10,
+                    "total_rows": 2,
+                    "total_pages": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/study-programs/{studyProgramId}": {
+      "put": {
+        "tags": ["Study Program"],
+        "summary": "Update study program",
+        "description": "Update study program",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "studyProgramId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "departement_id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "departement_id": "d78d2cd9-6c6f-4fbc-bd9a-ad77e86e0641",
+                "name": "D3 - Teknik Informatika"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success update study program",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Study Program"],
+        "description": "Get study program by id study program",
+        "summary": "Get study program by id",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "studyProgramId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get study program by id study program",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/StudyProgram"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": {
+                      "id": "c837de18-3c59-41df-a28b-ed96f147f710",
+                      "departement_id": "d78d2cd9-6c6f-4fbc-bd9a-ad77e86e0641",
+                      "name": "D-3 Teknik Elektronika",
+                      "created_at": "2023-01-02T21:52:00+07:00",
+                      "updated_at": "2023-01-02T21:54:18+07:00"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "tags": ["Auth"],
+        "description": "Send reset password link to user email",
+        "summary": "Send reset password link to user email",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "email": "pemustaka@mail.com"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success send reset password link to email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Auth"],
+        "description": "Forgot password user account",
+        "summary": "Forgot password user account",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "type": "string"
+                  },
+                  "token": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "password": "12345678",
+                  "token": "OTM0NTA2ZTNiNDgzNDc1NTk3YmI4NDE5N2Y4NWUzNTQmamFtZXRrdXByb3k3NzRAZ21haWwuY29t"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success update password user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/pemustaka/register": {
+      "post": {
+        "tags": ["Auth"],
+        "description": "Auth register for pemustaka",
+        "summary": "Auth register for pemustaka",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "study_program_id": {
+                    "type": "string"
+                  },
+                  "departement_id": {
+                    "type": "string"
+                  },
+                  "role_id": {
+                    "type": "string"
+                  },
+                  "fullname": {
+                    "type": "string"
+                  },
+                  "identity_number": {
+                    "type": "string",
+                    "minLength": 9
+                  },
+                  "year_gen": {
+                    "type": "string",
+                    "minLength": 4
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "study_program_id": "bdcc445e-3129-46d2-bae5-6ad490d7e5a4",
+                "departement_id": "d533fd7a-7da8-4e88-a126-331c1a2dc4b0",
+                "role_id": "fade66ce-4290-4b66-bf07-37205aea3ce7",
+                "fullname": "Pemustaka Test",
+                "identity_number": "123456789",
+                "year_gen": "2020",
+                "email": "pemustaka@mail.com",
+                "password": "12345678"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success register pemustaka",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 201,
+                    "status": "success",
+                    "message": "CREATED"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/pemustaka/login": {
+      "post": {
+        "tags": ["Auth"],
+        "description": "Auth login for pemustaka",
+        "summary": "Auth login for pemustaka",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "email": "pemustaka@mail.com",
+                  "password": "12345678"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success login pemustaka",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "status": "success",
+                  "message": "OK",
+                  "data": {
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMxMzJiYzEzLWRhM2YtNDNlMi05YWQ4LTIxZjFjZmE5OTY5NiIsInJvbGUiOiJNYWhhc2lzd2EiLCJleHAiOjE2NzU5MTM2NTcsImlhdCI6MTY3NTg3MDQ1N30.n1tDOVBHG785qBSv61Jm-irk_CRTd9nCpByy8vqTszg"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pemustaka": {
+      "get": {
+        "tags": ["Pemustaka"],
+        "description": "List all pemustaka based role id",
+        "summary": "List all pemustaka",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "keyword",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "fade66ce-4290-4b66-bf07-37205aea3ce7"
+            },
+            "name": "role_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "is_collected_final_project",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "year_gen",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "departement_id",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 10
+            },
+            "name": "limit",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": "1"
+            },
+            "name": "page",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get all pemustaka",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Pemustaka"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "status": "success",
+                  "message": "OK",
+                  "data": [
+                    {
+                      "id": "ec35e4a5-139f-4c66-9182-837bd72b8e8d",
+                      "study_program": "D-3 Teknik Informatika",
+                      "departement": "Teknik Informatika",
+                      "role": "Dosen",
+                      "member_code": "2TI",
+                      "email": "dosen@mail.com",
+                      "fullname": "Dosen Test",
+                      "identity_number": "123456789",
+                      "year_gen": "",
+                      "gender": "",
+                      "telp": "",
+                      "birth_date": "",
+                      "address": "",
+                      "is_collected_final_project": "0",
+                      "is_active": "0",
+                      "avatar": "",
+                      "created_at": "2023-01-06T01:31:29+07:00",
+                      "updated_at": "2023-01-06T01:31:29+07:00"
+                    }
+                  ],
+                  "pagination": {
+                    "page": 1,
+                    "limit": 10,
+                    "total_rows": 1,
+                    "total_pages": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pemustaka/{pemustakaId}": {
+      "get": {
+        "tags": ["Pemustaka"],
+        "description": "Get detail pemustaka by id",
+        "summary": "Get detail pemustaka by id",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "ec35e4a5-139f-4c66-9182-837bd72b8e8d"
+            },
+            "name": "pemustakaId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get detail pemustaka by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Pemustaka"
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "status": "success",
+                  "message": "OK",
+                  "data": {
+                    "id": "ec35e4a5-139f-4c66-9182-837bd72b8e8d",
+                    "study_program": "D-3 Teknik Informatika",
+                    "departement": "Teknik Informatika",
+                    "role": "Dosen",
+                    "member_code": "2TI",
+                    "email": "dosen@mail.com",
+                    "fullname": "Dosen Test",
+                    "identity_number": "123456789",
+                    "year_gen": "",
+                    "gender": "",
+                    "telp": "",
+                    "birth_date": "",
+                    "address": "",
+                    "is_collected_final_project": "0",
+                    "is_active": "0",
+                    "avatar": "",
+                    "created_at": "2023-01-06T01:31:29+07:00",
+                    "updated_at": "2023-01-06T01:31:29+07:00"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Pemustaka"],
+        "description": "Update pemustaka",
+        "summary": "Update pemustaka",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "c132bc13-da3f-43e2-9ad8-21f1cfa99696"
+            },
+            "name": "pemustakaId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "study_program_id": {
+                    "type": "string"
+                  },
+                  "departement_id": {
+                    "type": "string"
+                  },
+                  "fullname": {
+                    "type": "string"
+                  },
+                  "year_gen": {
+                    "type": "string"
+                  },
+                  "gender": {
+                    "type": "string"
+                  },
+                  "telp": {
+                    "type": "string"
+                  },
+                  "birth_date": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "study_program_id": "bdcc445e-3129-46d2-bae5-6ad490d7e5a4",
+                  "departement_id": "d533fd7a-7da8-4e88-a126-331c1a2dc4b0",
+                  "fullname": "User Pemustaka Test",
+                  "year_gen": "2023",
+                  "gender": "Pria",
+                  "telp": "",
+                  "birth_date": "",
+                  "address": "test"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success update pemustaka",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/request-accesses": {
+      "get": {
+        "tags": ["Request Access"],
+        "description": "Lit all request accesses",
+        "summary": "List all request accesses",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "keyword",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 10
+            },
+            "name": "limit",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 1
+            },
+            "name": "page",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get all request accesses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/RequestAccess"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/RequestAccess"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": [
+                      {
+                        "id": "a909232b-d7ef-4532-8aec-d0679fe434f7",
+                        "pemustaka_id": "d75127d3-6671-4ef4-b5ac-f4df99991f17",
+                        "pemustaka": "Arvin Paundra Ardana",
+                        "role": "Mahasiswa",
+                        "study_program": "D-3 Teknik Informatika",
+                        "departement": "Teknik Informatika",
+                        "identity_number": "123456789",
+                        "support_evidence": "https://res.cloudinary.com/dxhv9xlwc/image/upload/v1676350069/request-accesses/39bb9af8cf7943fdafb1c5f0436a23fe.jpg",
+                        "status": "accepted",
+                        "created_at": "2023-02-14T11:47:50+07:00",
+                        "updated_at": "2023-02-14T11:48:50+07:00"
+                      }
+                    ],
+                    "pagination": {
+                      "page": 1,
+                      "limit": 10,
+                      "total_rows": 1,
+                      "total_pages": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/request-accesses/{requestAccessId}": {
+      "get": {
+        "tags": ["Request Access"],
+        "description": "Get detail request access by id",
+        "summary": "Get detail request access by id",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "a909232b-d7ef-4532-8aec-d0679fe434f7"
+            },
+            "name": "requestAccessId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get detail request access by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/RequestAccess"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": {
+                      "id": "a909232b-d7ef-4532-8aec-d0679fe434f7",
+                      "pemustaka_id": "d75127d3-6671-4ef4-b5ac-f4df99991f17",
+                      "pemustaka": "Arvin Paundra Ardana",
+                      "role": "Mahasiswa",
+                      "study_program": "D-3 Teknik Informatika",
+                      "departement": "Teknik Informatika",
+                      "identity_number": "123456789",
+                      "support_evidence": "https://res.cloudinary.com/dxhv9xlwc/image/upload/v1676350069/request-accesses/39bb9af8cf7943fdafb1c5f0436a23fe.jpg",
+                      "status": "accepted",
+                      "created_at": "2023-02-14T11:47:50+07:00",
+                      "updated_at": "2023-02-14T11:48:50+07:00"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Request Access"],
+        "description": "Confirm acceptance account",
+        "summary": "Confirm acceptance account",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "a909232b-d7ef-4532-8aec-d0679fe434f7"
+            },
+            "name": "requestAccessId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "status": "accepted"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success confirm acceptance account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/repositories": {
+      "get": {
+        "tags": ["Repository"],
+        "description": "List all repositories",
+        "summary": "List all repositories",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "keyword",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "collection_id",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "category_id",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "improvement",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "created_at DESC"
+            },
+            "name": "sort",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 10
+            },
+            "name": "limit",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 1
+            },
+            "name": "page",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List all repositories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#components/schemas/Repositories"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "$ref": "#components/schemas/Pagination"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": [
+                      {
+                        "id": "d3f7e5d3-ef05-4d9f-93a0-6da3967ea3f6",
+                        "title": "Judul Test 1",
+                        "date_validated": "",
+                        "collection": "Laporan Tugas Akhir",
+                        "category": "Programming",
+                        "authors": [
+                          {
+                            "author_id": "a0f8818f-c7de-4cf1-947c-494e8c3e138a",
+                            "pemustaka_id": "d75127d3-6671-4ef4-b5ac-f4df99991f17",
+                            "fullname": "Arvin Paundra Ardana"
+                          }
+                        ],
+                        "created_at": "2023-02-17T01:39:54+07:00",
+                        "updated_at": "2023-02-17T01:39:54+07:00"
+                      }
+                    ],
+                    "pagination": {
+                      "page": 1,
+                      "limit": 10,
+                      "total_rows": 1,
+                      "total_pages": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/repositories/final-projects": {
+      "post": {
+        "tags": ["Repository"],
+        "description": "Create repository final project",
+        "summary": "Create repository final project",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "collection_id": {
+                    "type": "string"
+                  },
+                  "category_id": {
+                    "type": "string"
+                  },
+                  "author": {
+                    "type": "string"
+                  },
+                  "first_mentor": {
+                    "type": "string"
+                  },
+                  "second_mentor": {
+                    "type": "string"
+                  },
+                  "first_examiner": {
+                    "type": "string"
+                  },
+                  "second_examiner": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "abstract": {
+                    "type": "string"
+                  },
+                  "improvement": {
+                    "type": "string"
+                  },
+                  "related_title": {
+                    "type": "string"
+                  },
+                  "update_desc": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "collection_id": "849229b7-b224-4391-8cf9-9f01122e3667",
+                  "category_id": "7113062c-ed11-4404-aa7a-c39684b678e7",
+                  "author": "d75127d3-6671-4ef4-b5ac-f4df99991f17",
+                  "first_mentor": "ec35e4a5-139f-4c66-9182-837bd72b8e8d",
+                  "second_mentor": "ec35e4a5-139f-4c66-9182-837bd72b8e8d",
+                  "first_examiner": "ec35e4a5-139f-4c66-9182-837bd72b8e8d",
+                  "second_examiner": "ec35e4a5-139f-4c66-9182-837bd72b8e8d",
+                  "title": "Judul Repositori",
+                  "abstract": "Abstrak repositori",
+                  "improvement": "0",
+                  "related_title": "",
+                  "update_desc": ""
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "success create repository final project",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 201,
+                    "status": "success",
+                    "message": "OK"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/repositories/{repositoryId}": {
+      "get": {
+        "tags": ["Repository"],
+        "description": "Get detail repository by id",
+        "summary": "Get detail repository by id",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "d3f7e5d3-ef05-4d9f-93a0-6da3967ea3f6"
+            },
+            "name": "repositoryId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success get detail repository by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/DetailRepository"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": {
+                      "id": "d3f7e5d3-ef05-4d9f-93a0-6da3967ea3f6",
+                      "title": "Judul Test 1",
+                      "abstract": "Abstrak Text 1",
+                      "improvement": "0",
+                      "related_title": "",
+                      "update_desc": "",
+                      "date_validated": "",
+                      "status": "approved",
+                      "collection": "Laporan Tugas Akhir",
+                      "category": "Programming",
+                      "authors": [
+                        {
+                          "author_id": "a0f8818f-c7de-4cf1-947c-494e8c3e138a",
+                          "pemustaka_id": "d75127d3-6671-4ef4-b5ac-f4df99991f17",
+                          "fullname": "Arvin Paundra Ardana"
+                        }
+                      ],
+                      "contributors": [
+                        {
+                          "contributor_id": "f1a63c7a-652d-4522-a92b-59170b619c8a",
+                          "pemustaka_id": "ec35e4a5-139f-4c66-9182-837bd72b8e8d",
+                          "fullname": "Dosen Test",
+                          "contributed_as": "Pembimbing 1"
+                        },
+                        {
+                          "contributor_id": "c71e36c1-da06-439d-9eb2-0a05596c33bc",
+                          "pemustaka_id": "ec35e4a5-139f-4c66-9182-837bd72b8e8d",
+                          "fullname": "Dosen Test",
+                          "contributed_as": "Pembimbing 2"
+                        },
+                        {
+                          "contributor_id": "9d551517-c633-458e-8146-5f76d1170eaf",
+                          "pemustaka_id": "ec35e4a5-139f-4c66-9182-837bd72b8e8d",
+                          "fullname": "Dosen Test",
+                          "contributed_as": "Penguji 1"
+                        },
+                        {
+                          "contributor_id": "0dcce349-267b-41e2-8658-1c0e9c2109ca",
+                          "pemustaka_id": "ec35e4a5-139f-4c66-9182-837bd72b8e8d",
+                          "fullname": "Dosen Test",
+                          "contributed_as": "Penguji 2"
+                        }
+                      ],
+                      "documents": {
+                        "validity_page": "https://res.cloudinary.com/dxhv9xlwc/image/upload/v1676572789/validity-pages/cd159de1d0e84567a634382475f7f21c.pdf",
+                        "cover_and_list_content": "https://res.cloudinary.com/dxhv9xlwc/image/upload/v1676572789/covers/9f8375afb77f4186a620116a031acca5.pdf",
+                        "chp_one": "https://res.cloudinary.com/dxhv9xlwc/image/upload/v1676572790/bab1/27f24ac7b659438a80da791cf7e3e90f.pdf",
+                        "chp_two": "https://res.cloudinary.com/dxhv9xlwc/image/upload/v1676572791/bab2/694d99f8dbdd4fdba95bfbd100321ddd.pdf",
+                        "chp_three": "https://res.cloudinary.com/dxhv9xlwc/image/upload/v1676572791/bab3/afad7123b5fb4b328c83d9d6231bb668.pdf",
+                        "chp_four": "https://res.cloudinary.com/dxhv9xlwc/image/upload/v1676572792/bab4/c4b8c1a70f174b7c9c6cb9c77f9cb615.pdf",
+                        "chp_five": "https://res.cloudinary.com/dxhv9xlwc/image/upload/v1676572793/bab5/aacdf85f51cc4dfb92be1b6d5010ad98.pdf",
+                        "bibliography": "https://res.cloudinary.com/dxhv9xlwc/image/upload/v1676572793/bibliographies/ce66491248d84dc99f9c23954962b1ed.pdf"
+                      },
+                      "created_at": "2023-02-17T01:39:54+07:00",
+                      "updated_at": "2023-02-17T01:39:54+07:00"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Repository"],
+        "description": "Delete repository by id",
+        "summary": "Delete repository by id",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "d3f7e5d3-ef05-4d9f-93a0-6da3967ea3f6"
+            },
+            "name": "repositoryId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success delete repository by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/authors/{pemustakaId}/repositories": {
+      "get": {
+        "tags": ["Author"],
+        "description": "List all repositories by author",
+        "summary": "List all repositories by author",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "d75127d3-6671-4ef4-b5ac-f4df99991f17"
+            },
+            "name": "pemustakaId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "keyword",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "collection_id",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "category_id",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "improvement",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "created_at DESC"
+            },
+            "name": "sort",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 10
+            },
+            "name": "limit",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 1
+            },
+            "name": "page",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get list all repositories by author",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#components/schemas/Repositories"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "$ref": "#components/schemas/Pagination"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": [
+                      {
+                        "id": "d3f7e5d3-ef05-4d9f-93a0-6da3967ea3f6",
+                        "title": "Judul Test 1",
+                        "date_validated": "",
+                        "collection": "Laporan Tugas Akhir",
+                        "category": "Programming",
+                        "authors": [
+                          {
+                            "author_id": "a0f8818f-c7de-4cf1-947c-494e8c3e138a",
+                            "pemustaka_id": "d75127d3-6671-4ef4-b5ac-f4df99991f17",
+                            "fullname": "Arvin Paundra Ardana"
+                          }
+                        ],
+                        "created_at": "2023-02-17T01:39:54+07:00",
+                        "updated_at": "2023-02-17T01:39:54+07:00"
+                      }
+                    ],
+                    "pagination": {
+                      "page": 1,
+                      "limit": 10,
+                      "total_rows": 1,
+                      "total_pages": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mentors/{pemustakaId}/repositories": {
+      "get": {
+        "tags": ["Mentor"],
+        "description": "List all repositories by mentor",
+        "summary": "List all repositories by mentor",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "ec35e4a5-139f-4c66-9182-837bd72b8e8d"
+            },
+            "name": "pemustakaId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "keyword",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "collection_id",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "category_id",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "improvement",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "created_at DESC"
+            },
+            "name": "sort",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 10
+            },
+            "name": "limit",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 1
+            },
+            "name": "page",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get list all repositories by mentor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#components/schemas/Repositories"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "$ref": "#components/schemas/Pagination"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": [
+                      {
+                        "id": "d3f7e5d3-ef05-4d9f-93a0-6da3967ea3f6",
+                        "title": "Judul Test 1",
+                        "date_validated": "",
+                        "collection": "Laporan Tugas Akhir",
+                        "category": "Programming",
+                        "authors": [
+                          {
+                            "author_id": "a0f8818f-c7de-4cf1-947c-494e8c3e138a",
+                            "pemustaka_id": "d75127d3-6671-4ef4-b5ac-f4df99991f17",
+                            "fullname": "Arvin Paundra Ardana"
+                          }
+                        ],
+                        "created_at": "2023-02-17T01:39:54+07:00",
+                        "updated_at": "2023-02-17T01:39:54+07:00"
+                      }
+                    ],
+                    "pagination": {
+                      "page": 1,
+                      "limit": 10,
+                      "total_rows": 1,
+                      "total_pages": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/examiners/{pemustakaId}/repositories": {
+      "get": {
+        "tags": ["Examiner"],
+        "description": "List all repositories by examiner",
+        "summary": "List all repositories by examiner",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "ec35e4a5-139f-4c66-9182-837bd72b8e8d"
+            },
+            "name": "pemustakaId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "keyword",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "collection_id",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "category_id",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": ""
+            },
+            "name": "improvement",
+            "in": "query",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "created_at DESC"
+            },
+            "name": "sort",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 10
+            },
+            "name": "limit",
+            "in": "query",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 1
+            },
+            "name": "page",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get list all repositories by examiner",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#components/schemas/Repositories"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "$ref": "#components/schemas/Pagination"
+                    }
+                  },
+                  "example": {
+                    "code": 200,
+                    "status": "success",
+                    "message": "OK",
+                    "data": [
+                      {
+                        "id": "d3f7e5d3-ef05-4d9f-93a0-6da3967ea3f6",
+                        "title": "Judul Test 1",
+                        "date_validated": "",
+                        "collection": "Laporan Tugas Akhir",
+                        "category": "Programming",
+                        "authors": [
+                          {
+                            "author_id": "a0f8818f-c7de-4cf1-947c-494e8c3e138a",
+                            "pemustaka_id": "d75127d3-6671-4ef4-b5ac-f4df99991f17",
+                            "fullname": "Arvin Paundra Ardana"
+                          }
+                        ],
+                        "created_at": "2023-02-17T01:39:54+07:00",
+                        "updated_at": "2023-02-17T01:39:54+07:00"
+                      }
+                    ],
+                    "pagination": {
+                      "page": 1,
+                      "limit": 10,
+                      "total_rows": 1,
+                      "total_pages": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Category": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "Collection": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "Role": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "visibility": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "Departement": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "study_program_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "StudyProgram": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "departement_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "Pemustaka": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "study_program": {
+            "type": "string"
+          },
+          "departement": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "member_code": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "fullname": {
+            "type": "string"
+          },
+          "identity_number": {
+            "type": "string"
+          },
+          "year_gen": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string"
+          },
+          "telp": {
+            "type": "string"
+          },
+          "birth_date": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "is_collected_final_project": {
+            "type": "string"
+          },
+          "is_active": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "RequestAccess": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "pemustaka_id": {
+            "type": "string"
+          },
+          "pemustaka": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "study_program": {
+            "type": "string"
+          },
+          "departement": {
+            "type": "string"
+          },
+          "identitiy_number": {
+            "type": "string"
+          },
+          "support_evidence": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "Author": {
+        "type": "object",
+        "properties": {
+          "author_id": {
+            "type": "string"
+          },
+          "pemustaka_id": {
+            "type": "string"
+          },
+          "fullname": {
+            "type": "string"
+          }
+        }
+      },
+      "Contributor": {
+        "type": "object",
+        "properties": {
+          "contributor_id": {
+            "type": "string"
+          },
+          "pemustaka_id": {
+            "type": "string"
+          },
+          "fullname": {
+            "type": "string"
+          },
+          "contributed_as": {
+            "type": "string"
+          }
+        }
+      },
+      "Documents": {
+        "type": "object",
+        "properties": {
+          "validity_page": {
+            "type": "string"
+          },
+          "cover_and_list_content": {
+            "type": "string"
+          },
+          "chp_one": {
+            "type": "string"
+          },
+          "chp_two": {
+            "type": "string"
+          },
+          "chp_three": {
+            "type": "string"
+          },
+          "chp_four": {
+            "type": "string"
+          },
+          "chp_five": {
+            "type": "string"
+          },
+          "bibliography": {
+            "type": "string"
+          }
+        }
+      },
+      "Repositories": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "date_validated": {
+            "type": "string"
+          },
+          "collection": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "authors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Author"
+            }
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "DetailRepository": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "abstract": {
+            "type": "string"
+          },
+          "improvement": {
+            "type": "string"
+          },
+          "related_title": {
+            "type": "string"
+          },
+          "update_desc": {
+            "type": "string"
+          },
+          "date_validated": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "collection": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "authors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Author"
+            }
+          },
+          "contributors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Contributor"
+            }
+          },
+          "documents": {
+            "type": "object",
+            "$ref": "#/components/schemas/Documents"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "total_rows": {
+            "type": "number"
+          },
+          "total_pages": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}
