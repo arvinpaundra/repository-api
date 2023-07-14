@@ -74,7 +74,6 @@ func (service StaffServiceImpl) Register(ctx context.Context, req request.Regist
 	staffDomain := req.ToDomainStaff()
 	staffDomain.ID = uuid.NewString()
 	staffDomain.UserId = userDomain.ID
-	staffDomain.IsActive = "1"
 	staffDomain.Avatar = configs.GetConfig("DEFAULT_AVATAR")
 
 	if err := service.staffRepository.Save(ctx, tx, staffDomain); err != nil {
