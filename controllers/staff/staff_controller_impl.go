@@ -163,7 +163,7 @@ func (ctrl StaffControllerImpl) HandlerUploadSignature(c echo.Context) error {
 
 	if signature == nil {
 		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
-			"signature": "Bagian ini wajib diisi",
+			"signature": "Wajib diisi",
 		}))
 	}
 

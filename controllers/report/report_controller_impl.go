@@ -70,7 +70,7 @@ func (ctrl ReportControllerImpl) HandlerDownloadRecapCollectedReport(c echo.Cont
 	collectionId := c.QueryParam("collection_id")
 	if collectionId == "" {
 		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
-			"request.query.collection_id": "Bagian ini wajib diisi",
+			"request.query.collection_id": "Wajib diisi",
 		}))
 	}
 

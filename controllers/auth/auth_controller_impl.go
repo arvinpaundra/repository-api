@@ -62,13 +62,6 @@ func (ctrl AuthControllerImpl) HandlerChangePassword(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(err))
 	}
 
-	if req.Password != req.RepeatedPassword {
-		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
-			"password":          utils.ErrFieldsAreNotEqual.Error(),
-			"repeated_password": utils.ErrFieldsAreNotEqual.Error(),
-		}))
-	}
-
 	err := ctrl.authService.ChangePassword(c.Request().Context(), userId, req)
 
 	if err != nil {
