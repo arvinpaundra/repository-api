@@ -7,5 +7,6 @@ type RepositoryRequestQuery struct {
 	CategoryId    string
 	Improvement   string
 	Status        string
+	Year          string
 	Sort          string
 }

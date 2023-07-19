@@ -10,10 +10,10 @@ type UpdatePemustakaRequest struct {
 	RoleId                      string `json:"role_id" form:"role_id" validate:"required"`
 	Fullname                    string `json:"fullname" form:"fullname" validate:"required"`
 	Email                       string `json:"email" form:"email" validate:"required,email"`
-	IdentityNumber              string `json:"identity_number" form:"identity_number" validate:"required"`
-	YearGen                     string `json:"year_gen" form:"year_gen"`
+	IdentityNumber              string `json:"identity_number" form:"identity_number" validate:"required,numeric,min=9"`
+	YearGen                     string `json:"year_gen" form:"year_gen" validate:"max=4"`
 	Gender                      string `json:"gender" form:"gender"`
-	Telp                        string `json:"telp" form:"telp"`
+	Telp                        string `json:"telp" form:"telp" validate:"max=13"`
 	BirthDate                   string `json:"birth_date" form:"birth_date"`
 	Address                     string `json:"address" form:"address"`
 	IsActive                    string `json:"is_active" form:"is_active" validate:"required"`

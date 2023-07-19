@@ -6,8 +6,8 @@ type UpdateStaffRequest struct {
 	RoleId    string `json:"role_id" form:"role_id" validate:"required"`
 	Fullname  string `json:"fullname" form:"fullname" validate:"required"`
 	Email     string `json:"email" form:"email" validate:"required,email"`
-	Nip       string `json:"nip" form:"nip"`
-	Telp      string `json:"telp" form:"telp"`
+	Nip       string `json:"nip" form:"nip" validate:"max=18"`
+	Telp      string `json:"telp" form:"telp" validate:"max=13"`
 	Address   string `json:"address" form:"address"`
 	Gender    string `json:"gender" form:"gender"`
 	BirthDate string `json:"birth_date" form:"birth_date"`

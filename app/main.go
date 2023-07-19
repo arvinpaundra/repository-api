@@ -32,7 +32,7 @@ func main() {
 	e.Use(middlewares.CORS())
 
 	// init mail service
-	mail := mailing.NewMailing(configs.GetConfig("SMTP_HOST"), configs.GetConfig("SMTP_PORT"), configs.GetConfig("EMAIL"), configs.GetConfig("PASSWORD_EMAIL"), configs.GetConfig("EMAIL_SENDER_NAME"))
+	mail := mailing.NewMailing(configs.GetConfig("SMTP_HOST"), configs.GetConfig("SMTP_PORT"), configs.GetConfig("EMAIL"), configs.GetConfig("PASSWORD_EMAIL"), configs.GetConfig("EMAIL_SENDER_NAME"), configs.GetConfig("FE_BASE_URL"))
 	cloudinary := cloudinary.NewCloudinary()
 
 	route := routes.RouteConfig{
