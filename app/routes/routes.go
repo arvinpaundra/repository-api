@@ -276,10 +276,10 @@ func (rc *RouteConfig) New() {
 	identityCard.GET("/:pemustakaId", identityCardCtrl.HandlerGenerateIDCard, middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Kepala Perpustakaan", "Mahasiswa", "Dosen"}))
 
 	// report routes
-	report := v1.Group("/reports", middlewares.IsAuthenticated(), middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Kepala Perpustakaan"}))
-	report.POST("/surat-keterangan-penyerahan-laporan", reportCtrl.HandlerGetSuratKeteranganPenyerahanLaporan)
+	report := v1.Group("/reports", middlewares.IsAuthenticated())
+	report.POST("/surat-keterangan-penyerahan-laporan", reportCtrl.HandlerGetSuratKeteranganPenyerahanLaporan, middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Dosen", "Mahasiswa"}))
 
-	recapCollectedReport := report.Group("/recap-collected-report")
+	recapCollectedReport := report.Group("/recap-collected-report", middlewares.CheckRoles([]string{"Administrator", "Pustakawan", "Kepala Perpustakaan"}))
 	recapCollectedReport.GET("", reportCtrl.HandlerRecapCollectedReport)
 	recapCollectedReport.GET("/download", reportCtrl.HandlerDownloadRecapCollectedReport)
 }

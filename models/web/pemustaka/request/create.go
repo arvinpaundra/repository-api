@@ -8,12 +8,12 @@ type CreatePemustakaRequest struct {
 	StudyProgramId              string `json:"study_program_id" form:"study_program_id" validate:"required"`
 	Fullname                    string `json:"fullname" form:"fullname" validate:"required"`
 	Email                       string `json:"email" form:"email" validate:"required,email"`
-	Telp                        string `json:"telp" form:"telp"`
+	Telp                        string `json:"telp" form:"telp" validate:"max=13"`
 	BirthDate                   string `json:"birth_date" form:"birth_date"`
 	Gender                      string `json:"gender" form:"gender"`
 	Address                     string `json:"address" form:"address"`
-	IdentityNumber              string `json:"identity_number" form:"identity_number" validate:"required"`
-	YearGen                     string `json:"year_gen" form:"year_gen"`
+	IdentityNumber              string `json:"identity_number" form:"identity_number" validate:"required,numeric,min=9"`
+	YearGen                     string `json:"year_gen" form:"year_gen" validate:"max=4"`
 	IsActive                    string `json:"is_active" form:"is_active" validate:"required"`
 	IsCollectedFinalProject     string `json:"is_collected_final_project" form:"is_collected_final_project" validate:"required"`
 	IsCollectedInternshipReport string `json:"is_collected_internship_report" form:"is_collected_internship_report" validate:"required"`

@@ -40,7 +40,7 @@ func (ctrl RepositoryControllerImpl) HandlerCreateFinalProjectReport(c echo.Cont
 		file, _ := c.FormFile(key)
 
 		if file == nil {
-			validationErrors[key] = "Bagian ini wajib diisi"
+			validationErrors[key] = "Wajib diisi"
 		} else {
 			files[key] = file
 		}
@@ -101,7 +101,7 @@ func (ctrl RepositoryControllerImpl) HandlerCreateInternshipReport(c echo.Contex
 		file, _ := c.FormFile(key)
 
 		if file == nil {
-			validationErrors[key] = "Bagian ini wajib diisi"
+			validationErrors[key] = "Wajib diisi"
 		} else {
 			files[key] = file
 		}
@@ -158,7 +158,7 @@ func (ctrl RepositoryControllerImpl) HandlerCreateResearchReport(c echo.Context)
 		file, _ := c.FormFile(key)
 
 		if file == nil {
-			validationErrors[key] = "Bagian ini wajib diisi"
+			validationErrors[key] = "Wajib diisi"
 		} else {
 			files[key] = file
 		}
@@ -379,6 +379,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindAllRepositories(c echo.Context) 
 	departementId := c.QueryParam("departement_id")
 	categoryId := c.QueryParam("category_id")
 	improvement := c.QueryParam("improvement")
+	year := c.QueryParam("year")
 	status := c.QueryParam("status")
 
 	sort := c.QueryParam("sort")
@@ -395,6 +396,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindAllRepositories(c echo.Context) 
 		CategoryId:    categoryId,
 		Improvement:   improvement,
 		Status:        status,
+		Year:          year,
 		Sort:          sort,
 	}
 
@@ -443,6 +445,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindByAuthorId(c echo.Context) error
 	departementId := c.QueryParam("departement_id")
 	categoryId := c.QueryParam("category_id")
 	improvement := c.QueryParam("improvement")
+	year := c.QueryParam("year")
 	status := c.QueryParam("status")
 
 	sort := c.QueryParam("sort")
@@ -459,6 +462,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindByAuthorId(c echo.Context) error
 		CategoryId:    categoryId,
 		Improvement:   improvement,
 		Status:        status,
+		Year:          year,
 		Sort:          sort,
 	}
 
@@ -495,6 +499,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindByMentorId(c echo.Context) error
 	departementId := c.QueryParam("departement_id")
 	categoryId := c.QueryParam("category_id")
 	improvement := c.QueryParam("improvement")
+	year := c.QueryParam("year")
 	status := c.QueryParam("status")
 
 	sort := c.QueryParam("sort")
@@ -511,6 +516,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindByMentorId(c echo.Context) error
 		CategoryId:    categoryId,
 		Improvement:   improvement,
 		Status:        status,
+		Year:          year,
 		Sort:          sort,
 	}
 
@@ -547,6 +553,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindByExaminerId(c echo.Context) err
 	departementId := c.QueryParam("departement_id")
 	categoryId := c.QueryParam("category_id")
 	improvement := c.QueryParam("improvement")
+	year := c.QueryParam("year")
 	status := c.QueryParam("status")
 
 	sort := c.QueryParam("sort")
@@ -563,6 +570,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindByExaminerId(c echo.Context) err
 		CategoryId:    categoryId,
 		Improvement:   improvement,
 		Status:        status,
+		Year:          year,
 		Sort:          sort,
 	}
 
@@ -598,6 +606,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindByCollectionId(c echo.Context) e
 	departementId := c.QueryParam("departement_id")
 	categoryId := c.QueryParam("category_id")
 	improvement := c.QueryParam("improvement")
+	year := c.QueryParam("year")
 	status := c.QueryParam("status")
 
 	sort := c.QueryParam("sort")
@@ -613,6 +622,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindByCollectionId(c echo.Context) e
 		CategoryId:    categoryId,
 		Improvement:   improvement,
 		Status:        status,
+		Year:          year,
 		Sort:          sort,
 	}
 
@@ -648,6 +658,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindByDepartementId(c echo.Context) 
 	collectionId := c.QueryParam("collection_id")
 	categoryId := c.QueryParam("category_id")
 	improvement := c.QueryParam("improvement")
+	year := c.QueryParam("year")
 	status := c.QueryParam("status")
 
 	sort := c.QueryParam("sort")
@@ -663,6 +674,7 @@ func (ctrl RepositoryControllerImpl) HandlerFindByDepartementId(c echo.Context) 
 		CategoryId:   categoryId,
 		Improvement:  improvement,
 		Status:       status,
+		Year:         year,
 		Sort:         sort,
 	}
 
@@ -714,6 +726,12 @@ func (ctrl RepositoryControllerImpl) HandlerConfirmRepository(c echo.Context) er
 
 	if err := helper.ValidateRequest(req); err != nil {
 		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(err))
+	}
+
+	if req.Status == "denied" && req.Reasons == "" {
+		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
+			"reasons": "Wajib diisi",
+		}))
 	}
 
 	err := ctrl.repositoryService.Confirm(c.Request().Context(), req, repositoryId)

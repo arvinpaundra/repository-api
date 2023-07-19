@@ -88,7 +88,12 @@ func (service RequestAccessServiceImpl) Update(ctx context.Context, requestAcces
 	}
 
 	if requestAccessDTO.Status == "denied" {
-		if err := service.mailing.SendDeniedRegisterMail(pemustaka.User.Email, "Permintaan Akses REKSI PNC Ditolak!", requestAccessDTO.Reasons); err != nil {
+		data := mailing.User{
+			Fullname: pemustaka.Fullname,
+			Email:    pemustaka.User.Email,
+		}
+
+		if err := service.mailing.SendDeniedRegisterMail("Permintaan Akses REKSI PNC Ditolak!", requestAccessDTO.Reasons, data); err != nil {
 			return err
 		}
 	}

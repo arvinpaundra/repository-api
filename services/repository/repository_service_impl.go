@@ -1494,14 +1494,24 @@ func (service RepositoryServiceImpl) Confirm(ctx context.Context, req request.Co
 		DateValidated: repository.DateValidated,
 	}
 
+	userToMail := mailing.User{
+		Fullname:       authors[0].Pemustaka.Fullname,
+		Email:          authors[0].Pemustaka.User.Email,
+		IdentityNumber: authors[0].Pemustaka.IdentityNumber,
+		Departement:    authors[0].Pemustaka.Departement.Name,
+		StudyProgram:   authors[0].Pemustaka.StudyProgram.Name,
+		Role:           authors[0].Pemustaka.Role.Role,
+		YearGen:        authors[0].Pemustaka.YearGen,
+	}
+
 	if req.Status == "approved" {
-		if err := service.mailing.SendVerifiedRepositoryMail(authors[0].Pemustaka.User.Email, "Pengunggahan Karya Tulis Ilmiah Diterima!", repositoryToMail); err != nil {
+		if err := service.mailing.SendVerifiedRepositoryMail("Pengunggahan Karya Tulis Ilmiah Diterima!", userToMail, repositoryToMail); err != nil {
 			return err
 		}
 	}
 
 	if req.Status == "denied" {
-		if err := service.mailing.SendDeniedRepositoryMail(authors[0].Pemustaka.User.Email, "Pengunggahan Karya Tulis Ilmiah Ditolak!", repositoryToMail); err != nil {
+		if err := service.mailing.SendDeniedRepositoryMail("Pengunggahan Karya Tulis Ilmiah Ditolak!", req.Reasons, userToMail, repositoryToMail); err != nil {
 			return err
 		}
 	}

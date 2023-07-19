@@ -35,7 +35,9 @@ func (ctrl PemustakaControllerImpl) HandleCreatePemustaka(c echo.Context) error 
 	if err != nil {
 		switch err {
 		case utils.ErrEmailAlreadyUsed:
-			return c.JSON(http.StatusConflict, helper.ConflictResponse(err.Error()))
+			return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
+				"email": err.Error(),
+			}))
 		case utils.ErrStudyProgramNotFound:
 			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
 		case utils.ErrDepartementNotFound:
@@ -57,7 +59,7 @@ func (ctrl PemustakaControllerImpl) HandlerRegister(c echo.Context) error {
 
 	if supportEvidence == nil {
 		return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
-			"support_evidence": "Bagian ini wajib diisi",
+			"support_evidence": "Wajib diisi",
 		}))
 	}
 
@@ -72,7 +74,9 @@ func (ctrl PemustakaControllerImpl) HandlerRegister(c echo.Context) error {
 	if err != nil {
 		switch err {
 		case utils.ErrEmailAlreadyUsed:
-			return c.JSON(http.StatusConflict, helper.ConflictResponse(err.Error()))
+			return c.JSON(http.StatusBadRequest, helper.BadRequestResponse(map[string]string{
+				"email": err.Error(),
+			}))
 		case utils.ErrStudyProgramNotFound:
 			return c.JSON(http.StatusNotFound, helper.NotFoundResponse(err.Error()))
 		case utils.ErrDepartementNotFound:
@@ -155,6 +159,7 @@ func (ctrl PemustakaControllerImpl) HandlerFindAllPemustaka(c echo.Context) erro
 	keyword := c.QueryParam("keyword")
 	roleId := c.QueryParam("role_id")
 	departementId := c.QueryParam("departement_id")
+	studyProgramId := c.QueryParam("study_program_id")
 	isCollectedFinalProject := c.QueryParam("is_collected_final_project")
 	yearGen := c.QueryParam("year_gen")
 
@@ -162,6 +167,7 @@ func (ctrl PemustakaControllerImpl) HandlerFindAllPemustaka(c echo.Context) erro
 		Keyword:                 keyword,
 		RoleId:                  roleId,
 		DepartementId:           departementId,
+		StudyProgramId:          studyProgramId,
 		IsCollectedFinalProject: isCollectedFinalProject,
 		YearGen:                 yearGen,
 	}

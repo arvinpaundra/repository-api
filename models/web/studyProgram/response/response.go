@@ -10,6 +10,7 @@ type StudyProgramResponse struct {
 	ID          string    `json:"id"`
 	Name        string    `json:"name"`
 	Departement string    `json:"departement"`
+	CoverColor  string    `json:"cover_color"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
@@ -19,6 +20,7 @@ func ToStudyProgramResponse(studyProgramDomain domain.StudyProgram) StudyProgram
 		ID:          studyProgramDomain.ID,
 		Name:        studyProgramDomain.Name,
 		Departement: studyProgramDomain.Departement.Name,
+		CoverColor:  studyProgramDomain.CoverColor,
 		CreatedAt:   studyProgramDomain.CreatedAt,
 		UpdatedAt:   studyProgramDomain.UpdatedAt,
 	}
