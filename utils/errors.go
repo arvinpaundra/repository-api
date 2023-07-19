@@ -94,7 +94,7 @@ var (
 	ErrAccountNotActivated = errors.New("Akun belum diaktivasi")
 
 	// error pemustaka not collected final project report
-	ErrNotCollectedFinalProject = errors.New("Pemustka belum mengunggah Laporan Tugas Akhir")
+	ErrNotCollectedFinalProject = errors.New("Pemustaka belum mengunggah Laporan Tugas Akhir")
 
 	// error pemustaka not collected internship report
 	ErrNotCollectedInternshipReport = errors.New("Pemustaka belum mengunggah Laporan Hasil Magang")
