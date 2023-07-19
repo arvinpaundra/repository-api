@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"html/template"
+	"strconv"
 	"time"
 
 	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
@@ -92,6 +93,8 @@ func (service ReportServiceImpl) SuratKeteranganPenyerahanLaporan(ctx context.Co
 	}
 
 	data := map[string]string{
+		"letterCode":     configs.GetConfig("LETTER_CODE"),
+		"year":           strconv.Itoa(time.Now().Year()),
 		"fullname":       pemustaka.Fullname,
 		"identityNumber": pemustaka.IdentityNumber,
 		"programStudy":   pemustaka.StudyProgram.Name,
