@@ -26,7 +26,7 @@ jobs:
         with:
           go-version: 1.19
       - name: 'build application'
-        uses: go build -o ./dist/main ./app/main.go
+        run: go build -o ./dist/main ./app/main.go
 
   deploy:
     runs-on: ubuntu-latest
