@@ -56,7 +56,7 @@ func (repo RepositoryImpl) FindAll(ctx context.Context, query request.Repository
 	err = repo.conn.WithContext(ctx).Model(&domain.Repository{}).
 		Where(
 			"title LIKE ? AND collection_id LIKE ? AND departement_id LIKE ? AND date_validated LIKE ? AND improvement LIKE ? AND status LIKE ? AND category_id LIKE ?",
-			"%"+query.Keyword+"%", "%"+query.CollectionId+"%", "%"+query.DepartementId+"%", "%"+query.Year, "%"+query.Improvement+"%", "%"+query.Status+"%", "%"+query.CategoryId+"%",
+			"%"+query.Keyword+"%", "%"+query.CollectionId+"%", "%"+query.DepartementId+"%", query.Year+"%", "%"+query.Improvement+"%", "%"+query.Status+"%", "%"+query.CategoryId+"%",
 		).Count(&totalRows).Error
 	if err != nil {
 		return []domain.Repository{}, 0, err
@@ -67,7 +67,7 @@ func (repo RepositoryImpl) FindAll(ctx context.Context, query request.Repository
 		Preload("Collection").Preload("Departement").Preload("Authors.Pemustaka").Preload("Category").
 		Where(
 			"title LIKE ? AND collection_id LIKE ? AND departement_id LIKE ? AND date_validated LIKE ? AND improvement LIKE ? AND status LIKE ? AND category_id LIKE ?",
-			"%"+query.Keyword+"%", "%"+query.CollectionId+"%", "%"+query.DepartementId+"%", "%"+query.Year, "%"+query.Improvement+"%", "%"+query.Status+"%", "%"+query.CategoryId+"%",
+			"%"+query.Keyword+"%", "%"+query.CollectionId+"%", "%"+query.DepartementId+"%", query.Year+"%", "%"+query.Improvement+"%", "%"+query.Status+"%", "%"+query.CategoryId+"%",
 		).Order(query.Sort).Limit(limit).Offset(offset).Find(&rec).Error
 	if err != nil {
 		return []domain.Repository{}, 0, err
@@ -102,7 +102,7 @@ func (repo RepositoryImpl) FindByAuthorId(ctx context.Context, pemustakaId strin
 		Joins("INNER JOIN authors ON repositories.id = authors.repository_id").
 		Where(
 			"authors.pemustaka_id = ? AND repositories.title LIKE ? AND repositories.collection_id LIKE ? AND repositories.departement_id LIKE ? AND date_validated LIKE ? AND repositories.improvement LIKE ? AND repositories.status LIKE ? AND repositories.category_id LIKE ?",
-			pemustakaId, "%"+query.Keyword+"%", "%"+query.CollectionId+"%", "%"+query.DepartementId+"%", "%"+query.Year, "%"+query.Improvement+"%", "%"+query.Status+"%", "%"+query.CategoryId+"%",
+			pemustakaId, "%"+query.Keyword+"%", "%"+query.CollectionId+"%", "%"+query.DepartementId+"%", query.Year+"%", "%"+query.Improvement+"%", "%"+query.Status+"%", "%"+query.CategoryId+"%",
 		).Count(&totalRows).Error
 	if err != nil {
 		return []domain.Repository{}, 0, err
@@ -114,7 +114,7 @@ func (repo RepositoryImpl) FindByAuthorId(ctx context.Context, pemustakaId strin
 		Joins("INNER JOIN authors ON repositories.id = authors.repository_id").
 		Where(
 			"authors.pemustaka_id = ? AND repositories.title LIKE ? AND repositories.collection_id LIKE ? AND repositories.departement_id LIKE ? AND date_validated LIKE ? AND repositories.improvement LIKE ? AND repositories.status LIKE ? AND repositories.category_id LIKE ?",
-			pemustakaId, "%"+query.Keyword+"%", "%"+query.CollectionId+"%", "%"+query.DepartementId+"%", "%"+query.Year, "%"+query.Improvement+"%", "%"+query.Status+"%", "%"+query.CategoryId+"%",
+			pemustakaId, "%"+query.Keyword+"%", "%"+query.CollectionId+"%", "%"+query.DepartementId+"%", query.Year+"%", "%"+query.Improvement+"%", "%"+query.Status+"%", "%"+query.CategoryId+"%",
 		).Order(query.Sort).Limit(limit).Offset(offset).Find(&rec).Error
 	if err != nil {
 		return []domain.Repository{}, 0, err
@@ -131,7 +131,7 @@ func (repo RepositoryImpl) FindByMentorId(ctx context.Context, pemustakaId strin
 		Joins("INNER JOIN contributors ON repositories.id = contributors.repository_id").
 		Where(
 			"contributors.pemustaka_id = ? AND repositories.title LIKE ? AND repositories.collection_id LIKE ? AND repositories.departement_id LIKE ? AND date_validated LIKE ? AND repositories.improvement LIKE ? AND repositories.status LIKE ? AND contributors.contributed_as LIKE ? AND repositories.category_id LIKE ?",
-			pemustakaId, "%"+query.Keyword+"%", "%"+query.CollectionId+"%", "%"+query.DepartementId+"%", "%"+query.Year, "%"+query.Improvement+"%", "%"+query.Status+"%", "%Pembimbing%", "%"+query.CategoryId+"%",
+			pemustakaId, "%"+query.Keyword+"%", "%"+query.CollectionId+"%", "%"+query.DepartementId+"%", query.Year+"%", "%"+query.Improvement+"%", "%"+query.Status+"%", "%Pembimbing%", "%"+query.CategoryId+"%",
 		).Count(&totalRows).Error
 	if err != nil {
 		return []domain.Repository{}, 0, err
@@ -143,7 +143,7 @@ func (repo RepositoryImpl) FindByMentorId(ctx context.Context, pemustakaId strin
 		Joins("INNER JOIN contributors ON repositories.id = contributors.repository_id").
 		Where(
 			"contributors.pemustaka_id = ? AND repositories.title LIKE ? AND repositories.collection_id LIKE ? AND repositories.departement_id LIKE ? AND date_validated LIKE ? AND repositories.improvement LIKE ? AND repositories.status LIKE ? AND contributors.contributed_as LIKE ? AND repositories.category_id LIKE ?",
-			pemustakaId, "%"+query.Keyword+"%", "%"+query.CollectionId+"%", "%"+query.DepartementId+"%", "%"+query.Year, "%"+query.Improvement+"%", "%"+query.Status+"%", "%Pembimbing%", "%"+query.CategoryId+"%",
+			pemustakaId, "%"+query.Keyword+"%", "%"+query.CollectionId+"%", "%"+query.DepartementId+"%", query.Year+"%", "%"+query.Improvement+"%", "%"+query.Status+"%", "%Pembimbing%", "%"+query.CategoryId+"%",
 		).Order(query.Sort).Limit(limit).Offset(offset).Find(&rec).Error
 	if err != nil {
 		return []domain.Repository{}, 0, err
@@ -160,7 +160,7 @@ func (repo RepositoryImpl) FindByExaminerId(ctx context.Context, pemustakaId str
 		Joins("INNER JOIN contributors ON repositories.id = contributors.repository_id").
 		Where(
 			"contributors.pemustaka_id = ? AND repositories.title LIKE ? AND repositories.collection_id LIKE ? AND repositories.departement_id LIKE ? AND date_validated LIKE ? AND repositories.improvement LIKE ? AND repositories.status LIKE ? AND contributors.contributed_as LIKE ? AND repositories.category_id LIKE ?",
-			pemustakaId, "%"+query.Keyword+"%", "%"+query.CollectionId+"%", "%"+query.DepartementId+"%", "%"+query.Year, "%"+query.Improvement+"%", "%"+query.Status+"%", "%Penguji%", "%"+query.CategoryId+"%",
+			pemustakaId, "%"+query.Keyword+"%", "%"+query.CollectionId+"%", "%"+query.DepartementId+"%", query.Year+"%", "%"+query.Improvement+"%", "%"+query.Status+"%", "%Penguji%", "%"+query.CategoryId+"%",
 		).Count(&totalRows).Error
 	if err != nil {
 		return []domain.Repository{}, 0, err
@@ -172,7 +172,7 @@ func (repo RepositoryImpl) FindByExaminerId(ctx context.Context, pemustakaId str
 		Joins("INNER JOIN contributors ON repositories.id = contributors.repository_id").
 		Where(
 			"contributors.pemustaka_id = ? AND repositories.title LIKE ? AND repositories.collection_id LIKE ? AND repositories.departement_id LIKE ? AND date_validated LIKE ? AND repositories.improvement LIKE ? AND repositories.status LIKE ? AND contributors.contributed_as LIKE ? AND repositories.category_id LIKE ?",
-			pemustakaId, "%"+query.Keyword+"%", "%"+query.CollectionId+"%", "%"+query.DepartementId+"%", "%"+query.Year, "%"+query.Improvement+"%", "%"+query.Status+"%", "%Penguji%", "%"+query.CategoryId+"%",
+			pemustakaId, "%"+query.Keyword+"%", "%"+query.CollectionId+"%", "%"+query.DepartementId+"%", query.Year+"%", "%"+query.Improvement+"%", "%"+query.Status+"%", "%Penguji%", "%"+query.CategoryId+"%",
 		).Order(query.Sort).Limit(limit).Offset(offset).Find(&rec).Error
 	if err != nil {
 		return []domain.Repository{}, 0, err
@@ -188,7 +188,7 @@ func (repo RepositoryImpl) FindByCollectionId(ctx context.Context, collectionId 
 	err = repo.conn.WithContext(ctx).Model(&domain.Repository{}).
 		Where(
 			"title LIKE ? AND collection_id = ? AND departement_id LIKE ? AND date_validated LIKE ? AND improvement LIKE ? AND status = ? AND category_id LIKE ?",
-			"%"+query.Keyword+"%", collectionId, "%"+query.DepartementId+"%", "%"+query.Year, "%"+query.Improvement+"%", "approved", "%"+query.CategoryId+"%",
+			"%"+query.Keyword+"%", collectionId, "%"+query.DepartementId+"%", query.Year+"%", "%"+query.Improvement+"%", "approved", "%"+query.CategoryId+"%",
 		).Count(&totalRows).Error
 	if err != nil {
 		return []domain.Repository{}, 0, err
@@ -199,7 +199,7 @@ func (repo RepositoryImpl) FindByCollectionId(ctx context.Context, collectionId 
 		Preload("Collection").Preload("Departement").Preload("Authors.Pemustaka").Preload("Category").
 		Where(
 			"title LIKE ? AND collection_id = ? AND departement_id LIKE ? AND date_validated LIKE ? AND improvement LIKE ? AND status = ? AND category_id LIKE ?",
-			"%"+query.Keyword+"%", collectionId, "%"+query.DepartementId+"%", "%"+query.Year, "%"+query.Improvement+"%", "approved", "%"+query.CategoryId+"%",
+			"%"+query.Keyword+"%", collectionId, "%"+query.DepartementId+"%", query.Year+"%", "%"+query.Improvement+"%", "approved", "%"+query.CategoryId+"%",
 		).Order(query.Sort).Limit(limit).Offset(offset).Find(&rec).Error
 	if err != nil {
 		return []domain.Repository{}, 0, err
@@ -215,7 +215,7 @@ func (repo RepositoryImpl) FindByDepartementId(ctx context.Context, departementI
 	err = repo.conn.WithContext(ctx).Model(&domain.Repository{}).
 		Where(
 			"title LIKE ? AND collection_id LIKE ? AND departement_id = ? AND date_validated LIKE ? AND improvement LIKE ? AND status = ? AND category_id LIKE ?",
-			"%"+query.Keyword+"%", "%"+query.CollectionId+"%", departementId, "%"+query.Year, "%"+query.Improvement+"%", "approved", "%"+query.CategoryId+"%",
+			"%"+query.Keyword+"%", "%"+query.CollectionId+"%", departementId, query.Year+"%", "%"+query.Improvement+"%", "approved", "%"+query.CategoryId+"%",
 		).Count(&totalRows).Error
 	if err != nil {
 		return []domain.Repository{}, 0, err
@@ -226,7 +226,7 @@ func (repo RepositoryImpl) FindByDepartementId(ctx context.Context, departementI
 		Preload("Collection").Preload("Departement").Preload("Authors.Pemustaka").Preload("Category").
 		Where(
 			"title LIKE ? AND collection_id LIKE ? AND departement_id = ? AND date_validated LIKE ? AND improvement LIKE ? AND status = ? AND category_id LIKE ?",
-			"%"+query.Keyword+"%", "%"+query.CollectionId+"%", departementId, "%"+query.Year, "%"+query.Improvement+"%", "approved", "%"+query.CategoryId+"%",
+			"%"+query.Keyword+"%", "%"+query.CollectionId+"%", departementId, query.Year+"%", "%"+query.Improvement+"%", "approved", "%"+query.CategoryId+"%",
 		).Order(query.Sort).Limit(limit).Offset(offset).Find(&rec).Error
 	if err != nil {
 		return []domain.Repository{}, 0, err
