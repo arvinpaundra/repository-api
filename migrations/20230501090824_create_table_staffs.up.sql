@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS staffs (
   telp CHAR(13),
   address TEXT,
   gender ENUM('Pria', 'Wanita', '') DEFAULT '',
-  birth_date VARCHAR(10),
+  birth_date CHAR(10),
   is_active ENUM('1', '0') DEFAULT '0',
   avatar VARCHAR(255),
   signature VARCHAR(255),

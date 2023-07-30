@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS repositories (
   improvement ENUM('1', '0') DEFAULT '0',
   related_title VARCHAR(255),
   update_desc TEXT,
-  date_validated VARCHAR(10),
+  date_validated CHAR(10),
   status ENUM('pending', 'approved', 'denied') DEFAULT 'pending',
   created_at TIMESTAMP,
   updated_at TIMESTAMP,
