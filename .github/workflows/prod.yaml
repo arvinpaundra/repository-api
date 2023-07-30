@@ -67,7 +67,7 @@ jobs:
           username: ${{ secrets.DO_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          port: ${{ secret.SSH_PORT }}
+          port: ${{ secrets.SSH_PORT }}
           script: |
             docker stop reksi-app
             docker container rm reksi-app
